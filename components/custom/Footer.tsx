@@ -91,10 +91,10 @@ export default function Footer() {
                   href="tel:+9779869144346"
                   className="hover:text-white transition-colors"
                 >
-                  +977-9869144346
+                  +977-9841148149
                 </a>
               </li>
-              <li className="flex items-center">
+              {/* <li className="flex items-center">
                 <Phone className="w-5 h-5 mr-2" />
                 <a
                   href="tel:+9779843409076"
@@ -102,7 +102,7 @@ export default function Footer() {
                 >
                   +977-9843409076
                 </a>
-              </li>
+              </li> */}
               <li className="flex items-center">
                 <Mail className="w-5 h-5 mr-2" />
                 <a
@@ -149,13 +149,14 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-8 pt-8 border-t border-gray-800 text-sm text-center">
-          <p>© 2024 CSIT Association Of BMC. All Rights Reserved.</p>
+        <p>© {new Date().getFullYear()} CSIT Association Of BMC. All Rights Reserved.</p>
+
           <p className="mt-2">
             Discover the Code Behind this project :&nbsp;
             <span>
               <Link
                 target="_blank"
-                href={"https://github.com/sujansince2003/csitabmcweb"}
+                href={"https://github.com/CSIT-Association-of-BMC/csitabmcweb"}
                 className="text-blue-300 hover:text-white transition-colors"
               >
                 GitHub
