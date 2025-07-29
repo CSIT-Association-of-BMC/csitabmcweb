@@ -180,7 +180,7 @@ export default function ContactUs() {
                 </div>
                 <div className="flex items-center">
                   <Phone className="h-6 w-6 text-primary mr-2" />
-                  <span>+977-9869144346, +977-9843409076</span>
+                  <span>+977-9841148149,</span>
                 </div>
                 <div className="flex items-center">
                   <Mail className="h-6 w-6 text-primary mr-2" />
