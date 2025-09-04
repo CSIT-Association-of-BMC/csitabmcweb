@@ -11,7 +11,7 @@ export default function About() {
             <div className="relative rounded-2xl overflow-hidden group">
               <div className="aspect-[4/3] relative">
                 <Image
-                  src="https://res.cloudinary.com/dol8m5gx7/image/upload/v1723188288/team2081_wq5hob.jpg"
+                  src="/team.jpeg"
                   alt="CSIT Association team members"
                   fill
                   className="object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
