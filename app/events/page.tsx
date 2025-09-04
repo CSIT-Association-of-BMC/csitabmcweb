@@ -45,12 +45,18 @@ export default async function Event() {
               >
                 <div className=" h-full relative bg-white rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2">
                   <div className="relative h-64">
-                    <Image
-                      src={event.image[0].url}
-                      alt={event.title}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
+                  {event.image?.[0]?.url ? (
+  <Image
+    src={event.image[0].url}
+    alt={event.title}
+    fill
+    className="object-cover transition-transform duration-300 group-hover:scale-105"
+  />
+) : (
+  <div className="bg-gray-200 w-full h-full flex items-center justify-center text-gray-500">
+    No image
+  </div>
+)}
                     <div className="absolute top-4 right-4">
                       <span className="px-3 py-1 text-sm font-medium text-white bg-red-600 rounded-full">
                         {event.category}
