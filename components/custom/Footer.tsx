@@ -149,7 +149,10 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-8 pt-8 border-t border-gray-800 text-sm text-center">
-        <p>© {new Date().getFullYear()} CSIT Association Of BMC. All Rights Reserved.</p>
+          <p>
+            © {new Date().getFullYear()} CSIT Association Of BMC. All Rights
+            Reserved.
+          </p>
 
           <p className="mt-2">
             Discover the Code Behind this project :&nbsp;
@@ -163,7 +166,6 @@ export default function Footer() {
               </Link>
             </span>
           </p>
-
         </div>
       </div>
     </footer>
