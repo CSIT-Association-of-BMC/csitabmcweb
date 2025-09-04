@@ -146,7 +146,7 @@ export default function Footer() {
             </form>
           </div>
         </div>
-
+<p className="text-white">hello csitabmc</p>
         {/* Bottom Bar */}
         <div className="mt-8 pt-8 border-t border-gray-800 text-sm text-center">
         <p>© {new Date().getFullYear()} CSIT Association Of BMC. All Rights Reserved.</p>
@@ -164,8 +164,6 @@ export default function Footer() {
             </span>
           </p>
 
-
-          hello world
         </div>
       </div>
     </footer>
