@@ -37,7 +37,7 @@ const CertificateData = async ({
   const data: CertificateTypes = resJson.data;
 
   metadata.title = data.fullName + " | Certified";
-  metadata.description = "CSIT Assocaiotn of BMC Certificate Verification";
+  metadata.description = "CSIT Association of BMC Certificate Verification";
   metadata.openGraph = metadata.openGraph ?? {};
   metadata.openGraph.images = {
     url: "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191383/logohero_nsqj8h.png",
