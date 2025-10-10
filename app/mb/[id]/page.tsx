@@ -18,6 +18,51 @@ import { MemberTypes } from "@/types/Members";
 import { fetchWithToken } from "@/lib/fetch";
 import Markdown from "react-markdown";
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const userId = (await params).id;
+  const query = QueryString.stringify(
+    {
+      populate: {
+        image: {
+          fields: ["url"],
+        },
+      },
+    },
+    { encodeValuesOnly: true }
+  );
+  const res = await fetchWithToken(
+    `${process.env.STRAPI_API_URL}/members/${userId}?${query}`
+  );
+
+  if (!res || res.status !== 200) {
+    return {
+      title: "Member Not Found - CSIT Association of BMC",
+    };
+  }
+
+  const resJson = await res.json();
+  const profile: MemberTypes = resJson.data;
+
+  return {
+    title: `${profile.fullName} - CSIT Association of BMC`,
+    description: profile.description?.substring(0, 160) || `Learn about ${profile.fullName}, ${profile.post} at CSIT Association of BMC.`,
+    openGraph: {
+      images: profile.image ? [
+        {
+          url: profile.image.url,
+          width: 1200,
+          height: 600,
+          alt: profile.fullName,
+        },
+      ] : [],
+    },
+  };
+}
+
 export default async function Profile({
   params,
 }: {

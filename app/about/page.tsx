@@ -2,7 +2,13 @@ import React from "react";
 import Image from "next/image";
 import TeamList from "@/app/mb/[id]/TeamList";
 
+export const metadata = {
+  title: "About - CSIT Association of BMC",
+  description: "Learn about CSIT Association of BMC, a non-profitable organization created for the welfare of CSIT students at Butwal Multiple Campus.",
+};
+
 export default function About() {
+
   return (
     <>
       <section className="py-16 px-4 md:px-6 lg:px-8 overflow-hidden bg-white">

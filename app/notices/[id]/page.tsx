@@ -11,6 +11,49 @@ import { fetchWithToken } from "@/lib/fetch";
 import type { NoticeTypes } from "@/types/Notice";
 import Markdown from "react-markdown";
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const query = QueryString.stringify({
+    populate: {
+      image: {
+        fields: ["url"],
+      },
+    },
+  });
+
+  const res = await fetchWithToken(
+    `${process.env.STRAPI_API_URL}/notices/${id}?${query}`
+  );
+
+  if (!res || res.status !== 200) {
+    return {
+      title: "Notice Not Found - CSIT Association of BMC",
+    };
+  }
+
+  const resJson = await res.json();
+  const notice: NoticeTypes = resJson.data;
+
+  return {
+    title: notice.title + " - CSIT Association of BMC",
+    description: notice.description?.substring(0, 160) || "CSIT Association of BMC Notice",
+    openGraph: {
+      images: notice.image && notice.image.length > 0 ? [
+        {
+          url: notice.image[0].url,
+          width: 1200,
+          height: 600,
+          alt: notice.title,
+        },
+      ] : [],
+    },
+  };
+}
+
 export default async function NoticeDetail(props: {
   params: Promise<{ id: string }>;
 }) {

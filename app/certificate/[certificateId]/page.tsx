@@ -2,7 +2,6 @@ import React from "react";
 import DownloadCertificate from "./DownloadCertificate";
 import { format } from "date-fns";
 
-import { metadata } from "@/app/layout";
 import NotFound from "@/app/not-found";
 import { fetchWithToken } from "@/lib/fetch";
 import { CertificateTypes } from "@/types/certificate";
@@ -60,15 +59,6 @@ const CertificateData = async ({
   };
 
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=https://csitabmc.com/certificate/${certificateDetails.id}&size=200x200`;
-
-  metadata.title = data.fullName + " | Certified";
-  metadata.description = "CSIT Association of BMC Certificate Verification";
-  metadata.openGraph = metadata.openGraph ?? {};
-  metadata.openGraph.images = {
-    url: "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191383/logohero_nsqj8h.png",
-    width: 1200,
-    height: 600,
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
