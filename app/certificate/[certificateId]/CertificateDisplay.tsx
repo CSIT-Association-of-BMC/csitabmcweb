@@ -6,6 +6,8 @@ import { CertificateTypes } from "@/types/certificate";
 interface Signature {
   name: string;
   title: string;
+  image?: string;
+  institute?: string;
 }
 
 interface CertificateDetails {
@@ -30,10 +32,10 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
   isValid = true,
 }) => {
   return (
-    <div className="container w-full overflow-y-auto">
-      <div className="w-full overflow-x-hidden max-w-[1200px] mx-auto">
-        <div className="mx-auto text-[1.2vw] lg:text-[1vw] 2xl:text-[16px]">
-          <div className="relative w-full aspect-[16/10] bg-white shadow-xl overflow-hidden border border-slate-200">
+    <div className="w-full min-h-screen container bg-slate-50 overflow-x-auto overflow-y-hidden lg:overflow-visible lg:flex lg:items-center lg:justify-center">
+      <div className="relative bg-white shadow-2xl border border-slate-200 my-6 w-[1200px] aspect-[16/10] lg:w-[95vw] lg:mx-auto mx-4">
+        <div style={{ fontSize: "16px", width: "100%", height: "100%" }}>
+          <div className="relative w-full h-full overflow-hidden">
             <div
               style={{ top: "0", right: "0", width: "24em", height: "24em" }}
               className="absolute bg-blue-500/5 rounded-full blur-3xl"
@@ -124,16 +126,22 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
               className="absolute bg-blue-900"
             />
 
-            <div className="relative h-full flex flex-col p-8 md:p-16">
+            <div
+              className="relative h-full flex flex-col"
+              style={{ padding: "3em" }}
+            >
               {/* Download Button inside certificate border */}
-              <div className="absolute bottom-4 right-4 z-10">
+              <div
+                className="absolute"
+                style={{ bottom: "1em", right: "1em", zIndex: 10 }}
+              >
                 <DownloadCertificate certificateData={certificateData} />
               </div>
               <div
-                style={{ marginBottom: "3em" }}
+                style={{ marginBottom: "2em" }}
                 className="flex items-start justify-between"
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center" style={{ gap: "1em" }}>
                   <div className="relative">
                     <div
                       style={{ width: "4em", height: "4em" }}
@@ -159,15 +167,15 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                       style={{ fontSize: "0.875em" }}
                       className="text-slate-600"
                     >
-                      Creating world bit by bit
+                      Creating the world bit by bit
                     </p>
                   </div>
                 </div>
 
                 <div className="text-right">
                   <p
-                    style={{ fontSize: "0.75em" }}
-                    className="uppercase tracking-wider mb-1"
+                    style={{ fontSize: "0.75em", marginBottom: "0.5em" }}
+                    className="uppercase tracking-wider"
                   >
                     Certificate ID
                   </p>
@@ -180,18 +188,21 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                 </div>
               </div>
 
-              <div className="flex-1 flex items-center justify-between gap-16">
+              <div
+                className="flex-1 flex items-center justify-between"
+                style={{ gap: "4em" }}
+              >
                 <div className="flex-1">
-                  <div style={{ marginBottom: "2em" }}>
+                  <div style={{ marginBottom: "1.5em" }}>
                     <p
-                      style={{ fontSize: "1.125em", marginBottom: "2em" }}
+                      style={{ fontSize: "1.125em", marginBottom: "1.5em" }}
                       className="text-slate-600"
                     >
-                      This is to certify that
+                      This is to Certify That
                     </p>
 
                     <h1
-                      style={{ fontSize: "4em", marginBottom: "1em" }}
+                      style={{ fontSize: "3.5em", marginBottom: "0.2em" }}
                       className="font-bold text-blue-900 leading-tight"
                     >
                       {certificateDetails.recipientName}
@@ -200,56 +211,81 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                       style={{
                         width: "100%",
                         height: "0.25em",
-                        marginBottom: "2em",
+                        marginBottom: "1.5em",
                       }}
                       className="bg-blue-900"
                     />
 
                     <p
-                      style={{ fontSize: "0.875em", marginBottom: "1.5em" }}
-                      className="leading-relaxed"
+                      style={{ fontSize: "1em", marginBottom: "1em" }}
+                      className="leading-relaxed font-medium"
                     >
-                      has successfully completed the course
+                      has successfully completed this certified course
+                      demonstrating dedication and achivement in
                     </p>
 
-                    <p style={{ fontSize: "1em" }}>
-                      Awarded on {certificateDetails.completionDate}
-                    </p>
+                    <p style={{ fontSize: "1em", marginBottom: "0.5em" }}></p>
                     <p
-                      style={{ fontSize: "1.5em", marginBottom: "2em" }}
-                      className="font-semibold text-slate-900"
+                      style={{ fontSize: "1.5em", marginBottom: "0.5em" }}
+                      className="font-semibold text-blue-900"
                     >
                       {certificateDetails.courseName}
+                    </p>
+                    <p
+                      style={{ fontSize: "1em", marginBottom: "1em" }}
+                      className="leading-relaxed font-medium"
+                    >
+                      Awarded on {certificateDetails.completionDate}
                     </p>
                   </div>
 
                   <div
                     className="grid grid-cols-3"
-                    style={{ marginTop: "2em", gap: "1em" }}
+                    style={{ marginTop: "1.5em", gap: "2em" }}
                   >
                     {certificateDetails.signatures.map((signature, index) => (
                       <div key={signature.name}>
-                        <div style={{ marginBottom: "0.5em" }}>
-                          <svg
-                            viewBox="0 0 180 50"
-                            style={{ width: "100%", height: "0.5em" }}
-                            xmlns="http://www.w3.org/2000/svg"
+                        {signature.image ? (
+                          <div
+                            style={{
+                              height: "8em",
+                              display: "flex",
+                              alignItems: "flex-end",
+                              position: "relative",
+                            }}
                           >
-                            <path
-                              d={
-                                index % 2 === 0
-                                  ? "M 10 30 Q 25 15, 45 28 Q 65 40, 85 25 Q 105 10, 125 30 Q 145 45, 165 28"
-                                  : "M 10 25 Q 30 35, 50 20 Q 70 5, 90 25 Q 110 40, 130 20 Q 150 10, 170 30"
-                              }
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              fill="none"
-                              className="text-slate-700"
+                            <Image
+                              src={signature.image}
+                              alt={`${signature.name} signature`}
+                              width={2200}
+                              height={2200}
+                              className="object-contain absolute left-0 w-full scale-150 h-full"
+                              style={{ maxHeight: "9em" }}
                             />
-                          </svg>
-                        </div>
+                          </div>
+                        ) : (
+                          <div style={{ marginBottom: "0.5em" }}>
+                            <svg
+                              viewBox="0 0 180 50"
+                              style={{ width: "100%", height: "2em" }}
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d={
+                                  index % 2 === 0
+                                    ? "M 10 30 Q 25 15, 45 28 Q 65 40, 85 25 Q 105 10, 125 30 Q 145 45, 165 28"
+                                    : "M 10 25 Q 30 35, 50 20 Q 70 5, 90 25 Q 110 40, 130 20 Q 150 10, 170 30"
+                                }
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                fill="none"
+                                className="text-slate-700"
+                              />
+                            </svg>
+                          </div>
+                        )}
                         <div
-                          className="border-t border-slate-300"
+                          className="border-t border-slate-300 text-center"
                           style={{ paddingTop: "0.25em" }}
                         >
                           <p
@@ -264,16 +300,23 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                           >
                             {signature.title}
                           </p>
+                          <p
+                            style={{ fontSize: "0.75em" }}
+                            className="text-slate-600"
+                          >
+                            {signature.institute}
+                          </p>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col items-end justify-end h-full mb-20">
+                  <div className="flex-1" />
                   <div
-                    style={{ width: "12em", height: "12em" }}
-                    className="bg-white rounded-lg border-2 border-slate-300 p-2"
+                    style={{ width: "10em", height: "10em", padding: "0.5em" }}
+                    className="bg-white rounded-lg border-2 border-slate-300"
                   >
                     <img
                       src={qrCodeUrl || "/placeholder.svg"}
@@ -283,57 +326,57 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                   </div>
                 </div>
               </div>
-
-              <div
-                style={{ marginTop: "2em", paddingTop: "1.5em" }}
-                className="border-t border-slate-200"
-              >
-                <p
-                  style={{ fontSize: "0.75em" }}
-                  className="text-slate-500 text-center"
-                >
-                  This certificate validates the successful completion of the
-                  specified course and can be verified at the URL above.
-                </p>
-              </div>
             </div>
 
-            {/* Invalid Certificate Overlay */}
-            {!isValid && (
-              <div className="absolute inset-0 bg-red-900/90 backdrop-blur-sm flex items-center justify-center z-20">
-                <div className="bg-white rounded-lg p-8 max-w-md mx-4 text-center shadow-2xl border-4 border-red-600">
-                  <div className="mb-4">
-                    <svg
-                      className="w-16 h-16 text-red-600 mx-auto"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="text-xl font-bold text-red-600 mb-2">
-                    INVALID CERTIFICATE
-                  </h3>
-                  <p className="text-slate-700 mb-4">
-                    This certificate cannot be issued because the required
-                    projects and assignments have not been completed.
+            {/* <div
+              style={{ marginTop: "1.5em", paddingTop: "1em" }}
+              className="border-t border-slate-200"
+            >
+              <p
+                style={{ fontSize: "0.75em" }}
+                className="text-slate-500 text-center"
+              >
+                This certificate validates the successful completion of the
+                specified course and can be verified at the URL above.
+              </p>
+            </div> */}
+          </div>
+
+          {/* Invalid Certificate Overlay */}
+          {!isValid && (
+            <div className="absolute inset-0 bg-red-900/90 backdrop-blur-sm flex items-center justify-center z-20">
+              <div className="bg-white rounded-lg p-8 max-w-md mx-4 text-center shadow-2xl border-4 border-red-600">
+                <div className="mb-4">
+                  <svg
+                    className="w-16 h-16 text-red-600 mx-auto"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-red-600 mb-2">
+                  INVALID CERTIFICATE
+                </h3>
+                <p className="text-slate-700 mb-4">
+                  This certificate cannot be issued because the required
+                  projects and assignments have not been completed.
+                </p>
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                  <p className="text-sm text-red-800 font-medium">
+                    Please complete all required coursework to receive a valid
+                    certificate.
                   </p>
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                    <p className="text-sm text-red-800 font-medium">
-                      Please complete all required coursework to receive a valid
-                      certificate.
-                    </p>
-                  </div>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

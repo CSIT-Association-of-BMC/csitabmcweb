@@ -1,4 +1,3 @@
-import React from "react";
 import DownloadCertificate from "./DownloadCertificate";
 import { format } from "date-fns";
 
@@ -55,18 +54,23 @@ const CertificateData = async ({
     signatures: [
       {
         name: "Sanchit Pandey",
-        title: "President | CSIT Association of BMC",
+        title: "President ",
         institute: "CSIT Association of BMC",
+        image: "/sanchit-sign.png",
+
       },
       {
         name: "Dr. Arun Kumar Kshetree",
         title: "Campus Chief",
         institute: "Butwal Multiple Campus",
+        image: "/arun-sign.png",
+
       },
       {
         name: "Mr. Gobinda Adhikari",
         title: "B.Sc. CSIT Program Director",
         institute: "Butwal Multiple Campus",
+        image: "/gobinda-sign.png",
       },
     ],
   };
@@ -74,24 +78,27 @@ const CertificateData = async ({
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=https://csitabmc.com/certificate/${certificateDetails.id}&size=200x200`;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      <CertificateVerification
-        certificateDetails={certificateDetails}
-        isValid={data.isProjectComplete}
-      />
+    <div className="min-h-screen w-full mx-auto bg-gradient-to-br from-blue-50 via-white to-blue-50">
+      <div className="container mx-auto">
+        <CertificateVerification
+          certificateDetails={certificateDetails}
+          isValid={data.isProjectComplete}
+        />
 
-      {/* Certificate Display */}
-      <CertificateDisplay
-        certificateDetails={certificateDetails}
-        qrCodeUrl={qrCodeUrl}
-        certificateData={data}
-        isValid={data.isProjectComplete}
-      />
+        {/* Certificate Display */}
+        <CertificateDisplay
+          certificateDetails={certificateDetails}
+          qrCodeUrl={qrCodeUrl}
+          certificateData={data}
+          isValid={data.isProjectComplete}
+        />
 
-      <EventMentorDetails
-        certificateDetails={certificateDetails}
-        eventData={data.event}
-      />
+
+        <EventMentorDetails
+          certificateDetails={certificateDetails}
+          eventData={data.event}
+        />
+      </div>
     </div>
   );
 };
