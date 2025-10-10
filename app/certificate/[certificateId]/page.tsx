@@ -57,14 +57,12 @@ const CertificateData = async ({
         title: "President ",
         institute: "CSIT Association of BMC",
         image: "/sanchit-sign.png",
-
       },
       {
         name: "Dr. Arun Kumar Kshetree",
         title: "Campus Chief",
         institute: "Butwal Multiple Campus",
         image: "/arun-sign.png",
-
       },
       {
         name: "Mr. Gobinda Adhikari",
@@ -92,7 +90,6 @@ const CertificateData = async ({
           certificateData={data}
           isValid={data.isProjectComplete}
         />
-
 
         <EventMentorDetails
           certificateDetails={certificateDetails}
