@@ -13,12 +13,12 @@ export default function CertificateVerification({
   isValid,
 }: CertificateVerificationProps) {
   return (
-    <div className="py-16 px-4 md:px-8 bg-slate-50">
-      <div className="container mx-auto">
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-8 md:p-12">
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-            <div className="flex items-start space-x-6">
-              <div className="flex-shrink-0">
+    <div className="py-8 px-2 sm:px-4 md:px-6 bg-slate-50">
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 md:p-10">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div className="flex items-start space-x-3 sm:space-x-6">
+              <div className="flex-shrink-0 hidden sm:block">
                 <div
                   className={`w-16 h-16 rounded-lg flex items-center justify-center ${
                     isValid ? "bg-blue-600" : "bg-red-600"
@@ -66,7 +66,7 @@ export default function CertificateVerification({
                     : "This certificate has been deactivated due to incomplete requirements. The recipient has not completed all necessary projects and assignments."}
                 </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div className="flex items-center text-slate-600">
                     <svg
                       className="w-4 h-4 mr-2 text-slate-400"
@@ -103,29 +103,33 @@ export default function CertificateVerification({
               </div>
             </div>
 
-            <div className="">
-              <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1 lg:text-right">
+            <div className="w-full lg:w-auto">
+              <div className="bg-slate-50 rounded-lg p-3 border border-slate-200 max-w-full sm:max-w-xs lg:max-w-sm">
+                <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1 text-left lg:text-right">
                   Certificate ID
                 </div>
-                <div className="font-mono text-sm font-semibold text-slate-900 break-all">
+                <div className="font-mono text-sm font-semibold text-slate-900 break-words">
                   {certificateDetails.id}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-slate-200">
-            <div className="flex items-center justify-between text-sm text-slate-500">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-                Powered by
-                <span className="text-red-500 pl-1 underline ">
-                  <a href="https://consolesoft.ltd">Console Soft</a>
-                </span>
+          <div className="mt-6 pt-4 border-t border-slate-200">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 text-sm text-slate-500">
+              <div className="flex items-center space-x-2 text-sm">
+                <span className="text-slate-600">Powered by</span>
+                <a
+                  className="text-red-500 underline"
+                  href="https://consolesoft.ltd"
+                >
+                  Console Soft
+                </a>
               </div>
-              <span className="flex items-center">
+
+              <div className="flex items-center">
                 <svg
-                  className={`w-4 h-4 mr-1 ${
+                  className={`w-4 h-4 mr-2 ${
                     isValid ? "text-green-500" : "text-red-500"
                   }`}
                   fill="none"
@@ -143,8 +147,10 @@ export default function CertificateVerification({
                     }
                   />
                 </svg>
-                Status: {isValid ? "Active & Valid" : "Inactive & Invalid"}
-              </span>
+                <span className="text-sm">
+                  Status: {isValid ? "Active & Valid" : "Inactive & Invalid"}
+                </span>
+              </div>
             </div>
           </div>
         </div>
