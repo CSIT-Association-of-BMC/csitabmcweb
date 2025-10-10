@@ -36,14 +36,14 @@ const CertificateData = async ({
   const resJson = await res.json();
   const data: CertificateTypes = resJson.data;
 
-  metadata.title = data.fullName + " | Certified";
-  metadata.description = "CSIT Association of BMC Certificate Verification";
-  metadata.openGraph = metadata.openGraph ?? {};
-  metadata.openGraph.images = {
-    url: "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191383/logohero_nsqj8h.png",
-    width: 1200,
-    height: 600,
-  };
+  // metadata.title = data.fullName + " | Certified";
+  // metadata.description = "CSIT Association of BMC Certificate Verification";
+  // metadata.openGraph = metadata.openGraph ?? {};
+  // metadata.openGraph.images = {
+  //   url: "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191383/logohero_nsqj8h.png",
+  //   width: 1200,
+  //   height: 600,
+  // };
   return (
     <div>
       <Card>
