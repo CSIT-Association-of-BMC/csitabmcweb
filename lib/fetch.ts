@@ -1,5 +1,5 @@
 export const fetchWithToken = async (url: string) => {
-  return await fetch(url, {
+  return await globalThis.fetch(url, {
     headers: {
       Authorization: `Bearer ${process.env.TOKEN}`,
     },

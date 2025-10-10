@@ -27,5 +27,13 @@ export type EventTypes = {
   mentors: {
     id: number;
     documentId: string;
+    fullName: string;
+    socialLink: string;
+    role: string;
+    image: {
+      id: number;
+      documentId: string;
+      url: string;
+    };
   }[];
 };
