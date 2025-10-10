@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import Image from "next/image";
 
 interface EventMentorDetailsProps {
   certificateDetails: {
@@ -12,6 +13,13 @@ interface EventMentorDetailsProps {
   eventData: {
     startDate: string | Date;
     endDate: string | Date;
+    mentors?: Array<{
+      fullName: string;
+      role: string;
+      image?: {
+        url: string;
+      };
+    }>;
   };
 }
 
@@ -47,10 +55,10 @@ export default function EventMentorDetails({
             <h5 className="font-semibold text-slate-900 mb-3 text-lg">
               {certificateDetails.courseName}
             </h5>
-            <p className="text-slate-700 text-sm leading-relaxed mb-4">
+            {/* <p className="text-slate-700 text-sm leading-relaxed mb-4">
               A professional development workshop focused on practical skills
               and industry knowledge.
-            </p>
+            </p> */}
 
             <div className="space-y-3">
               <div className="flex items-center text-sm">
@@ -73,10 +81,16 @@ export default function EventMentorDetails({
                     try {
                       const startDate = new Date(eventData.startDate);
                       const endDate = new Date(eventData.endDate);
-                      if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                      if (
+                        isNaN(startDate.getTime()) ||
+                        isNaN(endDate.getTime())
+                      ) {
                         return "Date information unavailable";
                       }
-                      return `${format(startDate, "MMM d")} - ${format(endDate, "MMM d, yyyy")}`;
+                      return `${format(startDate, "MMM d")} - ${format(
+                        endDate,
+                        "MMM d, yyyy"
+                      )}`;
                     } catch (error) {
                       return "Date information unavailable";
                     }
@@ -127,36 +141,42 @@ export default function EventMentorDetails({
             </div>
 
             <div className="space-y-4">
-              {certificateDetails.signatures
-                .slice(0, 2)
-                .map((signature, index) => (
-                  <div
-                    key={signature.name}
-                    className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg"
-                  >
-                    <div className="w-12 h-12 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center flex-shrink-0">
+              {(eventData.mentors?.slice(0, 2) || []).map((mentor, index) => (
+                <div
+                  key={mentor.fullName}
+                  className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg"
+                >
+                  <div className="w-12 h-12 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {mentor.image?.url ? (
+                      <Image
+                        src={mentor.image.url}
+                        alt={mentor.fullName}
+                        width={48}
+                        height={48}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
                       <span className="text-slate-600 font-bold text-sm">
-                        {signature.name
+                        {mentor.fullName
                           .split(" ")
                           .map((n) => n[0])
                           .join("")}
                       </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h5 className="font-semibold text-slate-900 text-sm">
-                        {signature.name}
-                      </h5>
-                      <p className="text-xs text-slate-600">
-                        {signature.title}
-                      </p>
-                    </div>
-                    <div className="flex-shrink-0">
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {index === 0 ? "Lead" : "Expert"}
-                      </span>
-                    </div>
+                    )}
                   </div>
-                ))}
+                  <div className="flex-1 min-w-0">
+                    <h5 className="font-semibold text-slate-900 text-sm">
+                      {mentor.fullName}
+                    </h5>
+                    <p className="text-xs text-slate-600">{mentor.role}</p>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {index === 0 ? "Lead" : "Expert"}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

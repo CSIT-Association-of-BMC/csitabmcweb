@@ -20,6 +20,16 @@ const CertificateData = async ({
     populate: {
       event: {
         fields: ["title", "startDate", "endDate"],
+        populate: {
+          mentors: {
+            fields: ["fullName", "role"],
+            populate: {
+              image: {
+                fields: ["url"],
+              },
+            },
+          },
+        },
       },
     },
   });
@@ -45,15 +55,18 @@ const CertificateData = async ({
     signatures: [
       {
         name: "Sanchit Pandey",
-        title: "President of CSIT Association of BMC",
+        title: "President | CSIT Association of BMC",
+        institute: "CSIT Association of BMC",
       },
       {
-        name: "Arun Kshetri",
-        title: "Campus Chief of Butwal Multiple Campus",
+        name: "Dr. Arun Kumar Kshetree",
+        title: "Campus Chief",
+        institute: "Butwal Multiple Campus",
       },
       {
-        name: "Third Person",
-        title: "Additional Title",
+        name: "Mr. Gobinda Adhikari",
+        title: "B.Sc. CSIT Program Director",
+        institute: "Butwal Multiple Campus",
       },
     ],
   };
@@ -64,7 +77,7 @@ const CertificateData = async ({
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <CertificateVerification
         certificateDetails={certificateDetails}
-        isValid={false}
+        isValid={data.isProjectComplete}
       />
 
       {/* Certificate Display */}
@@ -72,7 +85,7 @@ const CertificateData = async ({
         certificateDetails={certificateDetails}
         qrCodeUrl={qrCodeUrl}
         certificateData={data}
-        isValid={false}
+        isValid={data.isProjectComplete}
       />
 
       <EventMentorDetails
