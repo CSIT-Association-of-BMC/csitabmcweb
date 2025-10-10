@@ -7,6 +7,7 @@ interface Signature {
   name: string;
   title: string;
   image?: string;
+  institute?: string;
 }
 
 interface CertificateDetails {
@@ -197,11 +198,11 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                       style={{ fontSize: "1.125em", marginBottom: "1.5em" }}
                       className="text-slate-600"
                     >
-                      This is to certify that
+                      This is to Certify That
                     </p>
 
                     <h1
-                      style={{ fontSize: "3.5em", marginBottom: "0.5em" }}
+                      style={{ fontSize: "3.5em", marginBottom: "0.2em" }}
                       className="font-bold text-blue-900 leading-tight"
                     >
                       {certificateDetails.recipientName}
@@ -216,21 +217,25 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                     />
 
                     <p
-                      style={{ fontSize: "0.95em", marginBottom: "1em" }}
-                      className="leading-relaxed"
+                      style={{ fontSize: "1em", marginBottom: "1em" }}
+                      className="leading-relaxed font-medium"
                     >
-                      has successfully participated in{" "}
-                      {certificateDetails.courseName} and shown dedication and
-                      understanding of the topics covered. This certificate is
-                      awarded in recognition of their achievement.
+                      has successfully completed this certified course
+                      demonstrating dedication and achivement in
                     </p>
 
                     <p style={{ fontSize: "1em", marginBottom: "0.5em" }}></p>
                     <p
-                      style={{ fontSize: "1.5em", marginBottom: "1.5em" }}
-                      className="font-semibold text-red-600"
+                      style={{ fontSize: "1.5em", marginBottom: "0.5em" }}
+                      className="font-semibold text-blue-900"
                     >
                       {certificateDetails.courseName}
+                    </p>
+                    <p
+                      style={{ fontSize: "1em", marginBottom: "1em" }}
+                      className="leading-relaxed font-medium"
+                    >
+                      Awarded on {certificateDetails.completionDate}
                     </p>
                   </div>
 
@@ -243,19 +248,19 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                         {signature.image ? (
                           <div
                             style={{
-                              marginBottom: "0.5em",
-                              height: "4em",
+                              height: "8em",
                               display: "flex",
                               alignItems: "flex-end",
+                              position: "relative",
                             }}
                           >
                             <Image
                               src={signature.image}
                               alt={`${signature.name} signature`}
-                              width={180}
-                              height={80}
-                              className="object-contain w-full h-full"
-                              style={{ maxHeight: "4em" }}
+                              width={2200}
+                              height={2200}
+                              className="object-contain absolute left-0 w-full scale-150 h-full"
+                              style={{ maxHeight: "9em" }}
                             />
                           </div>
                         ) : (
@@ -280,7 +285,7 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                           </div>
                         )}
                         <div
-                          className="border-t border-slate-300"
+                          className="border-t border-slate-300 text-center"
                           style={{ paddingTop: "0.25em" }}
                         >
                           <p
@@ -294,6 +299,12 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                             className="text-slate-600"
                           >
                             {signature.title}
+                          </p>
+                          <p
+                            style={{ fontSize: "0.75em" }}
+                            className="text-slate-600"
+                          >
+                            {signature.institute}
                           </p>
                         </div>
                       </div>

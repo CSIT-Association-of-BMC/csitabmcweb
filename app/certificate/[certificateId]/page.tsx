@@ -54,7 +54,7 @@ const CertificateData = async ({
     signatures: [
       {
         name: "Sanchit Pandey",
-        title: "President | CSIT Association of BMC",
+        title: "President ",
         institute: "CSIT Association of BMC",
         image: "/sanchit-sign.png",
       },
