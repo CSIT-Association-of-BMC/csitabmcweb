@@ -328,7 +328,7 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
               </div>
             </div>
 
-            <div
+            {/* <div
               style={{ marginTop: "1.5em", paddingTop: "1em" }}
               className="border-t border-slate-200"
             >
@@ -339,7 +339,7 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                 This certificate validates the successful completion of the
                 specified course and can be verified at the URL above.
               </p>
-            </div>
+            </div> */}
           </div>
 
           {/* Invalid Certificate Overlay */}
