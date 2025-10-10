@@ -44,7 +44,11 @@ export default async function NoticeDetail(props: {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="relative h-[300px] md:h-[30rem]">
             <Image
-              src={notice.image[0].url || "/placeholder.svg"}
+              src={
+                notice.image && notice.image.length > 0 && notice.image[0].url
+                  ? notice.image[0].url
+                  : "/placeholder.svg"
+              }
               alt={notice.title}
               fill
               className="object-cover object-top rounded-lg"
@@ -64,12 +68,16 @@ export default async function NoticeDetail(props: {
               </Markdown>
             </div>
             <div className="flex justify-end">
-              <Link href={notice.image[0].url} download>
-                <Button>
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Notice
-                </Button>
-              </Link>
+              {notice.image &&
+              notice.image.length > 0 &&
+              notice.image[0].url ? (
+                <Link href={notice.image[0].url} download>
+                  <Button>
+                    <Download className="mr-2 h-4 w-4" />
+                    Download Notice
+                  </Button>
+                </Link>
+              ) : null}
             </div>
           </div>
         </div>

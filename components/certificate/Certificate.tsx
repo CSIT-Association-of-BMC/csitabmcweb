@@ -1,64 +1,139 @@
 import React from "react";
 import { format } from "date-fns";
-import { Page, Text, View, Document, Image } from "@react-pdf/renderer";
+import {
+  Page,
+  Text,
+  View,
+  Document,
+  Image,
+  Svg,
+  Path,
+} from "@react-pdf/renderer";
 import { styles } from "./style";
 import { CertificateTypes } from "@/types/certificate";
 
-const Certificate = ({ data }: { data: CertificateTypes }) => (
-  <Document>
-    <Page size="A4" orientation="landscape" style={styles.page}>
-      <Image src="/certificate.png" style={styles.pageBackground} />
-      <View style={styles.head}>
-        <View style={styles.batchA}></View>
-        <View style={styles.copContainer}>
-          <View style={styles.cop}>
-            <Text>CERTIFICATE</Text>
-            <Text style={{ paddingVertical: "15px" }}>OF COMPLETION</Text>
-          </View>
-          <Text style={styles.awardedTo}>
-            This award is proudly presented to
-          </Text>
-        </View>
-        <View style={styles.batch}></View>
-      </View>
-      <View style={styles.body}>
-        <View>
-          <Text style={styles.name}>{data.fullName}</Text>
-        </View>
-        <View>
-          <Text style={styles.para}>
-            in recognition of their participation in the workshop titled as{" "}
-            <Text style={{ color: "red" }}> {data.event.title}</Text>, organized
-            by the CSIT Association of BMC. The workshop was conducted from{" "}
-            <Text style={{ color: "red" }}>
-              {format(new Date(data.event.startDate), "MMMM do")} to{" "}
-              {format(new Date(data.event.endDate), "MMMM do, yyyy")}
-            </Text>
-            . This certificate acknowledges their successful completion of the
-            program.
-          </Text>
-        </View>
-        <View style={styles.signs}>
-          <View style={styles.qr}>
-            <Image
-              src={`https://api.qrserver.com/v1/create-qr-code/?data=https://csitabmc.com/certificate/${data.certificateID}&color=0c2044&bgcolor=F1F1F1`}
-              style={{ objectFit: "contain", height: "100%" }}
-            />
-          </View>
-          <View style={styles.signContainer}>
-            <View style={styles.sign}>
-              <Image
-                src="/sign.png"
-                style={{ objectFit: "contain", width: "12rem", height: "5rem" }}
-              />
-              <Text style={styles.signName}>Suman Bhattarai</Text>
-              <Text>President</Text>
+const Certificate = ({ data }: { data: CertificateTypes }) => {
+  const certificateDetails = {
+    id: data.certificateID,
+    recipientName: data.fullName,
+    courseName: data.event.title,
+    completionDate: format(new Date(data.event.endDate), "MMMM d, yyyy"),
+    signatures: [
+      {
+        name: "Sanchit Pandey",
+        title: "President of CSIT Association of BMC",
+      },
+      {
+        name: "Arun Kshetri",
+        title: "Campus Chief of Butwal Multiple Campus",
+      },
+      {
+        name: "Third Person",
+        title: "Additional Title",
+      },
+    ],
+  };
+
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=https://csitabmc.com/certificate/${certificateDetails.id}&size=200x200`;
+
+  return (
+    <Document>
+      <Page size="A4" orientation="landscape" style={styles.page}>
+        {/* Decorative Elements */}
+        <View style={styles.decorativeCircle1} />
+        <View style={styles.decorativeCircle2} />
+        <View style={styles.diagonalLine1} />
+        <View style={styles.diagonalLine2} />
+        <View style={styles.diagonalLine3} />
+        <View style={styles.topBorderLine} />
+        <View style={styles.topGradientLine} />
+        <View style={styles.bottomGradientLine} />
+        <View style={styles.cornerBorderTopLeft} />
+        <View style={styles.cornerBorderBottomRight} />
+
+        <View style={styles.container}>
+          {/* Header */}
+          <View style={styles.header}>
+            <View style={styles.logoSection}>
+              <View style={styles.logo}>
+                <Image src="/logo.png" style={styles.logoImage} />
+              </View>
+              <View style={styles.companyInfo}>
+                <Text style={styles.companyName}>CSIT Association Of BMC</Text>
+                <Text style={styles.companyTagline}>
+                  Creating world bit by bit
+                </Text>
+              </View>
+            </View>
+            <View style={styles.certIdSection}>
+              <Text style={styles.certIdLabel}>Certificate ID</Text>
+              <Text style={styles.certId}>{certificateDetails.id}</Text>
             </View>
           </View>
+
+          {/* Main Content */}
+          <View style={styles.mainContent}>
+            <View style={styles.contentSection}>
+              <Text style={styles.certifyText}>This is to certify that</Text>
+
+              <Text style={styles.recipientName}>
+                {certificateDetails.recipientName}
+              </Text>
+              <View style={styles.nameUnderline} />
+
+              <Text style={styles.completionText}>
+                has successfully completed the course
+              </Text>
+
+              <Text style={styles.awardedDate}>
+                Awarded on {certificateDetails.completionDate}
+              </Text>
+              <Text style={styles.courseName}>
+                {certificateDetails.courseName}
+              </Text>
+
+              {/* Signatures */}
+              <View style={styles.signaturesSection}>
+                {certificateDetails.signatures.map((signature, index) => (
+                  <View key={signature.name} style={styles.signatureItem}>
+                    <Svg viewBox="0 0 180 8" style={styles.signatureLine}>
+                      <Path
+                        d={
+                          index % 2 === 0
+                            ? "M 10 6 Q 25 3, 45 5.6 Q 65 8, 85 5 Q 105 2, 125 6 Q 145 9, 165 5.6"
+                            : "M 10 5 Q 30 7, 50 4 Q 70 1, 90 5 Q 110 8, 130 4 Q 150 2, 170 6"
+                        }
+                        stroke="#374151"
+                        strokeWidth="1.5"
+                        fill="none"
+                      />
+                    </Svg>
+                    <Text style={styles.signatureName}>{signature.name}</Text>
+                    <Text style={styles.signatureTitle}>{signature.title}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+
+            {/* QR Code */}
+            <View style={styles.qrSection}>
+              <View style={styles.qrContainer}>
+                <Image src={qrCodeUrl} style={styles.qrImage} />
+              </View>
+            </View>
+          </View>
+
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>
+              This certificate validates the successful completion of the
+              specified course and can be verified at the URL above.
+            </Text>
+          </View>
         </View>
-      </View>
-    </Page>
-  </Document>
-);
+      </Page>
+    </Document>
+  );
+};
 
 export default Certificate;

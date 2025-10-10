@@ -18,7 +18,6 @@ export default async function NoticePage() {
   );
   if (!res || res.status !== 200) return <NotFound />;
   const resJson = await res.json();
-  console.log("API Response:", resJson);
   const notices: NoticeTypes[] = resJson.data;
   return (
     <>
