@@ -32,7 +32,7 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
   isValid = true,
 }) => {
   return (
-    <div className="w-full min-h-screen bg-slate-50 overflow-x-auto overflow-y-hidden lg:overflow-visible lg:flex lg:items-center lg:justify-center">
+    <div className="w-full min-h-screen container bg-slate-50 overflow-x-auto overflow-y-hidden lg:overflow-visible lg:flex lg:items-center lg:justify-center">
       <div className="relative bg-white shadow-2xl border border-slate-200 my-6 w-[1200px] aspect-[16/10] lg:w-[95vw] lg:mx-auto mx-4">
         <div style={{ fontSize: "16px", width: "100%", height: "100%" }}>
           <div className="relative w-full h-full overflow-hidden">
@@ -312,7 +312,8 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                   </div>
                 </div>
 
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col items-end justify-end h-full mb-20">
+                  <div className="flex-1" />
                   <div
                     style={{ width: "10em", height: "10em", padding: "0.5em" }}
                     className="bg-white rounded-lg border-2 border-slate-300"
@@ -325,57 +326,57 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                   </div>
                 </div>
               </div>
-
-              <div
-                style={{ marginTop: "1.5em", paddingTop: "1em" }}
-                className="border-t border-slate-200"
-              >
-                <p
-                  style={{ fontSize: "0.75em" }}
-                  className="text-slate-500 text-center"
-                >
-                  This certificate validates the successful completion of the
-                  specified course and can be verified at the URL above.
-                </p>
-              </div>
             </div>
 
-            {/* Invalid Certificate Overlay */}
-            {!isValid && (
-              <div className="absolute inset-0 bg-red-900/90 backdrop-blur-sm flex items-center justify-center z-20">
-                <div className="bg-white rounded-lg p-8 max-w-md mx-4 text-center shadow-2xl border-4 border-red-600">
-                  <div className="mb-4">
-                    <svg
-                      className="w-16 h-16 text-red-600 mx-auto"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="text-xl font-bold text-red-600 mb-2">
-                    INVALID CERTIFICATE
-                  </h3>
-                  <p className="text-slate-700 mb-4">
-                    This certificate cannot be issued because the required
-                    projects and assignments have not been completed.
+            <div
+              style={{ marginTop: "1.5em", paddingTop: "1em" }}
+              className="border-t border-slate-200"
+            >
+              <p
+                style={{ fontSize: "0.75em" }}
+                className="text-slate-500 text-center"
+              >
+                This certificate validates the successful completion of the
+                specified course and can be verified at the URL above.
+              </p>
+            </div>
+          </div>
+
+          {/* Invalid Certificate Overlay */}
+          {!isValid && (
+            <div className="absolute inset-0 bg-red-900/90 backdrop-blur-sm flex items-center justify-center z-20">
+              <div className="bg-white rounded-lg p-8 max-w-md mx-4 text-center shadow-2xl border-4 border-red-600">
+                <div className="mb-4">
+                  <svg
+                    className="w-16 h-16 text-red-600 mx-auto"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-red-600 mb-2">
+                  INVALID CERTIFICATE
+                </h3>
+                <p className="text-slate-700 mb-4">
+                  This certificate cannot be issued because the required
+                  projects and assignments have not been completed.
+                </p>
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                  <p className="text-sm text-red-800 font-medium">
+                    Please complete all required coursework to receive a valid
+                    certificate.
                   </p>
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                    <p className="text-sm text-red-800 font-medium">
-                      Please complete all required coursework to receive a valid
-                      certificate.
-                    </p>
-                  </div>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

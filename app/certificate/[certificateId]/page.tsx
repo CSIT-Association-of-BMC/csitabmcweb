@@ -76,24 +76,26 @@ const CertificateData = async ({
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=https://csitabmc.com/certificate/${certificateDetails.id}&size=200x200`;
 
   return (
-    <div className="min-h-screen container bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      <CertificateVerification
-        certificateDetails={certificateDetails}
-        isValid={data.isProjectComplete}
-      />
+    <div className="min-h-screen w-full mx-auto bg-gradient-to-br from-blue-50 via-white to-blue-50">
+      <div className="container mx-auto">
+        <CertificateVerification
+          certificateDetails={certificateDetails}
+          isValid={data.isProjectComplete}
+        />
 
-      {/* Certificate Display */}
-      <CertificateDisplay
-        certificateDetails={certificateDetails}
-        qrCodeUrl={qrCodeUrl}
-        certificateData={data}
-        isValid={data.isProjectComplete}
-      />
+        {/* Certificate Display */}
+        <CertificateDisplay
+          certificateDetails={certificateDetails}
+          qrCodeUrl={qrCodeUrl}
+          certificateData={data}
+          isValid={data.isProjectComplete}
+        />
 
-      <EventMentorDetails
-        certificateDetails={certificateDetails}
-        eventData={data.event}
-      />
+        <EventMentorDetails
+          certificateDetails={certificateDetails}
+          eventData={data.event}
+        />
+      </div>
     </div>
   );
 };
