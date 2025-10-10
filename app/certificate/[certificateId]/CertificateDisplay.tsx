@@ -20,12 +20,14 @@ interface CertificateDisplayProps {
   certificateDetails: CertificateDetails;
   qrCodeUrl: string;
   certificateData: CertificateTypes;
+  isValid?: boolean;
 }
 
 const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
   certificateDetails,
   qrCodeUrl,
   certificateData,
+  isValid = true,
 }) => {
   return (
     <div className="container w-full overflow-y-auto">
@@ -295,6 +297,42 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                 </p>
               </div>
             </div>
+
+            {/* Invalid Certificate Overlay */}
+            {!isValid && (
+              <div className="absolute inset-0 bg-red-900/90 backdrop-blur-sm flex items-center justify-center z-20">
+                <div className="bg-white rounded-lg p-8 max-w-md mx-4 text-center shadow-2xl border-4 border-red-600">
+                  <div className="mb-4">
+                    <svg
+                      className="w-16 h-16 text-red-600 mx-auto"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-red-600 mb-2">
+                    INVALID CERTIFICATE
+                  </h3>
+                  <p className="text-slate-700 mb-4">
+                    This certificate cannot be issued because the required
+                    projects and assignments have not been completed.
+                  </p>
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                    <p className="text-sm text-red-800 font-medium">
+                      Please complete all required coursework to receive a valid
+                      certificate.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
