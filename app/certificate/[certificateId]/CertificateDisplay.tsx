@@ -32,8 +32,8 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
   isValid = true,
 }) => {
   return (
-    <div className="w-full min-h-screen container bg-slate-50 overflow-x-auto overflow-y-hidden lg:overflow-visible lg:flex lg:items-center lg:justify-center">
-      <div className="relative bg-white shadow-2xl border border-slate-200 my-6 w-[1200px] aspect-[16/10] lg:w-[95vw] lg:mx-auto mx-4">
+    <div className="w-full mb-4  bg-slate-50 overflow-x-auto overflow-y-hidden lg:overflow-visible lg:flex lg:items-center lg:justify-center">
+      <div className=" bg-white shadow-sm border border-slate-200 my-6 w-[900px] aspect-[12/10] lg:aspect-auto lg:w-[95vw] lg:mx-auto mx-4">
         <div style={{ fontSize: "16px", width: "100%", height: "100%" }}>
           <div className="relative w-full h-full overflow-hidden">
             <div
