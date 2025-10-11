@@ -53,7 +53,7 @@ const CertificateData = async ({
     completionDate: format(new Date(data.event.endDate), "MMMM d, yyyy"),
     signatures: [
       {
-        name: "Sanchit Pandey",
+        name: "Mr. Sanchit Pandey",
         title: "President ",
         institute: "CSIT Association of BMC",
         image: "/sanchit-sign.png",

@@ -32,17 +32,20 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
   isValid = true,
 }) => {
   return (
-    <div className="w-full min-h-screen container bg-slate-50 overflow-x-auto overflow-y-hidden lg:overflow-visible lg:flex lg:items-center lg:justify-center">
-      <div className="relative bg-white shadow-2xl border border-slate-200 my-6 w-[1200px] aspect-[16/10] lg:w-[95vw] lg:mx-auto mx-4">
+    <div className="w-full mb-4  bg-slate-50 overflow-x-auto overflow-y-hidden lg:overflow-visible lg:flex lg:items-center lg:justify-center">
+      <div
+        id="certificate-to-download"
+        className=" bg-white shadow-sm border border-slate-200 my-6 w-[900px] aspect-[12/10] lg:aspect-auto lg:w-[95vw] lg:mx-auto mx-4"
+      >
         <div style={{ fontSize: "16px", width: "100%", height: "100%" }}>
           <div className="relative w-full h-full overflow-hidden">
             <div
               style={{ top: "0", right: "0", width: "24em", height: "24em" }}
-              className="absolute bg-blue-500/5 rounded-full blur-3xl"
+              className="absolute bg-blue-500/5 rounded-full blur-3xl no-pdf"
             />
             <div
               style={{ bottom: "0", left: "0", width: "20em", height: "20em" }}
-              className="absolute bg-blue-600/5 rounded-full blur-3xl"
+              className="absolute bg-blue-600/5 rounded-full blur-3xl no-pdf"
             />
 
             <svg
@@ -132,10 +135,13 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
             >
               {/* Download Button inside certificate border */}
               <div
-                className="absolute"
+                className="absolute no-pdf"
                 style={{ bottom: "1em", right: "1em", zIndex: 10 }}
               >
-                <DownloadCertificate certificateData={certificateData} />
+                <DownloadCertificate
+                  certificateId={certificateDetails.id}
+                  recipientName={certificateDetails.recipientName}
+                />
               </div>
               <div
                 style={{ marginBottom: "2em" }}
@@ -312,11 +318,11 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                   </div>
                 </div>
 
-                <div className="flex flex-col items-end justify-end h-full mb-20">
+                <div className="flex flex-col items-end justify-end h-full  ">
                   <div className="flex-1" />
                   <div
                     style={{ width: "10em", height: "10em", padding: "0.5em" }}
-                    className="bg-white rounded-lg border-2 border-slate-300"
+                    className="bg-white rounded-lg border-2 border-slate-300 mb-12 sm:mt-72 sm:mb-0"
                   >
                     <img
                       src={qrCodeUrl || "/placeholder.svg"}

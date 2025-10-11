@@ -20,16 +20,22 @@ const Certificate = ({ data }: { data: CertificateTypes }) => {
     completionDate: format(new Date(data.event.endDate), "MMMM d, yyyy"),
     signatures: [
       {
-        name: "Sanchit Pandey",
-        title: "President of CSIT Association of BMC",
+        name: "Mr. Sanchit Pandey",
+        title: "President",
+        institute: "CSIT Association of BMC",
+        image: "/sanchit-sign.png",
       },
       {
-        name: "Arun Kshetri",
-        title: "Campus Chief of Butwal Multiple Campus",
+        name: "Dr. Arun Kumar Kshetree",
+        title: "Campus Chief",
+        institute: "Butwal Multiple Campus",
+        image: "/arun-sign.png",
       },
       {
-        name: "Third Person",
-        title: "Additional Title",
+        name: "Mr. Gobinda Adhikari",
+        title: "B.Sc. CSIT Program Director",
+        institute: "Butwal Multiple Campus",
+        image: "/gobinda-sign.png",
       },
     ],
   };
@@ -61,7 +67,7 @@ const Certificate = ({ data }: { data: CertificateTypes }) => {
               <View style={styles.companyInfo}>
                 <Text style={styles.companyName}>CSIT Association Of BMC</Text>
                 <Text style={styles.companyTagline}>
-                  Creating world bit by bit
+                  Creating the world bit by bit
                 </Text>
               </View>
             </View>
@@ -74,7 +80,7 @@ const Certificate = ({ data }: { data: CertificateTypes }) => {
           {/* Main Content */}
           <View style={styles.mainContent}>
             <View style={styles.contentSection}>
-              <Text style={styles.certifyText}>This is to certify that</Text>
+              <Text style={styles.certifyText}>This is to Certify That</Text>
 
               <Text style={styles.recipientName}>
                 {certificateDetails.recipientName}
@@ -82,34 +88,49 @@ const Certificate = ({ data }: { data: CertificateTypes }) => {
               <View style={styles.nameUnderline} />
 
               <Text style={styles.completionText}>
-                has successfully completed the course
+                has successfully completed this certified course demonstrating
+                dedication and achivement in
+              </Text>
+
+              <Text style={styles.courseName}>
+                {certificateDetails.courseName}
               </Text>
 
               <Text style={styles.awardedDate}>
                 Awarded on {certificateDetails.completionDate}
-              </Text>
-              <Text style={styles.courseName}>
-                {certificateDetails.courseName}
               </Text>
 
               {/* Signatures */}
               <View style={styles.signaturesSection}>
                 {certificateDetails.signatures.map((signature, index) => (
                   <View key={signature.name} style={styles.signatureItem}>
-                    <Svg viewBox="0 0 180 8" style={styles.signatureLine}>
-                      <Path
-                        d={
-                          index % 2 === 0
-                            ? "M 10 6 Q 25 3, 45 5.6 Q 65 8, 85 5 Q 105 2, 125 6 Q 145 9, 165 5.6"
-                            : "M 10 5 Q 30 7, 50 4 Q 70 1, 90 5 Q 110 8, 130 4 Q 150 2, 170 6"
-                        }
-                        stroke="#374151"
-                        strokeWidth="1.5"
-                        fill="none"
-                      />
-                    </Svg>
+                    {signature.image ? (
+                      <View style={styles.signatureImageContainer}>
+                        <Image
+                          src={signature.image}
+                          style={styles.signatureImage}
+                        />
+                      </View>
+                    ) : (
+                      <Svg viewBox="0 0 180 8" style={styles.signatureLine}>
+                        <Path
+                          d={
+                            index % 2 === 0
+                              ? "M 10 6 Q 25 3, 45 5.6 Q 65 8, 85 5 Q 105 2, 125 6 Q 145 9, 165 5.6"
+                              : "M 10 5 Q 30 7, 50 4 Q 70 1, 90 5 Q 110 8, 130 4 Q 150 2, 170 6"
+                          }
+                          stroke="#374151"
+                          strokeWidth="1.5"
+                          fill="none"
+                        />
+                      </Svg>
+                    )}
+                    <View style={styles.signatureDivider} />
                     <Text style={styles.signatureName}>{signature.name}</Text>
                     <Text style={styles.signatureTitle}>{signature.title}</Text>
+                    <Text style={styles.signatureInstitute}>
+                      {signature.institute}
+                    </Text>
                   </View>
                 ))}
               </View>
@@ -121,14 +142,6 @@ const Certificate = ({ data }: { data: CertificateTypes }) => {
                 <Image src={qrCodeUrl} style={styles.qrImage} />
               </View>
             </View>
-          </View>
-
-          {/* Footer */}
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>
-              This certificate validates the successful completion of the
-              specified course and can be verified at the URL above.
-            </Text>
           </View>
         </View>
       </Page>

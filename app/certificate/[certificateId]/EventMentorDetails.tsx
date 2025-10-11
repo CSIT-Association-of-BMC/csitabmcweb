@@ -28,7 +28,7 @@ export default function EventMentorDetails({
   eventData,
 }: EventMentorDetailsProps) {
   return (
-    <div className="py-20 px-4 md:px-8 bg-slate-50">
+    <div className="pb-20 px-4 md:px-8 bg-slate-50">
       <div className="container mx-auto">
         <div className="grid md:grid-cols-2 gap-8">
           {/* Workshop Info Card */}
