@@ -138,10 +138,13 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                 className="absolute no-pdf"
                 style={{ bottom: "1em", right: "1em", zIndex: 10 }}
               >
+
                 {/* <DownloadCertificate
                   certificateId={certificateDetails.id}
                   recipientName={certificateDetails.recipientName}
                 /> */}
+
+
               </div>
               <div
                 style={{ marginBottom: "2em" }}
