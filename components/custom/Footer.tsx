@@ -153,7 +153,7 @@ export default function Footer() {
             © {new Date().getFullYear()} CSIT Association Of BMC. All Rights
             Reserved.
           </p>
-
+ 
           <p className="mt-2">
             Discover the Code Behind this project :&nbsp;
             <span>

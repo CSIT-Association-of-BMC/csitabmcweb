@@ -192,17 +192,16 @@ export default function ContactUs() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Location
               </h2>
-              <div className="aspect-w-16 aspect-h-9">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3420.6510102975053!2d83.47007464290205!3d27.710676847109525!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3996873e6c33d6bf%3A0x969e9716a8ecad23!2sCSIT%20Association%20of%20BMC!5e1!3m2!1sen!2snp!4v1730372812466!5m2!1sen!2snp"
-                  width="600"
-                  height="200"
-                  style={{ border: 0 }}
-                  allowFullScreen={true}
-                  loading="lazy"
-                  className="rounded-lg shadow-lg w-full"
-                ></iframe>
-              </div>
+              <div className="aspect-w-16 aspect-h-9 w-full">
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3332.0!2d83.4679022!3d27.7107553!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3996873e6c33d6bf%3A0x969e9716a8ecad23!2sButwal%20Multiple%20Campus%2C%20Golpark%2C%20Butwal%2C%20Rupandehi%2C%20Nepal!5e0!3m2!1sen!2snp!4v0000000000000"
+    style={{ border: 0 }}
+    allowFullScreen
+    loading="lazy"
+    className="w-full h-full rounded-lg shadow-lg"
+  ></iframe>
+</div>
+
             </div>
           </motion.div>
         </div>
