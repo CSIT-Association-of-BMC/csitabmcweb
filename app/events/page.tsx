@@ -8,7 +8,13 @@ import { EventTypes } from "@/types/events";
 import Link from "next/link";
 import EventDates from "./[eventId]/EventDates";
 
+export const metadata = {
+  title: "Events - CSIT Association of BMC",
+  description: "Discover upcoming and past events organized by CSIT Association of BMC including workshops, seminars, and tech events.",
+};
+
 export default async function Event() {
+
   const query = QueryString.stringify({
     populate: {
       image: {

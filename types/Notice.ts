@@ -3,7 +3,7 @@ export interface NoticeTypes {
   documentId: string;
   title: string;
   description: string;
-  image: { url: string }[];
+  image: { url: string }[] | null;
   publishedAt: Date;
   category: string;
 }
