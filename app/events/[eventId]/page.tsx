@@ -42,7 +42,7 @@ export async function generateMetadata({
   const eventId = (await params).eventId;
   const event: EventTypes = await fetchEventData(eventId);
   return {
-    title: event.title,
+    title: event.title + " - CSIT Association of BMC",
     description: `CSIT Association of BMC Present - ${event.title}`,
     openGraph: {
       images: [

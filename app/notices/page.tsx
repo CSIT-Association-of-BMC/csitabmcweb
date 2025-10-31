@@ -5,7 +5,14 @@ import NoticeHeader from "./components/NoticeHeader";
 import { fetchWithToken } from "@/lib/fetch";
 import NotFound from "../not-found";
 import QueryString from "qs";
+
+export const metadata = {
+  title: "Notices - CSIT Association of BMC",
+  description: "Stay updated with the latest notices, announcements, and important information from CSIT Association of BMC.",
+};
+
 export default async function NoticePage() {
+
   const query = QueryString.stringify({
     populate: {
       image: {
