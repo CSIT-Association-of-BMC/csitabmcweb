@@ -1,4 +1,14 @@
+'use client'
+
 import ContactForm from "./ContactForm";
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Send, MapPin, Phone, Mail } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export const metadata = {
   title: "Contact - CSIT Association of BMC",
@@ -6,6 +16,7 @@ export const metadata = {
 };
 
 export default function ContactUs() {
+
 
   const { toast } = useToast();
   const [formData, setFormData] = useState({
@@ -178,7 +189,7 @@ export default function ContactUs() {
                 </div>
                 <div className="flex items-center">
                   <Phone className="h-6 w-6 text-primary mr-2" />
-                  <span>+977-9841148149,</span>
+                  <span>+977-9841148149</span>
                 </div>
                 <div className="flex items-center">
                   <Mail className="h-6 w-6 text-primary mr-2" />
@@ -191,22 +202,18 @@ export default function ContactUs() {
                 Location
               </h2>
               <div className="aspect-w-16 aspect-h-9 w-full">
-  <iframe
-    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3332.0!2d83.4679022!3d27.7107553!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3996873e6c33d6bf%3A0x969e9716a8ecad23!2sButwal%20Multiple%20Campus%2C%20Golpark%2C%20Butwal%2C%20Rupandehi%2C%20Nepal!5e0!3m2!1sen!2snp!4v0000000000000"
-    style={{ border: 0 }}
-    allowFullScreen
-    loading="lazy"
-    className="w-full h-full rounded-lg shadow-lg"
-  ></iframe>
-</div>
-
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3332.0!2d83.4679022!3d27.7107553!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3996873e6c33d6bf%3A0x969e9716a8ecad23!2sButwal%20Multiple%20Campus%2C%20Golpark%2C%20Butwal%2C%20Rupandehi%2C%20Nepal!5e0!3m2!1sen!2snp!4v0000000000000"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  className="w-full h-full rounded-lg shadow-lg"
+                ></iframe>
+              </div>
             </div>
           </motion.div>
         </div>
       </div>
     </div>
   );
-
-  return <ContactForm />;
-
 }
