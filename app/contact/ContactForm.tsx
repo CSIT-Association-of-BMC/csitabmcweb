@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { MapPin, Phone, Mail, Send } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Send, MapPin, Phone, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function ContactForm() {
@@ -17,7 +17,6 @@ export default function ContactForm() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -33,9 +32,7 @@ export default function ContactForm() {
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
@@ -47,7 +44,6 @@ export default function ContactForm() {
           duration: 5000,
         });
         setFormData({ name: "", email: "", message: "" });
-        setSubmitStatus("Message sent successfully!");
       } else {
         const errorData = await response.json();
         toast({
@@ -57,7 +53,6 @@ export default function ContactForm() {
           variant: "destructive",
           duration: 5000,
         });
-        setSubmitStatus("Failed to send message. Please try again.");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -90,6 +85,7 @@ export default function ContactForm() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          {/* Left: Contact Form */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -113,6 +109,7 @@ export default function ContactForm() {
                   className="mt-1"
                 />
               </div>
+
               <div>
                 <label
                   htmlFor="email"
@@ -130,6 +127,7 @@ export default function ContactForm() {
                   className="mt-1"
                 />
               </div>
+
               <div>
                 <label
                   htmlFor="message"
@@ -147,6 +145,7 @@ export default function ContactForm() {
                   className="mt-1"
                 />
               </div>
+
               <Button
                 type="submit"
                 className="w-full flex items-center justify-center"
@@ -163,6 +162,7 @@ export default function ContactForm() {
             </form>
           </motion.div>
 
+          {/* Right: Contact Info & Map */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -180,7 +180,7 @@ export default function ContactForm() {
                 </div>
                 <div className="flex items-center">
                   <Phone className="h-6 w-6 text-primary mr-2" />
-                  <span>+977-9841148149,</span>
+                  <span>+977-9841148149</span>
                 </div>
                 <div className="flex items-center">
                   <Mail className="h-6 w-6 text-primary mr-2" />
@@ -188,19 +188,18 @@ export default function ContactForm() {
                 </div>
               </div>
             </div>
+
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Location
               </h2>
-              <div className="aspect-w-16 aspect-h-9">
+              <div className="aspect-w-16 aspect-h-9 w-full">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1m3!1d3420.6510102975053!2d83.47007464290205!3d27.710676847109525!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3996873e6c33d6bf%3A0x969e9716a8ecad23!2sCSIT%20Association%20of%20BMC!5e1!3m2!1sen!2snp!4v1730372812466!5m2!1sen!2snp"
-                  width="600"
-                  height="200"
+                  src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3332.0!2d83.4679022!3d27.7107553!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3996873e6c33d6bf%3A0x969e9716a8ecad23!2sButwal%20Multiple%20Campus%2C%20Golpark%2C%20Butwal%2C%20Rupandehi%2C%20Nepal!5e0!3m2!1sen!2snp!4v0000000000000"
                   style={{ border: 0 }}
-                  allowFullScreen={true}
+                  allowFullScreen
                   loading="lazy"
-                  className="rounded-lg shadow-lg w-full"
+                  className="w-full h-full rounded-lg shadow-lg"
                 ></iframe>
               </div>
             </div>
