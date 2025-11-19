@@ -8,10 +8,60 @@ import {
   Phone,
   MapPin,
   Calendar,
+  Github,
 } from "lucide-react";
 import { TeamDetails } from "@/app/data";
 import NotFound from "@/app/not-found";
 import { metadata } from "@/app/layout";
+import QueryString from "qs";
+import { MemberTypes } from "@/types/Members";
+import { fetchWithToken } from "@/lib/fetch";
+import Markdown from "react-markdown";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const userId = (await params).id;
+  const query = QueryString.stringify(
+    {
+      populate: {
+        image: {
+          fields: ["url"],
+        },
+      },
+    },
+    { encodeValuesOnly: true }
+  );
+  const res = await fetchWithToken(
+    `${process.env.STRAPI_API_URL}/members/${userId}?${query}`
+  );
+
+  if (!res || res.status !== 200) {
+    return {
+      title: "Member Not Found - CSIT Association of BMC",
+    };
+  }
+
+  const resJson = await res.json();
+  const profile: MemberTypes = resJson.data;
+
+  return {
+    title: `${profile.fullName} - CSIT Association of BMC`,
+    description: profile.description?.substring(0, 160) || `Learn about ${profile.fullName}, ${profile.post} at CSIT Association of BMC.`,
+    openGraph: {
+      images: profile.image ? [
+        {
+          url: profile.image.url,
+          width: 1200,
+          height: 600,
+          alt: profile.fullName,
+        },
+      ] : [],
+    },
+  };
+}
 
 export default async function Profile({
   params,
@@ -19,17 +69,22 @@ export default async function Profile({
   params: Promise<{ id: string }>;
 }) {
   const userId = (await params).id;
-  const profile = TeamDetails.find((item) => item.id === userId);
-  if (!profile) return <NotFound />;
-
-  metadata.title = profile.Name + " | CSIT Assocaiotn Of BMC";
-  metadata.description = "CSIT Assocaiotn of BMC Team Member";
-  metadata.openGraph = metadata.openGraph ?? {};
-  metadata.openGraph.images = {
-    url: profile.img,
-    width: 1200,
-    height: 600,
-  };
+  const query = QueryString.stringify(
+    {
+      populate: {
+        image: {
+          fields: ["url"],
+        },
+      },
+    },
+    { encodeValuesOnly: true }
+  );
+  const res = await fetchWithToken(
+    `${process.env.STRAPI_API_URL}/members/${userId}?${query}`
+  );
+  if (!res || res.status !== 200) return <NotFound />;
+  const resJson = await res.json();
+  const profile: MemberTypes = resJson.data;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -41,8 +96,8 @@ export default async function Profile({
               <div className="sticky top-24">
                 <div className="relative w-full  aspect-[1/1] rounded-2xl overflow-hidden mb-8">
                   <Image
-                    src={profile.img}
-                    alt={profile.Name}
+                    src={profile.image?.url}
+                    alt={profile.fullName}
                     fill
                     className="object-cover"
                   />
@@ -50,44 +105,43 @@ export default async function Profile({
                 <div className="space-y-4">
                   <div>
                     <h1 className="text-3xl font-bold text-gray-900">
-                      {profile.Name}
+                      {profile.fullName}
                     </h1>
                     <p className="text-xl text-red-600 font-medium">
-                      {profile.Post}
+                      {profile.post}
                     </p>
                   </div>
                   <div className="flex gap-3">
                     <Link
-                      href={profile.Facebook}
+                      href={profile.facebookLink as string}
                       className="p-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition-colors"
                       aria-label="Facebook Profile"
                     >
                       <Facebook className="w-5 h-5" />
                     </Link>
                     <Link
-                      href={profile.LinkedIn}
+                      href={profile.linkedLink as string}
                       className="p-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition-colors"
                       aria-label="LinkedIn Profile"
                     >
                       <Linkedin className="w-5 h-5" />
                     </Link>
                     <Link
-                      href="mailto:contact@example.com"
+                      href={profile.githubLink as string}
                       className="p-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition-colors"
-                      aria-label="Email"
+                      aria-label="Github"
                     >
-                      <Mail className="w-5 h-5" />
+                      <Github className="w-5 h-5" />
                     </Link>
                   </div>
-                  <div className="space-y-3 text-gray-600">
-                    <div className="flex items-center gap-2">
-                      <Phone className="w-5 h-5" />
-                      <span>+977-9876543210</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-5 h-5" />
-                      <span>Joined 2023</span>
-                    </div>
+                  <div className="space-y-3 pt-2 text-gray-600">
+                    <Link
+                      href={`mailto:${profile.email}`}
+                      className="flex items-center gap-2"
+                    >
+                      <Mail className="w-5 h-5" />
+                      <span>{profile.email}</span>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -97,32 +151,15 @@ export default async function Profile({
             <div className="pt-4 w-full md:pt-0">
               <section>
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                  About {profile.Name.split(" ")[0]}
+                  About {profile.fullName.split(" ")[0]}
                 </h2>
-                <p className="text-gray-600 leading-relaxed mb-6">
-                  Ut labore et dolore magna aliqua, ut enim ad minim veniam.
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur.
-                </p>
-                <p className="text-gray-600 leading-relaxed mb-6">
-                  Excepteur sint occaecat cupidatat non proident, sunt in culpa
-                  qui officia deserunt mollit anim id est laborum. Lorem ipsum
-                  dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-                  minim veniam, quis nostrud exercitation ullamco laboris nisi
-                  ut aliquip ex ea commodo consequat.
-                </p>
+                <Markdown className="markdown">{profile.description}</Markdown>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">Leadership</Badge>
-                  <Badge variant="secondary">Event Management</Badge>
-                  <Badge variant="secondary">Team Coordination</Badge>
-                  <Badge variant="secondary">Strategic Planning</Badge>
-                  <Badge variant="secondary">Public Speaking</Badge>
-                  <Badge variant="secondary">Project Management</Badge>
+                  {profile.tags?.split(",").map((tag, index) => (
+                    <Badge key={index} variant="secondary">
+                      {tag}
+                    </Badge>
+                  ))}
                 </div>
               </section>
             </div>

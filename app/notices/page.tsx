@@ -1,30 +1,31 @@
-"use client";
-import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NoticeTypes } from "@/types/Notice";
 import { NoticeCardComponent } from "./components/NoticeCard";
 import NoticeHeader from "./components/NoticeHeader";
+import { fetchWithToken } from "@/lib/fetch";
+import NotFound from "../not-found";
+import QueryString from "qs";
 
-export default function NoticePage() {
-  const [notices, setNotices] = useState<NoticeTypes[]>([]);
-  const [loading, setLoading] = useState(true);
+export const metadata = {
+  title: "Notices - CSIT Association of BMC",
+  description: "Stay updated with the latest notices, announcements, and important information from CSIT Association of BMC.",
+};
 
-  useEffect(() => {
-    const fetchNotices = async () => {
-      try {
-        const res = await fetch("/api/notices"); // Uses relative path
-        const data = await res.json();
-        setNotices(data);
-      } catch (error) {
-        console.error("Failed to fetch notices:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchNotices();
-  }, []);
+export default async function NoticePage() {
 
-  if (loading) return <div>Loading...</div>;
+  const query = QueryString.stringify({
+    populate: {
+      image: {
+        fields: ["url"],
+      },
+    },
+  });
+  const res = await fetchWithToken(
+    `${process.env.STRAPI_API_URL}/notices?${query}`
+  );
+  if (!res || res.status !== 200) return <NotFound />;
+  const resJson = await res.json();
+  const notices: NoticeTypes[] = resJson.data;
   return (
     <>
       <NoticeHeader />
@@ -46,7 +47,7 @@ export default function NoticePage() {
                 value="all"
                 className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
               >
-                {notices.map((notice) => {
+                {notices?.map((notice) => {
                   return (
                     <NoticeCardComponent key={notice.id} notice={notice} />
                   );
@@ -56,7 +57,7 @@ export default function NoticePage() {
                 value="administrative"
                 className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
               >
-                {notices.map((notice) => {
+                {notices?.map((notice) => {
                   if (notice.category == "administrative")
                     return (
                       <NoticeCardComponent key={notice.id} notice={notice} />
@@ -67,7 +68,7 @@ export default function NoticePage() {
                 value="events"
                 className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
               >
-                {notices.map((notice) => {
+                {notices?.map((notice) => {
                   if (notice.category == "events")
                     return (
                       <NoticeCardComponent key={notice.id} notice={notice} />
@@ -78,7 +79,7 @@ export default function NoticePage() {
                 value="academic"
                 className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
               >
-                {notices.map((notice) => {
+                {notices?.map((notice) => {
                   if (notice.category == "academic")
                     return (
                       <NoticeCardComponent key={notice.id} notice={notice} />

@@ -11,10 +11,15 @@ module.exports = {
       center: true,
       padding: "1rem",
       screens: {
-        "2xl": "1400px",
+        "2xl": "1200px",
       },
     },
     extend: {
+      fontFamily: {
+        cardo: ["Cardo", "sans-serif"],
+        montserrat: ["Montserrat", "sans-serif"],
+        greatVibes: ["Great Vibes", "sans-serif"],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

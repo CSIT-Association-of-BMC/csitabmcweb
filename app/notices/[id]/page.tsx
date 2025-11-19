@@ -1,97 +1,130 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
-import { NoticeTypes } from "@/types/Notice";
-import {
-  Calendar,
-  Download,
-  FileText,
-  MessageSquare,
-  Share2,
-  ThumbsUp,
-} from "lucide-react";
 import Image from "next/image";
-import DownloadNotice from "./DownloadNotice";
-import { getLocalDate } from "@/lib/data";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import QueryString from "qs";
+import { ArrowLeft, Download } from "lucide-react";
 
-export default async function NoticeDetail({
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardTitle } from "@/components/ui/card";
+import { fetchWithToken } from "@/lib/fetch";
+import type { NoticeTypes } from "@/types/Notice";
+import Markdown from "react-markdown";
+
+export async function generateMetadata({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const noticeId = (await params).id.split("_")[0];
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/notices/${noticeId}`
+  const { id } = await params;
+  const query = QueryString.stringify({
+    populate: {
+      image: {
+        fields: ["url"],
+      },
+    },
+  });
+
+  const res = await fetchWithToken(
+    `${process.env.STRAPI_API_URL}/notices/${id}?${query}`
   );
-  const notice: NoticeTypes = await res.json();
+
+  if (!res || res.status !== 200) {
+    return {
+      title: "Notice Not Found - CSIT Association of BMC",
+    };
+  }
+
+  const resJson = await res.json();
+  const notice: NoticeTypes = resJson.data;
+
+  return {
+    title: notice.title + " - CSIT Association of BMC",
+    description: notice.description?.substring(0, 160) || "CSIT Association of BMC Notice",
+    openGraph: {
+      images: notice.image && notice.image.length > 0 ? [
+        {
+          url: notice.image[0].url,
+          width: 1200,
+          height: 600,
+          alt: notice.title,
+        },
+      ] : [],
+    },
+  };
+}
+
+export default async function NoticeDetail(props: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await props.params;
+  const query = QueryString.stringify({
+    populate: {
+      image: {
+        fields: ["url"],
+      },
+    },
+  });
+
+  const res = await fetchWithToken(
+    `${process.env.STRAPI_API_URL}/notices/${id}?${query}`
+  );
+
+  if (!res || res.status !== 200) return notFound();
+
+  const resJson = await res.json();
+  const notice: NoticeTypes = resJson.data;
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <Card>
-        <CardHeader>
-          <div className="flex justify-between items-start">
+    <div className="container mx-auto py-8 px-4">
+      <Link href="/notices" className="inline-block mb-6">
+        <Button variant="outline" size="sm">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Notices
+        </Button>
+      </Link>
+      <Card className="overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="relative h-[300px] md:h-[30rem]">
+            <Image
+              src={
+                notice.image && notice.image.length > 0 && notice.image[0].url
+                  ? notice.image[0].url
+                  : "/placeholder.svg"
+              }
+              alt={notice.title}
+              fill
+              className="object-cover object-top rounded-lg"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-lg" />
+          </div>
+          <div className="p-6 flex flex-col justify-between">
             <div>
-              <Badge className="mb-2 capitalize">{notice.category}</Badge>
-              <CardTitle className="text-2xl font-bold">
+              <Badge variant="secondary" className="mb-4 capitalize">
+                {notice.category}
+              </Badge>
+              <CardTitle className="text-3xl font-bold mb-4 transition-colors">
                 {notice.title}
               </CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
-                Posted on {getLocalDate(notice.publishedDate)}
-              </p>
+              <Markdown className="markdown text-gray-700 mb-6 leading-relaxed">
+                {notice.description}
+              </Markdown>
             </div>
-            <Button variant="outline" size="icon">
-              <Share2 className="h-4 w-4" />
-            </Button>
+            <div className="flex justify-end">
+              {notice.image &&
+              notice.image.length > 0 &&
+              notice.image[0].url ? (
+                <Link href={notice.image[0].url} download>
+                  <Button>
+                    <Download className="mr-2 h-4 w-4" />
+                    Download Notice
+                  </Button>
+                </Link>
+              ) : null}
+            </div>
           </div>
-        </CardHeader>
-        <CardContent>
-          <p className="text-base mb-4">{notice.description}</p>
-          <Image
-            src={
-              notice.photo !== ""
-                ? (notice.photo as string)
-                : "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191383/logohero_nsqj8h.png"
-            }
-            width={800}
-            height={400}
-            alt="Exam Routine"
-            className="rounded-lg border w-full h-full max-h-80 object-contain"
-          />
-          <div className="flex justify-end py-5">
-            <DownloadNotice notice={notice} />
-          </div>
-        </CardContent>
+        </div>
       </Card>
-
-      <Separator className="my-8" />
-
-      <div className="space-y-8">
-        {/* <h2 className="text-xl font-semibold">Comments (0)</h2> */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Add a Comment</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Textarea
-              placeholder="Type your comment here..."
-              className="min-h-[100px]"
-            />
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline">Cancel</Button>
-            <Button disabled>Post Comment</Button>
-          </CardFooter>
-        </Card>
-      </div>
     </div>
   );
 }

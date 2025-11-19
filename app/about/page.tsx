@@ -1,8 +1,14 @@
 import React from "react";
 import Image from "next/image";
-import TeamList from "@/components/custom/TeamList";
+import TeamList from "@/app/mb/[id]/TeamList";
+
+export const metadata = {
+  title: "About - CSIT Association of BMC",
+  description: "Learn about CSIT Association of BMC, a non-profitable organization created for the welfare of CSIT students at Butwal Multiple Campus.",
+};
 
 export default function About() {
+
   return (
     <>
       <section className="py-16 px-4 md:px-6 lg:px-8 overflow-hidden bg-white">
@@ -11,7 +17,7 @@ export default function About() {
             <div className="relative rounded-2xl overflow-hidden group">
               <div className="aspect-[4/3] relative">
                 <Image
-                  src="https://res.cloudinary.com/dol8m5gx7/image/upload/v1723188288/team2081_wq5hob.jpg"
+                  src="/team.jpeg"
                   alt="CSIT Association team members"
                   fill
                   className="object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
