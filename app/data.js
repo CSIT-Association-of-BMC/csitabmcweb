@@ -298,12 +298,7 @@ export const Partnerdata = [
   {
     id: 2,
     Image:
-      "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191320/2_bgvdtz.png",
-  },
-  {
-    id: 5,
-    Image:
-      "https://res.cloudinary.com/dyshj7mor/image/upload/v1757253969/world_link_yqql5u.png",
+      "https://res.cloudinary.com/dyshj7mor/image/upload/v1765976095/DearHive_zf6cjb.png",
   },
 
   {
@@ -316,6 +311,7 @@ export const Partnerdata = [
     Image:
       "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191353/8_iuulbk.png",
   },
+
   {
     id: 9,
     Image:

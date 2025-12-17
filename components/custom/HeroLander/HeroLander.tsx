@@ -1,76 +1,187 @@
 "use client";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import Typewriter from "typewriter-effect";
 import Aos from "aos";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import ReactFlow, {
+  Node,
+  Edge,
+  Background,
+  useNodesState,
+  useEdgesState,
+  ConnectionMode,
+  Handle,
+  Position,
+} from "reactflow";
+import "reactflow/dist/style.css";
 
-type OrbitalChip = {
-  id: string;
-  label: string;
-  tone: "rose" | "slate" | "emerald" | "amber";
-  x: number;
-  y: number;
+// Custom circular logo node
+const LogoNode = () => {
+  return (
+    <div className="relative">
+      <Handle type="source" position={Position.Top} style={{ opacity: 0 }} />
+      <Handle type="source" position={Position.Bottom} style={{ opacity: 0 }} />
+      <Handle type="source" position={Position.Left} style={{ opacity: 0 }} />
+      <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
+
+      <div className="flex items-center justify-center w-20 h-20 rounded-full bg-white border border-slate-200">
+        <Image
+          src="https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191383/logohero_nsqj8h.png"
+          alt="CSIT Association"
+          width={56}
+          height={56}
+          className="w-14 h-14 object-contain"
+        />
+      </div>
+    </div>
+  );
 };
 
-const toneClass: Record<OrbitalChip["tone"], string> = {
-  rose: "bg-[#2b3870]/5 text-[#2b3870] border-[#2b3870]/30",
-  slate: "bg-slate-50 text-slate-700 border-slate-200",
-  emerald: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  amber: "bg-amber-50 text-amber-700 border-amber-200",
+// Minimal pill node style
+const pillStyle = {
+  background: "white",
+  color: "#2b3870",
+  border: "1px solid #e2e8f0",
+  borderRadius: "20px",
+  padding: "8px 16px",
+  fontSize: "13px",
+  fontWeight: "500",
 };
+
+const nodeTypes = { logo: LogoNode };
+
+const initialNodes: Node[] = [
+  {
+    id: "1",
+    type: "logo",
+    position: { x: 240, y: 160 },
+    data: {},
+    draggable: false,
+  },
+  {
+    id: "2",
+    type: "default",
+    position: { x: 80, y: 60 },
+    data: { label: "Events" },
+    style: pillStyle,
+    draggable: true,
+  },
+  {
+    id: "3",
+    type: "default",
+    position: { x: 380, y: 60 },
+    data: { label: "Hackathons" },
+    style: pillStyle,
+    draggable: true,
+  },
+  {
+    id: "4",
+    type: "default",
+    position: { x: 50, y: 280 },
+    data: { label: "Mentorship" },
+    style: pillStyle,
+    draggable: true,
+  },
+  {
+    id: "5",
+    type: "default",
+    position: { x: 400, y: 280 },
+    data: { label: "Workshops" },
+    style: pillStyle,
+    draggable: true,
+  },
+  {
+    id: "6",
+    type: "default",
+    position: { x: 230, y: 20 },
+    data: { label: "Community" },
+    style: pillStyle,
+    draggable: true,
+  },
+  {
+    id: "7",
+    type: "default",
+    position: { x: 210, y: 320 },
+    data: { label: "Open Source" },
+    style: pillStyle,
+    draggable: true,
+  },
+];
+
+const initialEdges: Edge[] = [
+  {
+    id: "e1-2",
+    source: "1",
+    target: "2",
+    style: { stroke: "#cbd5e1", strokeWidth: 1 },
+  },
+  {
+    id: "e1-3",
+    source: "1",
+    target: "3",
+    style: { stroke: "#cbd5e1", strokeWidth: 1 },
+  },
+  {
+    id: "e1-4",
+    source: "1",
+    target: "4",
+    style: { stroke: "#cbd5e1", strokeWidth: 1 },
+  },
+  {
+    id: "e1-5",
+    source: "1",
+    target: "5",
+    style: { stroke: "#cbd5e1", strokeWidth: 1 },
+  },
+  {
+    id: "e1-6",
+    source: "1",
+    target: "6",
+    style: { stroke: "#cbd5e1", strokeWidth: 1 },
+  },
+  {
+    id: "e1-7",
+    source: "1",
+    target: "7",
+    style: { stroke: "#cbd5e1", strokeWidth: 1 },
+  },
+];
 
 const HeroLander = () => {
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
+  const [edges] = useEdgesState(initialEdges);
+
   useEffect(() => {
-    Aos.init({ easing: "ease", duration: 700 });
-  });
-
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [spot, setSpot] = useState({ x: 0, y: 0, active: false });
-  const orbit = useMemo<OrbitalChip[]>(
-    () => [
-      { id: "chip-1", label: "Mentors", tone: "emerald", x: 18, y: 22 },
-      { id: "chip-2", label: "Events", tone: "rose", x: 74, y: 18 },
-      { id: "chip-3", label: "Workshops", tone: "amber", x: 82, y: 62 },
-      { id: "chip-4", label: "Community", tone: "slate", x: 22, y: 72 },
-      { id: "chip-5", label: "Open Source", tone: "rose", x: 52, y: 78 },
-    ],
-    []
-  );
-
-  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = containerRef.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const x = ((e.clientX - r.left) / r.width) * 100;
-    const y = ((e.clientY - r.top) / r.height) * 100;
-    setSpot({ x, y, active: true });
-  };
+    Aos.init({ easing: "ease", duration: 500 });
+  }, []);
 
   return (
     <section
-      className="relative min-h-auto max-h-[800px] flex items-center bg-gradient-to-br from-white via-slate-50 to-[#2b3870]/5"
+      className="relative min-h-auto max-h-[800px] flex items-center bg-white"
       id="home"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.04)_1px,transparent_1px)] bg-[size:90px_90px]" />
+      <div className="container mx-auto px-4 sm:px-6 pt-12 sm:py-12 lg:py-16">
+        <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+          {/* Left */}
+          <div className="space-y-6" data-aos="fade-up">
+            <span className="inline-block text-xs font-medium tracking-widest text-[#2b3870] uppercase border rounded-full px-4 py-2">
+              Since 2016
+            </span>
 
-      <div className="mt-40 sm:mt-10 max-w-6xl mx-auto p-10 w-full ">
-        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-start">
-          {/* Left content */}
-          <div className="space-y-8" data-aos="fade-right">
-            <div className="space-y-4">
-              <h1 className="text-5xl md:text-6xl font-bold leading-tight text-slate-900">
-                CSIT Association
-                <span className="block text-[#2b3870]">of BMC</span>
-              </h1>
-              <p className="text-lg text-slate-600 max-w-2xl">
-                Non profit, student led, and future focused since 2016. We build
-                spaces where IT students learn, ship, and grow together.
-              </p>
-            </div>
+            <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
+              CSIT Association
+              <span className="text-[#2b3870]"> of BMC</span>
+            </h1>
 
-            <div className="text-xl md:text-2xl text-slate-700 min-h-[2rem]">
+            <p className="text-slate-500 text-base leading-relaxed max-w-md">
+              Non-profit, student-led, and future-focused. Building spaces where
+              students learn, and grow together.
+            </p>
+
+            <div className="text-base font-medium text-[#2b3870]">
               <Typewriter
                 options={{
                   strings: [
@@ -87,98 +198,69 @@ const HeroLander = () => {
               />
             </div>
 
-            <div className="flex flex-row gap-4">
-              <Link href="/about" className="">
-                <Button
-                  size="lg"
-                  className="bg-[#2b3870] hover:bg-[#243061] text-white px-8 py-5 rounded-lg shadow-md shadow-[#2b3870]/10"
-                >
+            <div className="flex flex-wrap gap-3 pt-2">
+              <Link href="/about">
+                <Button className="bg-[#2b3870] hover:bg-[#1f2a52] text-white px-6 h-10 text-sm font-medium group">
                   About Us
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
                 </Button>
               </Link>
               <Link href="/events">
                 <Button
-                  size="lg"
                   variant="outline"
-                  className="border border-[#2b3870]/30 text-[#2b3870] hover:bg-[#2b3870]/5 px-6 py-5 rounded-lg"
+                  className="border-slate-200 text-slate-600 hover:bg-slate-50 px-6 h-10 text-sm font-medium"
                 >
                   Explore Events
                 </Button>
               </Link>
             </div>
-
-            {/* Feature boxes removed as requested */}
           </div>
 
-          {/* Right column */}
-          <div className="space-y-5" data-aos="fade-left" data-aos-delay="120">
-            <div
-              ref={containerRef}
-              onMouseMove={onMove}
-              onMouseLeave={() => setSpot((s) => ({ ...s, active: false }))}
-              className="relative overflow-hidden rounded-xl border border-slate-200 bg-white/95 shadow-lg p-6"
+          {/* Right - React Flow */}
+          <div
+            className="h-[400px] lg:h-[420px]"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              nodeTypes={nodeTypes}
+              connectionMode={ConnectionMode.Loose}
+              fitView
+              fitViewOptions={{ padding: 0.15 }}
+              panOnDrag={false}
+              panOnScroll={false}
+              zoomOnScroll={false}
+              zoomOnPinch={false}
+              zoomOnDoubleClick={false}
+              preventScrolling={true}
+              nodesDraggable={true}
+              nodesConnectable={false}
+              elementsSelectable={false}
+              nodeExtent={[
+                [0, 0],
+                [550, 420],
+              ]}
+              translateExtent={[
+                [0, 0],
+                [550, 420],
+              ]}
+              proOptions={{ hideAttribution: true }}
             >
-              {/* spotlight */}
-              <div
-                className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300"
-                style={{
-                  opacity: spot.active ? 1 : 0,
-                  background: `radial-gradient(420px circle at ${spot.x}% ${spot.y}%, rgba(43,56,112,0.20), transparent 55%)`,
-                }}
+              <Background
+                color="#cbd5e1"
+                gap={16}
+                size={0.5}
+                style={{ opacity: 0.15 }}
               />
-              {/* soft blur blobs */}
-              <div className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-[#2b3870]/10 blur-3xl" />
-              <div className="pointer-events-none absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-sky-200/30 blur-3xl" />
-
-              <div className="relative">
-                <p className="text-xs uppercase tracking-wide text-slate-500">
-                  How we operate
-                </p>
-                <h3 className="mt-1 text-2xl font-semibold text-slate-900">
-                  Learn → Build → Share
-                </h3>
-                <p className="mt-2 text-sm text-slate-600"></p>
-
-                {/* orbit */}
-                <div className="relative mt-6 h-[260px] rounded-lg border border-slate-200 bg-gradient-to-b from-white to-slate-50 overflow-hidden">
-                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(15,23,42,0.06),transparent_58%)]" />
-                  <div className="pointer-events-none absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-[32px] border border-slate-200" />
-                  <div className="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-[32px] border border-slate-200/70" />
-
-                  {/* center */}
-                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                      <p className="text-xs uppercase tracking-wide text-slate-500">
-                        CSITABMC
-                      </p>
-                      <p className="text-sm font-semibold text-slate-900">
-                        Student first
-                      </p>
-                    </div>
-                  </div>
-
-                  {orbit.map((c) => (
-                    <button
-                      key={c.id}
-                      type="button"
-                      className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full border px-3 py-1.5 text-xs font-semibold shadow-sm transition-transform hover:-translate-y-[40%] ${
-                        toneClass[c.tone]
-                      }`}
-                      style={{ left: `${c.x}%`, top: `${c.y}%` }}
-                    >
-                      {c.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Stats removed as requested */}
+            </ReactFlow>
           </div>
         </div>
       </div>
     </section>
   );
 };
+
 export default HeroLander;
