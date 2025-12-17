@@ -81,23 +81,23 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="grid gap-8 border-t border-white/10 pt-8 md:grid-cols-[2fr_1fr] items-start">
-          <div className="grid gap-3 text-sm text-slate-100/80 sm:grid-cols-3 sm:gap-4">
+        <div className="grid gap-8 border-t border-white/10 pt-8  items-start">
+          <div className="grid gap-3 text-sm text-slate-100/80 sm:grid-cols-3 w-full sm:gap-4">
             <a
               href="mailto:team@csitabmc.com"
-              className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 hover:border-white/25 transition-colors"
+              className="rounded-lg border w-full border-white/10 bg-white/5 px-4 py-3 hover:border-white/25 transition-colors"
             >
               team@csitabmc.com
             </a>
             <a
               href="tel:+977-9841148149"
-              className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 hover:border-white/25 transition-colors"
+              className="rounded-lg w-full border border-white/10 bg-white/5 px-4 py-3 hover:border-white/25 transition-colors"
             >
               +977-9841148149
             </a>
             <a
-              href="tel:+977-9841148149"
-              className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 hover:border-white/25 transition-colors"
+              href="https://share.google/mkIurTVtME2SvTP3G"
+              className="rounded-lg w-full border border-white/10 bg-white/5 px-4 py-3 hover:border-white/25 transition-colors"
             >
               Golpark-3, Butwal
             </a>

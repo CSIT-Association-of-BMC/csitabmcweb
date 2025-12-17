@@ -14,8 +14,8 @@ interface NavLinkProps {
 const NavLink = ({
   href,
   children,
-  activeClassName = "text-[#2b3870]",
-  className = " ",
+  activeClassName = "text-primary font-semibold",
+  className = "text-slate-700",
   onClick,
 }: NavLinkProps) => {
   const pathname = usePathname();
@@ -29,9 +29,14 @@ const NavLink = ({
     <Link
       onClick={onClick}
       href={href}
-      className={combinedClassName + " hover:text-[#2b3870] text-[15px]"}
+      className={`${combinedClassName} relative text-sm font-medium transition-colors hover:text-primary group`}
     >
       {children}
+      <span
+        className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all ${
+          isActive ? "w-full" : "w-0 group-hover:w-full"
+        }`}
+      />
     </Link>
   );
 };

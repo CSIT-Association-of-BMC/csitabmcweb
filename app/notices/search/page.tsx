@@ -2,49 +2,130 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import Form from "next/form";
+import { fetchWithToken } from "@/lib/fetch";
+import { NoticeTypes } from "@/types/Notice";
+import { NoticeCardComponent } from "../components/NoticeCard";
+import NoticeHeader from "../components/NoticeHeader";
+import QueryString from "qs";
 
 const NoticeSearch = async ({
   searchParams,
 }: {
   searchParams: Promise<{ query: string }>;
 }) => {
-  return <QueryNotFound />;
+  const { query } = await searchParams;
+
+  if (!query) {
+    return (
+      <>
+        <NoticeHeader />
+        <QueryNotFound />
+      </>
+    );
+  }
+
+  // Search in Strapi
+  const strapiQuery = QueryString.stringify({
+    filters: {
+      $or: [
+        {
+          title: {
+            $containsi: query,
+          },
+        },
+        {
+          description: {
+            $containsi: query,
+          },
+        },
+      ],
+    },
+    populate: {
+      image: {
+        fields: ["url"],
+      },
+    },
+  });
+
+  const res = await fetchWithToken(
+    `${process.env.STRAPI_API_URL}/notices?${strapiQuery}`
+  );
+
+  if (!res || res.status !== 200) {
+    return (
+      <>
+        <NoticeHeader />
+        <QueryNotFound />
+      </>
+    );
+  }
+
+  const resJson = await res.json();
+  const notices: NoticeTypes[] = resJson.data;
+
+  if (!notices || notices.length === 0) {
+    return (
+      <>
+        <NoticeHeader />
+        <NoticeNotFoundForQuery query={query} />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <NoticeHeader />
+      <div className="min-h-screen bg-gray-50/50">
+        <main className="container py-8">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold">Search Results for "{query}"</h2>
+            <p className="text-muted-foreground mt-1">
+              Found {notices.length}{" "}
+              {notices.length === 1 ? "notice" : "notices"}
+            </p>
+          </div>
+          <div className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {notices.map((notice) => (
+              <NoticeCardComponent key={notice.id} notice={notice} />
+            ))}
+          </div>
+        </main>
+      </div>
+    </>
+  );
 };
 
 export default NoticeSearch;
 
 const QueryNotFound = () => {
   return (
-    <div className="container h-[50vh] flex flex-col items-center justify-center">
-      <div className="w-full">
-        <div className="text-center">
-          <h1 className="text-2xl md:text-4xl font-bold text-gray-800">
-            Search for Notices
-          </h1>
-          <p className="text-gray-700">
-            Enter a keyword or phrase to search for notices.
-          </p>
-        </div>
-        <div className="flex flex-1 pt-4 items-center justify-end space-x-4">
+    <div className="min-h-screen bg-gray-50/50">
+      <div className="container flex flex-col items-center justify-center py-20">
+        <div className="max-w-2xl w-full text-center space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">
+              Search for Notices
+            </h1>
+            <p className="text-muted-foreground mt-2">
+              Enter a keyword or phrase to find relevant notices.
+            </p>
+          </div>
           <Form
             action="/notices/search"
-            className="w-full flex justify-center items-center space-x-2"
+            className="flex items-center gap-2 max-w-xl mx-auto"
           >
-            <div className="w-full max-w-[40rem]">
+            <div className="relative flex-1">
               <Input
                 type="search"
                 name="query"
                 placeholder="Search notices..."
-                className="w-full rounded-full shadow-md h-12 "
+                className="h-11 pl-10 shadow-sm"
+                required
               />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             </div>
-            <Button
-              type="submit"
-              variant="ghost"
-              size="icon"
-              className="w-14 h-14 bg-primary text-white  rounded-full"
-            >
-              <Search className="scale-125" />
+            <Button type="submit" className="h-11 px-6">
+              Search
             </Button>
           </Form>
         </div>
@@ -55,36 +136,36 @@ const QueryNotFound = () => {
 
 const NoticeNotFoundForQuery = ({ query }: { query: string }) => {
   return (
-    <div className="container h-[50vh] flex flex-col items-center justify-center">
-      <div>
-        <div className="text-center">
-          <h1 className="text-2xl md:text-4xl font-bold text-gray-800">
-            No Notice Found related to: {query}
-          </h1>
-          <p className="text-gray-700">
-            Enter a keyword or phrase to search for notices.
-          </p>
-        </div>
-        <div className="flex flex-1 pt-4 items-center justify-end space-x-4">
+    <div className="min-h-screen bg-gray-50/50">
+      <div className="container flex flex-col items-center justify-center py-20">
+        <div className="max-w-2xl w-full text-center space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">
+              No Results Found
+            </h1>
+            <p className="text-muted-foreground mt-2">
+              No notices found for "
+              <span className="font-medium text-foreground">{query}</span>". Try
+              a different search term.
+            </p>
+          </div>
           <Form
             action="/notices/search"
-            className="w-full flex justify-center items-center space-x-2"
+            className="flex items-center gap-2 max-w-xl mx-auto"
           >
-            <div className="w-full max-w-[40rem]">
+            <div className="relative flex-1">
               <Input
                 type="search"
                 name="query"
+                defaultValue={query}
                 placeholder="Search notices..."
-                className="w-full rounded-full shadow-md h-12 "
+                className="h-11 pl-10 shadow-sm"
+                required
               />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             </div>
-            <Button
-              type="submit"
-              variant="ghost"
-              size="icon"
-              className="w-14 h-14 bg-primary text-white  rounded-full"
-            >
-              <Search className="scale-125" />
+            <Button type="submit" className="h-11 px-6">
+              Search
             </Button>
           </Form>
         </div>
