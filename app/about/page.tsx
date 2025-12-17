@@ -64,6 +64,7 @@ export default function About() {
             <h1 className="text-4xl md:text-5xl font-semibold text-slate-900 leading-tight">
               Student-led community for learners at Butwal
             </h1>
+
           </div>
 
           <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] items-start">
@@ -97,9 +98,10 @@ export default function About() {
                 </p>
 
                 <p>
-                  We also support campus events and work closely with faculty,
-                  giving students real opportunities to contribute, connect, and
-                  make an impact.
+
+                  Our goal is simple: give every student the confidence, skills,
+                  and community to build meaningful innovations and real-world
+                  impacts.
                 </p>
               </div>
             </div>
@@ -124,6 +126,7 @@ export default function About() {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+
             {pillars.map((pillar) => (
               <div
                 key={pillar.title}
