@@ -9,6 +9,7 @@ import Image from "next/image";
 import ReactFlow, {
   Node,
   Edge,
+  Background,
   useNodesState,
   useEdgesState,
   ConnectionMode,
@@ -66,6 +67,7 @@ const initialNodes: Node[] = [
     position: { x: 80, y: 60 },
     data: { label: "Events" },
     style: pillStyle,
+    draggable: true,
   },
   {
     id: "3",
@@ -73,6 +75,7 @@ const initialNodes: Node[] = [
     position: { x: 380, y: 60 },
     data: { label: "Hackathons" },
     style: pillStyle,
+    draggable: true,
   },
   {
     id: "4",
@@ -80,6 +83,7 @@ const initialNodes: Node[] = [
     position: { x: 50, y: 280 },
     data: { label: "Mentorship" },
     style: pillStyle,
+    draggable: true,
   },
   {
     id: "5",
@@ -87,6 +91,7 @@ const initialNodes: Node[] = [
     position: { x: 400, y: 280 },
     data: { label: "Workshops" },
     style: pillStyle,
+    draggable: true,
   },
   {
     id: "6",
@@ -94,6 +99,7 @@ const initialNodes: Node[] = [
     position: { x: 230, y: 20 },
     data: { label: "Community" },
     style: pillStyle,
+    draggable: true,
   },
   {
     id: "7",
@@ -101,6 +107,7 @@ const initialNodes: Node[] = [
     position: { x: 210, y: 320 },
     data: { label: "Open Source" },
     style: pillStyle,
+    draggable: true,
   },
 ];
 
@@ -153,14 +160,14 @@ const HeroLander = () => {
 
   return (
     <section
-      className="relative min-h-[calc(100vh-5rem)] flex items-center bg-white"
+      className="relative min-h-auto max-h-[800px] flex items-center bg-white"
       id="home"
     >
-      <div className="container mx-auto px-4 sm:px-6 py-12 lg:py-16">
+      <div className="container mx-auto px-4 sm:px-6 pt-12 sm:py-12 lg:py-16">
         <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
           {/* Left */}
           <div className="space-y-6" data-aos="fade-up">
-            <span className="inline-block text-xs font-medium tracking-widest text-[#2b3870] uppercase">
+            <span className="inline-block text-xs font-medium tracking-widest text-[#2b3870] uppercase border rounded-full px-4 py-2">
               Since 2016
             </span>
 
@@ -171,7 +178,7 @@ const HeroLander = () => {
 
             <p className="text-slate-500 text-base leading-relaxed max-w-md">
               Non-profit, student-led, and future-focused. Building spaces where
-              IT students learn, ship, and grow together.
+              students learn, and grow together.
             </p>
 
             <div className="text-base font-medium text-[#2b3870]">
@@ -232,8 +239,23 @@ const HeroLander = () => {
               nodesDraggable={true}
               nodesConnectable={false}
               elementsSelectable={false}
+              nodeExtent={[
+                [0, 0],
+                [550, 420],
+              ]}
+              translateExtent={[
+                [0, 0],
+                [550, 420],
+              ]}
               proOptions={{ hideAttribution: true }}
-            />
+            >
+              <Background
+                color="#cbd5e1"
+                gap={16}
+                size={0.5}
+                style={{ opacity: 0.15 }}
+              />
+            </ReactFlow>
           </div>
         </div>
       </div>
