@@ -1,6 +1,5 @@
-'use client';
+"use client";
 
-import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -26,9 +25,9 @@ export const NoticeCardComponent = ({ notice }: { notice: NoticeTypes }) => {
 
   const handleDownload = useCallback(() => {
     if (notice.image && notice.image.length > 0 && notice.image[0].url) {
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = notice.image[0].url;
-      a.download = '';
+      a.download = "";
       a.click();
     }
   }, [notice.image]);
@@ -42,14 +41,16 @@ export const NoticeCardComponent = ({ notice }: { notice: NoticeTypes }) => {
             <Markdown>{notice.description}</Markdown>
           </div>
         </div>
-        <Badge variant="secondary" className="ml-auto capitalize">
+        <span className="ml-auto rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold capitalize text-slate-700">
           {notice.category}
-        </Badge>
+        </span>
       </CardHeader>
       <CardContent>
         <Image
           src={
-            notice.image && notice.image.length > 0 && notice.image[0].url !== ""
+            notice.image &&
+            notice.image.length > 0 &&
+            notice.image[0].url !== ""
               ? (notice.image[0].url as string)
               : "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191383/logohero_nsqj8h.png"
           }
@@ -65,7 +66,12 @@ export const NoticeCardComponent = ({ notice }: { notice: NoticeTypes }) => {
           {getLocalDate(notice.publishedAt)}
         </div>
         {notice.image && notice.image.length > 0 && notice.image[0].url ? (
-          <Button onClick={(e) => { e.stopPropagation(); handleDownload(); }}>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDownload();
+            }}
+          >
             <Download className="mr-2 h-4 w-4" />
             Notice
           </Button>

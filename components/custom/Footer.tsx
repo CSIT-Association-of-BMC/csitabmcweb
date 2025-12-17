@@ -1,171 +1,114 @@
 import { NavLinkPaths } from "@/app/data";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
-  Mail,
-  Phone,
-  MapPin,
-  Github,
-} from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import NavLink from "./NavBar/NavLinks";
-import { Gideon_Roman } from "next/font/google";
+import { Linkedin, Instagram, Facebook, Github } from "lucide-react";
+
+const keyLinks = NavLinkPaths.slice(0, 4);
 
 export default function Footer() {
+  const socials = [
+    {
+      icon: Linkedin,
+      label: "LinkedIn",
+      href: "https://np.linkedin.com/company/csitabmc",
+    },
+    {
+      icon: Instagram,
+      label: "Instagram",
+      href: "https://www.instagram.com/csitabmc",
+    },
+    {
+      icon: Facebook,
+      label: "Facebook",
+      href: "https://www.facebook.com/csit.bmc",
+    },
+    {
+      icon: Github,
+      label: "GitHub",
+      href: "https://github.com/CSIT-Association-of-BMC/csitabmcweb",
+    },
+  ];
+
   return (
-    <footer className="bg-gray-900 text-gray-300 py-12">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* About Section */}
-          <div>
-            <h2 className="text-2xl font-bold text-white mb-4">
-              CSIT Association of BMC
-            </h2>
-            <p className="mb-4">
-              Empowering students through technology and innovation since 2016.
+    <footer className="relative border-t border-slate-200 bg-gradient-to-b from-white to-[#eef2ff]">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#2b3870]/20 to-transparent" />
+      <div className="max-w-7xl mx-auto px-6 py-20 space-y-10">
+        <div className="grid gap-8 md:grid-cols-[1.2fr_0.8fr]">
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm uppercase tracking-wide text-slate-500">
+                CSIT Association of BMC
+              </p>
+              <h3 className="text-2xl font-semibold text-[#2b3870]">
+                Community of builders, since 2016
+              </h3>
+            </div>
+            <p className="text-sm text-slate-600">
+              Meetups, workshops, labs, and campus projects organized entirely
+              by CSIT students at Butwal Multiple Campus.
             </p>
-            <div className="flex space-x-4">
-              <Link
-                href="https://www.facebook.com/csit.bmc"
-                className="hover:text-white transition-colors"
+            <div className="flex flex-wrap gap-6 text-sm text-slate-600">
+              <a
+                href="tel:+977-9841148149"
+                className="hover:text-[#2b3870] transition-colors"
               >
-                <Facebook className="w-6 h-6" />
-                <span className="sr-only">Facebook</span>
-              </Link>
-              <Link
-                href="https://x.com/csitabmc"
-                className="hover:text-white transition-colors"
+                +977-9841148149
+              </a>
+              <span className="hidden text-slate-300 md:block">•</span>
+              <a
+                href="mailto:team@csitabmc.com"
+                className="hover:text-[#2b3870] transition-colors"
               >
-                <Twitter className="w-6 h-6" />
-                <span className="sr-only">Twitter</span>
-              </Link>
-              <Link
-                href="https://www.instagram.com/csitabmc"
-                className="hover:text-white transition-colors"
-              >
-                <Instagram className="w-6 h-6" />
-                <span className="sr-only">Instagram</span>
-              </Link>
-              <Link
-                href="https://np.linkedin.com/company/csitabmc"
-                className="hover:text-white transition-colors"
-              >
-                <Linkedin className="w-6 h-6" />
-                <span className="sr-only">LinkedIn</span>
-              </Link>
+                team@csitabmc.com
+              </a>
             </div>
           </div>
 
-          {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">
-              Quick Links
-            </h3>
-            <ul className="space-y-2">
-              {NavLinkPaths.map((item, index) => (
-                <li key={index}>
-                  <NavLink
-                    href={item.path}
-                    className="hover:text-white transition-colors"
-                  >
-                    {item.title}
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact Information */}
-          <div>
-            <h3 className="text-lg font-semibold text-white mb-4">
-              Contact Us
-            </h3>
-            <ul className="space-y-2">
-              <li className="flex items-center">
-                <Phone className="w-5 h-5 mr-2" />
-                <a
-                  href="tel:+9779869144346"
-                  className="hover:text-white transition-colors"
-                >
-                  +977-9841148149
-                </a>
-              </li>
-              {/* <li className="flex items-center">
-                <Phone className="w-5 h-5 mr-2" />
-                <a
-                  href="tel:+9779843409076"
-                  className="hover:text-white transition-colors"
-                >
-                  +977-9843409076
-                </a>
-              </li> */}
-              <li className="flex items-center">
-                <Mail className="w-5 h-5 mr-2" />
-                <a
-                  href="mailto:csitassociationbmc@gmail.com"
-                  className="hover:text-white transition-colors"
-                >
-                  csitassociationbmc@gmail.com
-                </a>
-              </li>
-              <li className="flex items-start">
-                <MapPin className="w-5 h-5 mr-2 mt-1" />
-                <span>
-                  Golpark-3, Butwal
-                  <br />
-                  Butwal Multiple Campus
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Newsletter Signup */}
-          <div>
-            <h3 className="text-lg font-semibold text-white mb-4">
-              Stay Updated
-            </h3>
-            <p className="mb-4">
-              Subscribe to our newsletter for the latest updates and events.
+            <p className="text-sm font-semibold text-slate-700 mb-4">
+              Quick links
             </p>
-            <form className="space-y-2">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
-              />
-              <Button
-                type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                Subscribe
-              </Button>
-            </form>
+            <nav className="grid gap-3 text-sm text-slate-600">
+              {keyLinks.map((item) => (
+                <NavLink
+                  key={item.path}
+                  href={item.path}
+                  className="text-slate-600 hover:text-[#2b3870]"
+                >
+                  {item.title}
+                </NavLink>
+              ))}
+            </nav>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-8 pt-8 border-t border-gray-800 text-sm text-center">
-          <p>
-            © {new Date().getFullYear()} CSIT Association Of BMC. All Rights
-            Reserved.
-          </p>
- 
-          <p className="mt-2">
-            Discover the Code Behind this project :&nbsp;
-            <span>
+        <div className="border-t border-slate-200 pt-6 flex flex-col gap-4 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-3">
+            <Link href="/" aria-label="CSIT Association of BMC">
+              <Image
+                src="https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191383/logohero_nsqj8h.png"
+                alt="CSIT Association of BMC"
+                height={48}
+                width={48}
+                className="h-12 w-12 object-contain"
+              />
+            </Link>
+            <p>© {new Date().getFullYear()} CSIT Association of BMC.</p>
+          </div>
+          <div className="flex items-center gap-3">
+            {socials.map(({ icon: Icon, label, href }) => (
               <Link
+                key={label}
+                href={href}
                 target="_blank"
-                href={"https://github.com/CSIT-Association-of-BMC/csitabmcweb"}
-                className="text-blue-300 hover:text-white transition-colors"
+                aria-label={label}
+                className="h-10 w-10 grid place-items-center rounded-full border border-slate-200 bg-white text-[#2b3870] hover:bg-[#2b3870]/5 transition-all"
               >
-                GitHub
+                <Icon className="h-4 w-4" />
               </Link>
-            </span>
-          </p>
+            ))}
+          </div>
         </div>
       </div>
     </footer>

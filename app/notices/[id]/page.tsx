@@ -5,7 +5,6 @@ import QueryString from "qs";
 import { ArrowLeft, Download } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardTitle } from "@/components/ui/card";
 import { fetchWithToken } from "@/lib/fetch";
 import type { NoticeTypes } from "@/types/Notice";
@@ -40,16 +39,20 @@ export async function generateMetadata({
 
   return {
     title: notice.title + " - CSIT Association of BMC",
-    description: notice.description?.substring(0, 160) || "CSIT Association of BMC Notice",
+    description:
+      notice.description?.substring(0, 160) || "CSIT Association of BMC Notice",
     openGraph: {
-      images: notice.image && notice.image.length > 0 ? [
-        {
-          url: notice.image[0].url,
-          width: 1200,
-          height: 600,
-          alt: notice.title,
-        },
-      ] : [],
+      images:
+        notice.image && notice.image.length > 0
+          ? [
+              {
+                url: notice.image[0].url,
+                width: 1200,
+                height: 600,
+                alt: notice.title,
+              },
+            ]
+          : [],
     },
   };
 }
@@ -100,9 +103,9 @@ export default async function NoticeDetail(props: {
           </div>
           <div className="p-6 flex flex-col justify-between">
             <div>
-              <Badge variant="secondary" className="mb-4 capitalize">
+              <span className="mb-4 inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold capitalize text-slate-700">
                 {notice.category}
-              </Badge>
+              </span>
               <CardTitle className="text-3xl font-bold mb-4 transition-colors">
                 {notice.title}
               </CardTitle>

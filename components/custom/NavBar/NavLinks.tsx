@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { ReactNode } from "react";
@@ -14,7 +14,7 @@ interface NavLinkProps {
 const NavLink = ({
   href,
   children,
-  activeClassName = "text-primary ",
+  activeClassName = "text-[#2b3870]",
   className = " ",
   onClick,
 }: NavLinkProps) => {
@@ -29,7 +29,7 @@ const NavLink = ({
     <Link
       onClick={onClick}
       href={href}
-      className={combinedClassName + "hover:text-primary text-[15px]"}
+      className={combinedClassName + " hover:text-[#2b3870] text-[15px]"}
     >
       {children}
     </Link>

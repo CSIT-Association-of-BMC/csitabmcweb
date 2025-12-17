@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { MapPin, Users, ExternalLink, Video } from "lucide-react";
 import NotFound from "@/app/not-found";
 import { fetchWithToken } from "@/lib/fetch";
@@ -77,7 +76,9 @@ export default async function EventPage({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black to-black/0 flex items-end">
           <div className="container mx-auto px-4 py-8">
-            <Badge className="mb-4">{event.category}</Badge>
+            <span className="inline-flex px-3 py-1 rounded-full bg-white/15 text-white text-xs font-semibold mb-4">
+              {event.category}
+            </span>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
               {event.title}
             </h1>

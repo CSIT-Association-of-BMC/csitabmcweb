@@ -8,11 +8,11 @@ import QueryString from "qs";
 
 export const metadata = {
   title: "Notices - CSIT Association of BMC",
-  description: "Stay updated with the latest notices, announcements, and important information from CSIT Association of BMC.",
+  description:
+    "Stay updated with the latest notices, announcements, and important information from CSIT Association of BMC.",
 };
 
 export default async function NoticePage() {
-
   const query = QueryString.stringify({
     populate: {
       image: {
@@ -26,6 +26,11 @@ export default async function NoticePage() {
   if (!res || res.status !== 200) return <NotFound />;
   const resJson = await res.json();
   const notices: NoticeTypes[] = resJson.data;
+  const sortedNotices = [...notices].sort((a, b) => {
+    const aDate = new Date((a as any)?.attributes?.createdAt || 0).getTime();
+    const bDate = new Date((b as any)?.attributes?.createdAt || 0).getTime();
+    return bDate - aDate;
+  });
   return (
     <>
       <NoticeHeader />
@@ -47,7 +52,7 @@ export default async function NoticePage() {
                 value="all"
                 className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
               >
-                {notices?.map((notice) => {
+                {sortedNotices?.map((notice) => {
                   return (
                     <NoticeCardComponent key={notice.id} notice={notice} />
                   );
@@ -57,7 +62,7 @@ export default async function NoticePage() {
                 value="administrative"
                 className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
               >
-                {notices?.map((notice) => {
+                {sortedNotices?.map((notice) => {
                   if (notice.category == "administrative")
                     return (
                       <NoticeCardComponent key={notice.id} notice={notice} />
@@ -68,7 +73,7 @@ export default async function NoticePage() {
                 value="events"
                 className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
               >
-                {notices?.map((notice) => {
+                {sortedNotices?.map((notice) => {
                   if (notice.category == "events")
                     return (
                       <NoticeCardComponent key={notice.id} notice={notice} />
@@ -79,7 +84,7 @@ export default async function NoticePage() {
                 value="academic"
                 className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
               >
-                {notices?.map((notice) => {
+                {sortedNotices?.map((notice) => {
                   if (notice.category == "academic")
                     return (
                       <NoticeCardComponent key={notice.id} notice={notice} />
