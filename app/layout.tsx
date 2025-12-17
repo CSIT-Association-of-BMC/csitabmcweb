@@ -6,6 +6,8 @@ import NavBar from "@/components/custom/NavBar/NavBar";
 import Footer from "@/components/custom/Footer";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "@/components/ui/toaster";
+import { siteConfig, buildOgImageUrl } from "@/lib/seo";
+import { OrganizationJsonLd, WebsiteJsonLd } from "@/lib/structured-data";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -15,17 +17,52 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://csitabmc.com"),
-  title: "CSIT Association Of BMC",
-  description:
-    "CSIT Association of Butwal Multiple Campus is Non profit, Non political association of CSIT Students of Butwal Multiple Campus.",
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  keywords: [...siteConfig.keywords],
+  authors: [...siteConfig.authors],
+  creator: siteConfig.creator,
+  publisher: siteConfig.publisher,
   openGraph: {
-    images: {
-      url: "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191383/logohero_nsqj8h.png",
-      width: 1200,
-      height: 630,
-      alt: "CSIT Association of Butwal Multiple Campus",
+    type: "website",
+    locale: siteConfig.locale,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    title: siteConfig.name,
+    description: siteConfig.description,
+    images: [
+      {
+        url: buildOgImageUrl({ title: siteConfig.name }),
+        width: 1200,
+        height: 630,
+        alt: siteConfig.name,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.name,
+    description: siteConfig.description,
+    images: [buildOgImageUrl({ title: siteConfig.name })],
+    creator: siteConfig.twitterHandle,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
   },
 };
 
@@ -36,6 +73,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <OrganizationJsonLd />
+        <WebsiteJsonLd />
+      </head>
       <body className={poppins.className}>
         <NextTopLoader showSpinner={false} color="red" />
         <nav className="bg-background/60 backdrop-blur-xl shadow-sm fixed z-50 w-full top-0">

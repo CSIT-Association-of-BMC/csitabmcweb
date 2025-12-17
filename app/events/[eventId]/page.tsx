@@ -11,6 +11,8 @@ import EventTime from "./EventTime";
 import EventMentor from "./EventMentor";
 import Link from "next/link";
 import EventRegistrationFee from "./EventRegistrationFee";
+import { generateEventMetadata, siteConfig } from "@/lib/seo";
+import { EventJsonLd, BreadcrumbJsonLd } from "@/lib/structured-data";
 
 // fetch event data from strapi
 const fetchEventData = async (eventId: string) => {
@@ -40,20 +42,27 @@ export async function generateMetadata({
 }) {
   const eventId = (await params).eventId;
   const event: EventTypes = await fetchEventData(eventId);
-  return {
-    title: event.title + " - CSIT Association of BMC",
-    description: `CSIT Association of BMC Present - ${event.title}`,
-    openGraph: {
-      images: [
-        {
-          url: event.image[0].url,
-          width: 1200,
-          height: 600,
-          alt: "CSIT-BMC",
-        },
-      ],
-    },
-  };
+
+  if (!event || !event.title) {
+    return {
+      title: `Event Not Found - ${siteConfig.name}`,
+    };
+  }
+
+  return generateEventMetadata({
+    title: event.title,
+    description:
+      event.description ||
+      `Join us for ${event.title}, organized by ${siteConfig.name} in Butwal, Nepal.`,
+    slug: eventId,
+    category: event.category,
+    startDate:
+      event.startDate instanceof Date
+        ? event.startDate.toISOString()
+        : event.startDate,
+    location: event.location,
+    image: event.image?.[0]?.url,
+  });
 }
 
 // EventPage
@@ -71,6 +80,7 @@ export default async function EventPage({
           src={event.image[0].url}
           alt="banner image"
           fill
+          sizes="100vw"
           className="object-cover"
           priority
         />

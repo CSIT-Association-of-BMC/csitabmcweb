@@ -62,19 +62,19 @@ export default function Footer() {
           <div className="flex flex-wrap gap-3 text-sm text-slate-100/80">
             <a
               href="/about"
-              className="rounded-full border border-white/20 px-4 py-2 hover:bg-white/10 transition-colors"
+              className="rounded-lg border border-white/20 px-4 py-2 hover:bg-white/10 transition-colors"
             >
               About
             </a>
             <a
               href="/events"
-              className="rounded-full border border-white/20 px-4 py-2 hover:bg-white/10 transition-colors"
+              className="rounded-lg border border-white/20 px-4 py-2 hover:bg-white/10 transition-colors"
             >
               Events
             </a>
             <a
               href="/contact"
-              className="rounded-full border border-white/20 px-4 py-2 hover:bg-white/10 transition-colors"
+              className="rounded-lg border border-white/20 px-4 py-2 hover:bg-white/10 transition-colors"
             >
               Contact
             </a>
@@ -82,10 +82,10 @@ export default function Footer() {
         </div>
 
         <div className="grid gap-8 border-t border-white/10 pt-8 md:grid-cols-[2fr_1fr] items-start">
-          <div className="grid gap-3 text-sm text-slate-100/80 sm:grid-cols-2 sm:gap-4">
+          <div className="grid gap-3 text-sm text-slate-100/80 sm:grid-cols-3 sm:gap-4">
             <a
               href="mailto:team@csitabmc.com"
-              className="rounded-lg w-fit sm:w-auto border border-white/10 bg-white/5 px-4 py-3 hover:border-white/25 transition-colors"
+              className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 hover:border-white/25 transition-colors"
             >
               team@csitabmc.com
             </a>

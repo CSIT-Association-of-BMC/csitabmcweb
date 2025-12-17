@@ -1,5 +1,21 @@
 import React from "react";
 import InputForm from "./InputForm";
+import { generatePageMetadata, siteConfig } from "@/lib/seo";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = generatePageMetadata({
+  title: `Certificate Verification - ${siteConfig.name}`,
+  description:
+    "Verify your certificates from CSIT Association of BMC. Enter your certificate ID to authenticate workshop, hackathon, and event participation certificates.",
+  canonical: `${siteConfig.url}/certificate`,
+  keywords: [
+    "Certificate Verification",
+    "CSIT Certificate",
+    "Event Certificate",
+    "Workshop Certificate",
+    "BMC Verification",
+  ],
+});
 
 const page = () => {
   return (

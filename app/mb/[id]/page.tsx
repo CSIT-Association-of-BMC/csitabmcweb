@@ -3,11 +3,11 @@ import Link from "next/link";
 import { Facebook, Linkedin, Mail, Github } from "lucide-react";
 import { TeamDetails } from "@/app/data";
 import NotFound from "@/app/not-found";
-import { metadata } from "@/app/layout";
 import QueryString from "qs";
 import { MemberTypes } from "@/types/Members";
 import { fetchWithToken } from "@/lib/fetch";
 import Markdown from "react-markdown";
+import { generateMemberMetadata, siteConfig } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -31,31 +31,20 @@ export async function generateMetadata({
 
   if (!res || res.status !== 200) {
     return {
-      title: "Member Not Found - CSIT Association of BMC",
+      title: `Member Not Found - ${siteConfig.name}`,
     };
   }
 
   const resJson = await res.json();
   const profile: MemberTypes = resJson.data;
 
-  return {
-    title: `${profile.fullName} - CSIT Association of BMC`,
-    description:
-      profile.description?.substring(0, 160) ||
-      `Learn about ${profile.fullName}, ${profile.post} at CSIT Association of BMC.`,
-    openGraph: {
-      images: profile.image
-        ? [
-            {
-              url: profile.image.url,
-              width: 1200,
-              height: 600,
-              alt: profile.fullName,
-            },
-          ]
-        : [],
-    },
-  };
+  return generateMemberMetadata({
+    fullName: profile.fullName,
+    post: profile.post,
+    description: profile.description || undefined,
+    slug: userId,
+    image: profile.image?.url,
+  });
 }
 
 export default async function Profile({

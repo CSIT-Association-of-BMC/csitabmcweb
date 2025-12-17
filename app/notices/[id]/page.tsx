@@ -9,6 +9,7 @@ import { Card, CardTitle } from "@/components/ui/card";
 import { fetchWithToken } from "@/lib/fetch";
 import type { NoticeTypes } from "@/types/Notice";
 import Markdown from "react-markdown";
+import { generateNoticeMetadata, siteConfig, buildOgImageUrl } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -30,31 +31,19 @@ export async function generateMetadata({
 
   if (!res || res.status !== 200) {
     return {
-      title: "Notice Not Found - CSIT Association of BMC",
+      title: `Notice Not Found - ${siteConfig.name}`,
     };
   }
 
   const resJson = await res.json();
   const notice: NoticeTypes = resJson.data;
 
-  return {
-    title: notice.title + " - CSIT Association of BMC",
-    description:
-      notice.description?.substring(0, 160) || "CSIT Association of BMC Notice",
-    openGraph: {
-      images:
-        notice.image && notice.image.length > 0
-          ? [
-              {
-                url: notice.image[0].url,
-                width: 1200,
-                height: 600,
-                alt: notice.title,
-              },
-            ]
-          : [],
-    },
-  };
+  return generateNoticeMetadata({
+    title: notice.title,
+    description: notice.description?.substring(0, 160),
+    slug: id,
+    publishedAt: (notice as any).createdAt,
+  });
 }
 
 export default async function NoticeDetail(props: {
@@ -97,6 +86,7 @@ export default async function NoticeDetail(props: {
               }
               alt={notice.title}
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover object-top rounded-lg"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-lg" />

@@ -5,12 +5,27 @@ import NoticeHeader from "./components/NoticeHeader";
 import { fetchWithToken } from "@/lib/fetch";
 import NotFound from "../not-found";
 import QueryString from "qs";
+import { generatePageMetadata, siteConfig, buildOgImageUrl } from "@/lib/seo";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Notices - CSIT Association of BMC",
+export const metadata: Metadata = generatePageMetadata({
+  title: `Notices - ${siteConfig.name}`,
   description:
-    "Stay updated with the latest notices, announcements, and important information from CSIT Association of BMC.",
-};
+    "Stay updated with the latest notices, announcements, and important information from CSIT Association of BMC. Official updates for CSIT students at Butwal Multiple Campus.",
+  canonical: `${siteConfig.url}/notices`,
+  ogImage: buildOgImageUrl({
+    title: "Notices",
+    subtitle: "Official Announcements & Updates",
+    type: "notice",
+  }),
+  keywords: [
+    "CSIT Notices",
+    "BMC Announcements",
+    "Student Updates",
+    "CSIT Association News",
+    "Butwal Campus Notices",
+  ],
+});
 
 export default async function NoticePage() {
   const query = QueryString.stringify({

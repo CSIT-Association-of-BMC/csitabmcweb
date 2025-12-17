@@ -1,12 +1,28 @@
 import React from "react";
 import Image from "next/image";
 import TeamList from "@/app/mb/[id]/TeamList";
+import { generatePageMetadata, siteConfig, buildOgImageUrl } from "@/lib/seo";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "About - CSIT Association of BMC",
+export const metadata: Metadata = generatePageMetadata({
+  title: `About Us - ${siteConfig.name}`,
   description:
-    "Learn about CSIT Association of BMC, a non profitable organization created for the welfare of CSIT students at Butwal Multiple Campus.",
-};
+    "Learn about CSIT Association of BMC, a non-profit student-led tech community founded in 2016, empowering CSIT and IT students at Butwal Multiple Campus through workshops, hackathons, and mentorship.",
+  canonical: `${siteConfig.url}/about`,
+  ogImage: buildOgImageUrl({
+    title: "About Us",
+    subtitle: "Student-led Tech Community in Butwal",
+    type: "page",
+  }),
+  keywords: [
+    "About CSIT Association",
+    "CSIT Association BMC",
+    "Butwal Multiple Campus",
+    "Tech Community",
+    "Student Organization Nepal",
+    "CSIT Students Butwal",
+  ],
+});
 
 export default function About() {
   const stats = [
@@ -95,6 +111,7 @@ export default function About() {
                     src="/team.jpeg"
                     alt="CSIT Association team members"
                     fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
                     className="object-cover"
                   />
                 </div>
