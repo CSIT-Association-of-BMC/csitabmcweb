@@ -10,9 +10,11 @@ export const metadata = {
 
 export default function About() {
   const stats = [
-    { label: "Founded", value: "2016" },
-    { label: "Active members", value: "120+" },
-    { label: "Community events", value: "80+" },
+    { label: "Founded", value: "2016 AD" },
+    { label: "Executive members", value: "15" },
+    { label: "Community events", value: "110+" },
+    { label: "Students Impacted", value: "10000+" },
+    { label: "Partnered Org.", value: "100+" },
   ];
 
   const pillars = [
@@ -44,18 +46,18 @@ export default function About() {
         <div className="max-w-6xl mx-auto space-y-12">
           <div className="flex flex-col gap-3 text-left">
             <h1 className="text-4xl md:text-5xl font-semibold text-slate-900 leading-tight">
-              Student-led community for builders at Butwal Multiple Campus
+              Student-led community for builders at Butwal
             </h1>
             <p className="text-base md:text-lg text-slate-600 max-w-3xl">
-              We are a non-profit student collective established in 2016 to help
-              CSIT students grow through hands-on learning, mentorship, and
-              campus initiatives.
+              We are a non-profit student led organization established in 2016
+              AD to help IT students grow through hands-on learning, mentorship,
+              networking opportunities, and multiple meaningful initiatives.
             </p>
           </div>
 
           <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] items-start">
             <div className="space-y-8">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {stats.map((item) => (
                   <div
                     key={item.label}
@@ -73,17 +75,17 @@ export default function About() {
 
               <div className="space-y-4 text-slate-700">
                 <p>
-                  We run workshops, hack sessions, and labs that keep the cohort
-                  aligned with current technology.
+                  We run multiple workshops, hackathons, and sessions that keep
+                  the students aligned with current technology.
                 </p>
                 <p>
                   We also assist faculty with technical execution for campus
                   events, giving students chances to lead and collaborate.
                 </p>
                 <p>
-                  Our goal is simple: give every CSIT student the confidence,
-                  skills, and community to build meaningful projects and
-                  careers.
+                  Our goal is simple: give every student the confidence, skills,
+                  and community to build meaningful innovations and real-world
+                  impacts.
                 </p>
               </div>
             </div>
@@ -100,10 +102,7 @@ export default function About() {
                 </div>
                 <div className="border-t border-slate-200 px-5 py-4">
                   <p className="text-sm font-semibold text-[#2b3870]">
-                    Student-led departments
-                  </p>
-                  <p className="text-sm text-slate-600">
-                    Events · Labs · Partnerships · Outreach
+                    CSITABMC Tenure 2082/83
                   </p>
                 </div>
               </div>

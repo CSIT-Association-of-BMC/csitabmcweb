@@ -4,6 +4,7 @@ import Typewriter from "typewriter-effect";
 import Aos from "aos";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 type OrbitalChip = {
   id: string;
@@ -30,7 +31,7 @@ const HeroLander = () => {
   const orbit = useMemo<OrbitalChip[]>(
     () => [
       { id: "chip-1", label: "Mentors", tone: "emerald", x: 18, y: 22 },
-      { id: "chip-2", label: "Projects", tone: "rose", x: 74, y: 18 },
+      { id: "chip-2", label: "Events", tone: "rose", x: 74, y: 18 },
       { id: "chip-3", label: "Workshops", tone: "amber", x: 82, y: 62 },
       { id: "chip-4", label: "Community", tone: "slate", x: 22, y: 72 },
       { id: "chip-5", label: "Open Source", tone: "rose", x: 52, y: 78 },
@@ -49,20 +50,15 @@ const HeroLander = () => {
 
   return (
     <section
-      className="relative min-h-screen flex items-center bg-gradient-to-br from-white via-slate-50 to-[#2b3870]/5"
+      className="relative min-h-auto max-h-[800px] flex items-center bg-gradient-to-br from-white via-slate-50 to-[#2b3870]/5"
       id="home"
     >
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.04)_1px,transparent_1px)] bg-[size:90px_90px]" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-16 w-full">
+      <div className="mt-40 sm:mt-10 max-w-6xl mx-auto p-10 w-full ">
         <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-start">
           {/* Left content */}
           <div className="space-y-8" data-aos="fade-right">
-            <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm">
-              <span className="h-2 w-2 rounded-full bg-[#2b3870] animate-pulse" />
-              <span>CSIT Association of BMC</span>
-            </div>
-
             <div className="space-y-4">
               <h1 className="text-5xl md:text-6xl font-bold leading-tight text-slate-900">
                 CSIT Association
@@ -70,7 +66,7 @@ const HeroLander = () => {
               </h1>
               <p className="text-lg text-slate-600 max-w-2xl">
                 Non profit, student led, and future focused since 2016. We build
-                spaces where CSIT students learn, ship, and grow together.
+                spaces where IT students learn, ship, and grow together.
               </p>
             </div>
 
@@ -91,21 +87,25 @@ const HeroLander = () => {
               />
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                size="lg"
-                className="bg-[#2b3870] hover:bg-[#243061] text-white px-8 py-5 rounded-lg shadow-md shadow-[#2b3870]/10"
-              >
-                Join Us
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border border-[#2b3870]/30 text-[#2b3870] hover:bg-[#2b3870]/5 px-8 py-5 rounded-lg"
-              >
-                Explore Events
-              </Button>
+            <div className="flex flex-row gap-4">
+              <Link href="/about" className="">
+                <Button
+                  size="lg"
+                  className="bg-[#2b3870] hover:bg-[#243061] text-white px-8 py-5 rounded-lg shadow-md shadow-[#2b3870]/10"
+                >
+                  About Us
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href="/events">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border border-[#2b3870]/30 text-[#2b3870] hover:bg-[#2b3870]/5 px-6 py-5 rounded-lg"
+                >
+                  Explore Events
+                </Button>
+              </Link>
             </div>
 
             {/* Feature boxes removed as requested */}
@@ -138,10 +138,7 @@ const HeroLander = () => {
                 <h3 className="mt-1 text-2xl font-semibold text-slate-900">
                   Learn → Build → Share
                 </h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  A lightweight system that keeps you shipping: mentor feedback,
-                  small teams, and public demos.
-                </p>
+                <p className="mt-2 text-sm text-slate-600"></p>
 
                 {/* orbit */}
                 <div className="relative mt-6 h-[260px] rounded-lg border border-slate-200 bg-gradient-to-b from-white to-slate-50 overflow-hidden">
@@ -153,7 +150,7 @@ const HeroLander = () => {
                   <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                     <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 shadow-sm">
                       <p className="text-xs uppercase tracking-wide text-slate-500">
-                        CSIT @ BMC
+                        CSITABMC
                       </p>
                       <p className="text-sm font-semibold text-slate-900">
                         Student first
@@ -165,7 +162,7 @@ const HeroLander = () => {
                     <button
                       key={c.id}
                       type="button"
-                      className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-md border px-3 py-1.5 text-xs font-semibold shadow-sm transition-transform hover:-translate-y-[40%] ${
+                      className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full border px-3 py-1.5 text-xs font-semibold shadow-sm transition-transform hover:-translate-y-[40%] ${
                         toneClass[c.tone]
                       }`}
                       style={{ left: `${c.x}%`, top: `${c.y}%` }}
@@ -173,22 +170,6 @@ const HeroLander = () => {
                       {c.label}
                     </button>
                   ))}
-                </div>
-
-                <div className="mt-5 flex flex-col sm:flex-row gap-3">
-                  <Button
-                    size="sm"
-                    className="bg-[#2b3870] hover:bg-[#243061] text-white rounded-lg px-5"
-                  >
-                    See what we do
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="rounded-lg border-[#2b3870]/30 text-[#2b3870] hover:bg-[#2b3870]/5"
-                  >
-                    View resources
-                  </Button>
                 </div>
               </div>
             </div>
