@@ -41,8 +41,7 @@ export default function ContactForm() {
             Let's talk about community
           </h1>
           <p className="text-base text-slate-600 max-w-2xl mx-auto">
-            Reach us directly through the contacts below or find us on campus.
-            We keep things simple—no forms, just people.
+            Reach us directly through the contacts below.
           </p>
         </motion.div>
 

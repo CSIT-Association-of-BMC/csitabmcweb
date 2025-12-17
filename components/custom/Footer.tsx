@@ -37,16 +37,13 @@ export default function Footer() {
         <div className="grid gap-8 md:grid-cols-[1.2fr_0.8fr]">
           <div className="space-y-4">
             <div>
-              <p className="text-sm uppercase tracking-wide text-slate-500">
-                CSIT Association of BMC
-              </p>
               <h3 className="text-2xl font-semibold text-[#2b3870]">
-                Community of builders, since 2016
+                CSIT Association of BMC{" "}
               </h3>
             </div>
             <p className="text-sm text-slate-600">
-              Meetups, workshops, labs, and campus projects organized entirely
-              by CSIT students at Butwal Multiple Campus.
+              Meetups, Workshops, Hackathons, Tech Talks and so on organized
+              entirely by CSIT students at Butwal Multiple Campus.
             </p>
             <div className="flex flex-wrap gap-6 text-sm text-slate-600">
               <a

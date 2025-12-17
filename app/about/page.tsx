@@ -46,13 +46,8 @@ export default function About() {
         <div className="max-w-6xl mx-auto space-y-12">
           <div className="flex flex-col gap-3 text-left">
             <h1 className="text-4xl md:text-5xl font-semibold text-slate-900 leading-tight">
-              Student-led community for builders at Butwal
+              Student-led community for learners at Butwal
             </h1>
-            <p className="text-base md:text-lg text-slate-600 max-w-3xl">
-              We are a non-profit student led organization established in 2016
-              AD to help IT students grow through hands-on learning, mentorship,
-              networking opportunities, and multiple meaningful initiatives.
-            </p>
           </div>
 
           <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] items-start">
@@ -75,17 +70,20 @@ export default function About() {
 
               <div className="space-y-4 text-slate-700">
                 <p>
-                  We run multiple workshops, hackathons, and sessions that keep
-                  the students aligned with current technology.
+                  We are a non-profit, student-led organization founded in 2016,
+                  dedicated to helping IT students learn, grow, and lead.
                 </p>
+
                 <p>
-                  We also assist faculty with technical execution for campus
-                  events, giving students chances to lead and collaborate.
+                  Through workshops, hackathons, and hands-on sessions, we keep
+                  students aligned with current technology while encouraging
+                  collaboration and innovation.
                 </p>
+
                 <p>
-                  Our goal is simple: give every student the confidence, skills,
-                  and community to build meaningful innovations and real-world
-                  impacts.
+                  We also support campus events and work closely with faculty,
+                  giving students real opportunities to contribute, connect, and
+                  make an impact.
                 </p>
               </div>
             </div>
