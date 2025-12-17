@@ -19,24 +19,24 @@ export default function About() {
 
   const pillars = [
     {
-      title: "Peer-led learning",
+      title: "Skill building & participation",
       description:
-        "Hands-on workshops and study circles designed and delivered by students for students.",
+        "Workshops, training, and guided participation to help students learn and grow.",
     },
     {
-      title: "Industry connection",
+      title: "Industry mentoring & networking",
       description:
-        "Partnerships with speakers, alumni, and tech companies to expose members to real projects.",
+        "Connecting students with professionals, alumni, and tech communities.",
     },
     {
-      title: "Campus support",
+      title: "Student welfare & campus support",
       description:
-        "We collaborate with the CSIT department to provide technical assistance and event execution.",
+        "Working with the CSIT department to support events and student initiatives.",
     },
     {
-      title: "Inclusive community",
+      title: "Hackathons & innovation",
       description:
-        "Every CSIT student gets a platform to build, present, and receive mentorship regardless of experience.",
+        "Hackathons and challenges that drive innovation and real-world problem solving.",
     },
   ];
 
@@ -106,23 +106,22 @@ export default function About() {
                   </p>
                 </div>
               </div>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-                {pillars.map((pillar) => (
-                  <div
-                    key={pillar.title}
-                    className="rounded-lg border border-slate-200 bg-white p-4"
-                  >
-                    <p className="text-sm font-semibold text-[#2b3870]">
-                      {pillar.title}
-                    </p>
-                    <p className="text-sm text-slate-600 mt-2">
-                      {pillar.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
             </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-4">
+            {pillars.map((pillar) => (
+              <div
+                key={pillar.title}
+                className="rounded-lg border border-slate-200 bg-white p-4"
+              >
+                <p className="text-sm font-semibold text-[#2b3870]">
+                  {pillar.title}
+                </p>
+                <p className="text-sm text-slate-600 mt-2">
+                  {pillar.description}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

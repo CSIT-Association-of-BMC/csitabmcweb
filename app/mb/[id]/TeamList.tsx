@@ -43,7 +43,7 @@ export default async function TeamList() {
             Our <span className="text-[#2b3870]">Teams</span>
           </h2>
           <p className="mt-3 text-slate-600 max-w-2xl mx-auto">
-            The people who keep the community running—events, mentorship,
+            The people who keep the community running events, mentorship,
             design, and everything in between.
           </p>
         </div>
