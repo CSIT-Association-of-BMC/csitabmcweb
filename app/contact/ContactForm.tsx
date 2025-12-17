@@ -114,7 +114,7 @@ export default function ContactForm() {
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <a
-                      href="https://www.facebook.com/csit.bmc"
+                      href="https://www.facebook.com/csitabmc"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-xs px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors"

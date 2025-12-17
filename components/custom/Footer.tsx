@@ -22,7 +22,7 @@ export default function Footer() {
     {
       icon: Facebook,
       label: "Facebook",
-      href: "https://www.facebook.com/csit.bmc",
+      href: "https://www.facebook.com/csitabmc",
     },
     {
       icon: Github,
