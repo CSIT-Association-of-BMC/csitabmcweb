@@ -7,14 +7,31 @@ import NotFound from "../not-found";
 import { EventTypes } from "@/types/events";
 import Link from "next/link";
 import EventDates from "./[eventId]/EventDates";
+import { generatePageMetadata, siteConfig, buildOgImageUrl } from "@/lib/seo";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Events - CSIT Association of BMC",
-  description: "Discover upcoming and past events organized by CSIT Association of BMC including workshops, seminars, and tech events.",
-};
+export const metadata: Metadata = generatePageMetadata({
+  title: `Events - ${siteConfig.name}`,
+  description:
+    "Discover workshops, hackathons, seminars, and tech events organized by CSIT Association of BMC in Butwal, Nepal. Join our community events and grow your skills.",
+  canonical: `${siteConfig.url}/events`,
+  ogImage: buildOgImageUrl({
+    title: "Events",
+    subtitle: "Workshops, Hackathons & Tech Talks",
+    type: "event",
+  }),
+  keywords: [
+    "Tech Events Butwal",
+    "CSIT Workshops",
+    "Hackathons Nepal",
+    "Student Events BMC",
+    "Tech Seminars",
+    "Programming Workshops",
+    "CSIT Association Events",
+  ],
+});
 
 export default async function Event() {
-
   const query = QueryString.stringify({
     populate: {
       image: {
@@ -51,18 +68,19 @@ export default async function Event() {
               >
                 <div className=" h-full relative bg-white rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2">
                   <div className="relative h-64">
-                  {event.image?.[0]?.url ? (
-  <Image
-    src={event.image[0].url}
-    alt={event.title}
-    fill
-    className="object-cover transition-transform duration-300 group-hover:scale-105"
-  />
-) : (
-  <div className="bg-gray-200 w-full h-full flex items-center justify-center text-gray-500">
-    No image
-  </div>
-)}
+                    {event.image?.[0]?.url ? (
+                      <Image
+                        src={event.image[0].url}
+                        alt={event.title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="bg-gray-200 w-full h-full flex items-center justify-center text-gray-500">
+                        No image
+                      </div>
+                    )}
                     <div className="absolute top-4 right-4">
                       <span className="px-3 py-1 text-sm font-medium text-white bg-red-600 rounded-full">
                         {event.category}
