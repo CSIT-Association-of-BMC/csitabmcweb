@@ -247,7 +247,7 @@ export const TeamDetails = [
     Github: "",
     Email: "mission@csitabmc.com",
   },
-   {
+  {
     id: "081EMGSB16",
     Name: "Govinda Sagar Bhusal",
     img: "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723190539/GOVINDA_cma3ba.jpg",
@@ -291,6 +291,11 @@ export const Partnerdata = [
       "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191319/1_a6ilde.jpg",
   },
   {
+    id: 6,
+    Image:
+      "https://res.cloudinary.com/dyshj7mor/image/upload/v1765976095/DearHive_zf6cjb.png",
+  },
+  {
     id: 2,
     Image:
       "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191320/2_bgvdtz.png",
@@ -298,17 +303,13 @@ export const Partnerdata = [
   {
     id: 5,
     Image:
-      "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191336/5_po8z5b.jpg",
+      "https://res.cloudinary.com/dyshj7mor/image/upload/v1757253969/world_link_yqql5u.png",
   },
-  {
-    id: 6,
-    Image:
-      "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191338/6_xj1gys.png",
-  },
+
   {
     id: 7,
     Image:
-      "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191340/7_avzaau.png",
+      "https://res.cloudinary.com/dyshj7mor/image/upload/v1757253969/programiz_e8pxfq.svg",
   },
   {
     id: 8,
@@ -318,7 +319,52 @@ export const Partnerdata = [
   {
     id: 9,
     Image:
-      "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191355/9_kevbjw.jpg",
+      "https://res.cloudinary.com/dyshj7mor/image/upload/v1757253969/github_logo_w1hhva.png",
+  },
+  {
+    id: 11,
+    Image:
+      "https://res.cloudinary.com/dyshj7mor/image/upload/v1757253581/tilottama_mun_qbymbt.jpg",
+  },
+  {
+    id: 12,
+    Image:
+      "https://res.cloudinary.com/dyshj7mor/image/upload/v1765976095/DearHive_zf6cjb.png",
+  },
+  {
+    id: 13,
+    Image:
+      "https://res.cloudinary.com/dyshj7mor/image/upload/v1757253582/2pm_w6e4sl.jpg",
+  },
+  {
+    id: 14,
+    Image:
+      "https://res.cloudinary.com/dyshj7mor/image/upload/v1757253581/butwal-mun_cllopb.png",
+  },
+  {
+    id: 15,
+    Image:
+      "https://res.cloudinary.com/dyshj7mor/image/upload/v1757253447/TU_o9uydr.jpg",
+  },
+  {
+    id: 16,
+    Image:
+      "https://res.cloudinary.com/dyshj7mor/image/upload/v1757253969/programiz_e8pxfq.svg",
+  },
+  {
+    id: 17,
+    Image:
+      "https://res.cloudinary.com/dyshj7mor/image/upload/v1757253970/nepal_bank_wdabtp.png",
+  },
+  {
+    id: 18,
+    Image:
+      "https://res.cloudinary.com/dyshj7mor/image/upload/v1757253969/mero_job_orvduv.jpg",
+  },
+  {
+    id: 19,
+    Image:
+      "https://res.cloudinary.com/dyshj7mor/image/upload/v1757254196/shineresunga_fitfis.png",
   },
 ];
 

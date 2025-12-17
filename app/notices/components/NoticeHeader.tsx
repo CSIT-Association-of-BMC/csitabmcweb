@@ -6,24 +6,22 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import Form from "next/form";
-
 import { useSearchParams } from "next/navigation";
+
 const NoticeHeader = () => {
   return (
-    <header className="pt-2 border-b">
-      <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
-        <div className="flex items-center gap-6 md:gap-8">
-          <Link href="/notices">
-            <h1 className="text-xl font-bold text-primary">Notice Board</h1>
-          </Link>
-        </div>
+    <header className="sticky top-0 z-40 border-b bg-white/80 backdrop-blur-md shadow-sm">
+      <div className="container flex h-16 items-center justify-between gap-4">
+        <Link href="/notices" className="group flex items-center gap-2">
+          <div className="h-8 w-1 bg-primary rounded-full group-hover:h-10 transition-all" />
+          <h1 className="text-xl font-bold tracking-tight group-hover:text-primary transition-colors">
+            Notice Board
+          </h1>
+        </Link>
 
-        <div className="flex flex-1 items-center justify-end space-x-4">
-          {/* Suspense to handle asynchronous data */}
-          <Suspense fallback={<div>Loading search bar...</div>}>
-            <SearchForm />
-          </Suspense>
-        </div>
+        <Suspense fallback={null}>
+          <SearchForm />
+        </Suspense>
       </div>
     </header>
   );
@@ -38,17 +36,21 @@ function SearchForm() {
   return (
     <Form
       action="/notices/search"
-      className="w-full max-w-lg flex items-center space-x-2"
+      className="flex items-center gap-2 max-w-md w-full"
     >
-      <Input
-        type="search"
-        name="query"
-        defaultValue={search as string}
-        placeholder="Search notices..."
-        className=""
-      />
-      <Button type="submit" variant="ghost" size="icon" className="shrink-0">
-        <Search className="h-4 w-4" />
+      <div className="relative flex-1">
+        <Input
+          type="search"
+          name="query"
+          defaultValue={search as string}
+          placeholder="Search notices..."
+          className="h-10 pl-10 pr-4 text-sm border-slate-200 focus-visible:ring-primary/20"
+          required
+        />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+      </div>
+      <Button type="submit" size="sm" className="h-10 px-4">
+        Search
       </Button>
     </Form>
   );
