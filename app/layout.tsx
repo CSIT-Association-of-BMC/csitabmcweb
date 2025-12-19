@@ -8,6 +8,8 @@ import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "@/components/ui/toaster";
 import { siteConfig, buildOgImageUrl } from "@/lib/seo";
 import { OrganizationJsonLd, WebsiteJsonLd } from "@/lib/structured-data";
+import MicrosoftClarity from "@/components/custom/MicrosoftClarity";
+import Clarity from "@microsoft/clarity";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -71,6 +73,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const clarityProjectId = process.env.CLARITY_PROJECT_ID as string;
+  Clarity.init(clarityProjectId);
   return (
     <html lang="en">
       <head>
@@ -78,6 +82,12 @@ export default function RootLayout({
           name="google-adsense-account"
           content="ca-pub-4150130021078265"
         ></meta>
+        <MicrosoftClarity />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4150130021078265"
+          crossOrigin="anonymous"
+        ></script>
         <OrganizationJsonLd />
         <WebsiteJsonLd />
       </head>
