@@ -32,10 +32,10 @@ const Certificate = ({ data }: { data: CertificateTypes }) => {
         image: "/arun-sign.png",
       },
       {
-        name: "Mr. Gobinda Adhikari",
+        name: "Mr. Chhetra Bahadur Chhetri",
         title: "B.Sc. CSIT Program Director",
         institute: "Butwal Multiple Campus",
-        image: "/gobinda-sign.png",
+        image: "/ChhetraSir-Sign.png",
       },
     ],
   };
