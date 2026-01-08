@@ -78,16 +78,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta
-          name="google-adsense-account"
-          content="ca-pub-4150130021078265"
-        ></meta>
-        <MicrosoftClarity />
+        {/* Google tag (gtag.js) */}
         <script
           async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4150130021078265"
-          crossOrigin="anonymous"
+          src="https://www.googletagmanager.com/gtag/js?id=G-1PYDC70JVG"
         ></script>
+        <script>
+          {`window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-1PYDC70JVG');`}
+        </script>
+
+        <MicrosoftClarity />
+
         <OrganizationJsonLd />
         <WebsiteJsonLd />
       </head>
