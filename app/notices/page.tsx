@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NoticeTypes } from "@/types/Notice";
-import { NoticeCardComponent } from "./components/NoticeCard";
+import { NoticeList } from "./components/NoticeList";
 import NoticeHeader from "./components/NoticeHeader";
 import { fetchWithToken } from "@/lib/fetch";
 import NotFound from "../not-found";
@@ -34,18 +34,25 @@ export default async function NoticePage() {
         fields: ["url"],
       },
     },
+    sort: ["publishedAt:desc"],
   });
   const res = await fetchWithToken(
-    `${process.env.STRAPI_API_URL}/notices?${query}`
+    `${process.env.STRAPI_API_URL}/notices?${query}`,
   );
   if (!res || res.status !== 200) return <NotFound />;
   const resJson = await res.json();
   const notices: NoticeTypes[] = resJson.data;
-  const sortedNotices = [...notices].sort((a, b) => {
-    const aDate = new Date((a as any)?.attributes?.createdAt || 0).getTime();
-    const bDate = new Date((b as any)?.attributes?.createdAt || 0).getTime();
-    return bDate - aDate;
-  });
+
+  const allNotices = notices;
+  const administrativeNotices = notices.filter(
+    (notice) => notice.category === "administrative",
+  );
+  const academicNotices = notices.filter(
+    (notice) => notice.category === "academic",
+  );
+  const eventsNotices = notices.filter(
+    (notice) => notice.category === "events",
+  );
   return (
     <>
       <NoticeHeader />
@@ -63,48 +70,17 @@ export default async function NoticePage() {
                   <TabsTrigger value="events">Events</TabsTrigger>
                 </TabsList>
               </div>
-              <TabsContent
-                value="all"
-                className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-              >
-                {sortedNotices?.map((notice) => {
-                  return (
-                    <NoticeCardComponent key={notice.id} notice={notice} />
-                  );
-                })}
+              <TabsContent value="all">
+                <NoticeList notices={allNotices} />
               </TabsContent>
-              <TabsContent
-                value="administrative"
-                className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-              >
-                {sortedNotices?.map((notice) => {
-                  if (notice.category == "administrative")
-                    return (
-                      <NoticeCardComponent key={notice.id} notice={notice} />
-                    );
-                })}
+              <TabsContent value="administrative">
+                <NoticeList notices={administrativeNotices} />
               </TabsContent>
-              <TabsContent
-                value="events"
-                className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-              >
-                {sortedNotices?.map((notice) => {
-                  if (notice.category == "events")
-                    return (
-                      <NoticeCardComponent key={notice.id} notice={notice} />
-                    );
-                })}
+              <TabsContent value="events">
+                <NoticeList notices={eventsNotices} />
               </TabsContent>
-              <TabsContent
-                value="academic"
-                className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-              >
-                {sortedNotices?.map((notice) => {
-                  if (notice.category == "academic")
-                    return (
-                      <NoticeCardComponent key={notice.id} notice={notice} />
-                    );
-                })}
+              <TabsContent value="academic">
+                <NoticeList notices={academicNotices} />
               </TabsContent>
             </Tabs>
           </div>

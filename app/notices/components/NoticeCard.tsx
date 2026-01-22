@@ -20,7 +20,7 @@ export const NoticeCardComponent = ({ notice }: { notice: NoticeTypes }) => {
   const router = useRouter();
 
   const handleCardClick = useCallback(() => {
-    router.push(`notices/${notice.documentId}`);
+    router.push(`/notices/${notice.documentId}`);
   }, [router, notice.documentId]);
 
   const handleDownload = useCallback(() => {
