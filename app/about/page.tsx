@@ -119,7 +119,7 @@ export default function About() {
                 </div>
                 <div className="border-t border-slate-200 px-5 py-4">
                   <p className="text-sm font-semibold text-[#2b3870]">
-                    CSITABMC Tenure 2082/83
+                    CSITABMC Tenure 2083/84
                   </p>
                 </div>
               </div>
