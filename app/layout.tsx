@@ -37,10 +37,11 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     images: [
       {
-        url: /public/logo.png,
+        url: "/logo.png",
         width: 1200,
         height: 630,
-        alt: siteConfig.name,
+        alt: "Logo | CSIT Asociation of BMC | Butwal, Nepal",
+        type: "image/jpeg",
       },
     ],
   },
