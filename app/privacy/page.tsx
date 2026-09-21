@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Notice App",
+  title: "Privacy Policy | CSIT Association of BMC Notice App",
   description:
     "Privacy Policy explaining how CSIT Association of BMC's Notice App collects, uses, stores, and protects user and device information.",
 };
@@ -43,7 +43,7 @@ export default function PrivacyPolicyPage() {
           <PolicySection title={`1. About ${APP_NAME}`}>
             <p>
               {APP_NAME} is an informational notice application operated by{" "}
-              <strong>{DEVELOPER_NAME}</strong>. It allows users to view
+              <strong><a href="https://csitabmc.com">CSIT Association of BMC</a></strong>. It allows users to view
               published notices, notice categories, descriptions, dates,
               images, and receive notifications when new information is
               published.
