@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/seo";
+import { SEMESTER_DEFINITIONS, getSubjectsForSemester } from "@/lib/study-materials";
 
 type ChangeFrequency =
     | "always"
@@ -29,6 +30,7 @@ const staticRoutes: Array<{
         { path: "/contact", changeFrequency: "monthly", priority: 0.7 },
         { path: "/notices", changeFrequency: "daily", priority: 0.8 },
         { path: "/certificate", changeFrequency: "monthly", priority: 0.5 },
+        { path: "/study-materials/semester-exam", changeFrequency: "weekly", priority: 0.8 },
     ];
 
 // Fetch dynamic events from Strapi
@@ -139,5 +141,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.5,
     }));
 
-    return [...staticEntries, ...eventEntries, ...noticeEntries, ...memberEntries];
+    // Semester exam study materials routes
+    const studyEntries: SitemapEntry[] = [];
+    for (const sem of SEMESTER_DEFINITIONS) {
+        studyEntries.push({
+            url: `${baseUrl}/study-materials/semester-exam/${sem.slug}`,
+            lastModified: now,
+            changeFrequency: "weekly" as ChangeFrequency,
+            priority: 0.7,
+        });
+
+        const subjects = getSubjectsForSemester(sem.number);
+        for (const subj of subjects) {
+            studyEntries.push({
+                url: `${baseUrl}/study-materials/semester-exam/${sem.slug}/${subj.slug}`,
+                lastModified: now,
+                changeFrequency: "monthly" as ChangeFrequency,
+                priority: 0.6,
+            });
+        }
+    }
+
+    return [...staticEntries, ...eventEntries, ...noticeEntries, ...memberEntries, ...studyEntries];
 }

@@ -113,7 +113,7 @@ export function NoticeList({ notices, itemsPerPage = 15 }: NoticeListProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
         {currentNotices.map((notice) => (
           <NoticeCardComponent key={notice.id} notice={notice} />
         ))}

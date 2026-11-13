@@ -14,7 +14,10 @@ const DesktopDropdown = ({ item }: { item: (typeof NavLinkPaths)[0] }) => {
   const pathname = usePathname();
 
   const isAnyChildActive = item.content?.some(
-    (child) => pathname === child.path || pathname === "/" + child.path
+    (child) =>
+      pathname === child.path ||
+      pathname === "/" + child.path ||
+      (child.path && !child.path.startsWith("http") && pathname.startsWith(child.path))
   );
 
   useEffect(() => {
@@ -49,7 +52,9 @@ const DesktopDropdown = ({ item }: { item: (typeof NavLinkPaths)[0] }) => {
         <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-xl border border-slate-200 shadow-lg py-1 z-50">
           {item.content!.map((child, i) => {
             const isActive =
-              pathname === child.path || pathname === "/" + child.path;
+              pathname === child.path ||
+              pathname === "/" + child.path ||
+              (child.path && !child.path.startsWith("http") && pathname.startsWith(child.path));
             return (
               <Link
                 key={i}
@@ -86,7 +91,10 @@ const MobileDropdown = ({
   const pathname = usePathname();
 
   const isAnyChildActive = item.content?.some(
-    (child) => pathname === child.path || pathname === "/" + child.path
+    (child) =>
+      pathname === child.path ||
+      pathname === "/" + child.path ||
+      (child.path && !child.path.startsWith("http") && pathname.startsWith(child.path))
   );
 
   return (
@@ -106,7 +114,9 @@ const MobileDropdown = ({
         <div className="pb-2 pl-3 flex flex-col gap-1">
           {item.content!.map((child, i) => {
             const isActive =
-              pathname === child.path || pathname === "/" + child.path;
+              pathname === child.path ||
+              pathname === "/" + child.path ||
+              (child.path && !child.path.startsWith("http") && pathname.startsWith(child.path));
             return (
               <Link
                 key={i}

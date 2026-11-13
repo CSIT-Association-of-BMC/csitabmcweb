@@ -24,6 +24,20 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/study-materials/semesterExam",
+        destination: "/study-materials/semester-exam",
+        permanent: true,
+      },
+      {
+        source: "/study-materials/semesterExam/:path*",
+        destination: "/study-materials/semester-exam",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

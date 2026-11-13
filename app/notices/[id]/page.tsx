@@ -10,6 +10,7 @@ import { fetchWithToken } from "@/lib/fetch";
 import type { NoticeTypes } from "@/types/Notice";
 import Markdown from "react-markdown";
 import { generateNoticeMetadata, siteConfig, buildOgImageUrl } from "@/lib/seo";
+import { NoticeDetailImage } from "./NoticeDetailImage";
 
 export async function generateMetadata({
   params,
@@ -77,20 +78,23 @@ export default async function NoticeDetail(props: {
       </Link>
       <Card className="overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="relative h-[300px] md:h-[30rem]">
-            <Image
-              src={
-                notice.image && notice.image.length > 0 && notice.image[0].url
-                  ? notice.image[0].url
-                  : "/placeholder.svg"
-              }
-              alt={notice.title}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover object-top rounded-lg"
+          {notice.image && notice.image.length > 0 && notice.image[0].url ? (
+            <NoticeDetailImage
+              imageUrl={notice.image[0].url}
+              title={notice.title}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-lg" />
-          </div>
+          ) : (
+            <div className="relative h-[300px] md:h-[30rem]">
+              <Image
+                src="/placeholder.svg"
+                alt={notice.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover object-top rounded-lg"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-lg" />
+            </div>
+          )}
           <div className="p-6 flex flex-col justify-between">
             <div>
               <span className="mb-4 inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold capitalize text-slate-700">
