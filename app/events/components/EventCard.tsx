@@ -7,6 +7,7 @@ import { Calendar, Clock, MapPin, Video, ArrowRight, X } from "lucide-react";
 import Markdown from "react-markdown";
 import { EventTypes } from "@/types/events";
 import { cn } from "@/lib/utils";
+import { startLoading } from "@/components/custom/LoadingIndicator";
 
 const MONTHS = [
   "Jan",
@@ -100,6 +101,7 @@ export function EventCard({ event }: { event: EventTypes }) {
         setIsExpanded(true);
       }
     } else {
+      startLoading();
       router.push(eventUrl);
     }
   };

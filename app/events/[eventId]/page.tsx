@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { MapPin, Users, ExternalLink, Video } from "lucide-react";
+import { MapPin, Users, ExternalLink, Video, ArrowLeft } from "lucide-react";
 import NotFound from "@/app/not-found";
 import { fetchWithToken } from "@/lib/fetch";
 import { EventTypes } from "@/types/events";
@@ -86,9 +86,18 @@ export default async function EventPage({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black to-black/0 flex items-end">
           <div className="container mx-auto px-4 py-8">
-            <span className="inline-flex px-3 py-1 rounded-full bg-white/15 text-white text-xs font-semibold mb-4">
-              {event.category}
-            </span>
+            <Link
+              href="/events"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/40 hover:bg-black/60 text-white text-xs font-medium mb-4 backdrop-blur-sm transition-colors border border-white/20"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Events</span>
+            </Link>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="inline-flex px-3 py-1 rounded-full bg-white/15 text-white text-xs font-semibold">
+                {event.category}
+              </span>
+            </div>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
               {event.title}
             </h1>

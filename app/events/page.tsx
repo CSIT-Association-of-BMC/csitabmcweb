@@ -2,7 +2,7 @@ import QueryString from "qs";
 import { fetchWithToken } from "@/lib/fetch";
 import NotFound from "../not-found";
 import { EventTypes } from "@/types/events";
-import { EventCard } from "./components/EventCard";
+import { EventList } from "./components/EventList";
 import { generatePageMetadata, siteConfig, buildOgImageUrl } from "@/lib/seo";
 import type { Metadata } from "next";
 
@@ -55,11 +55,7 @@ export default async function Event() {
           <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-60 h-[2px] bg-red-600" />
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {eventDetails.map((event, index) => (
-            <EventCard key={event.documentId || event.id || index} event={event} />
-          ))}
-        </div>
+        <EventList events={eventDetails} itemsPerPage={16} />
       </div>
     </section>
   );

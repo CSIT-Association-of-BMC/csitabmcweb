@@ -1,5 +1,5 @@
 import About from "./about/page";
-import Event from "./events/page";
+import HomeEvents from "./events/components/HomeEvents";
 import HeroLander from "@/components/custom/HeroLander/HeroLander";
 import Testimonial from "@/components/custom/Testimonial";
 import CommunityPartners from "@/components/custom/CommunityPartners";
@@ -35,7 +35,7 @@ export default function Home() {
       {/* <Lander/> */}
       <HeroLander />
       <About />
-      <Event />
+      <HomeEvents />
       <Testimonial />
       <CommunityPartners />
     </>
