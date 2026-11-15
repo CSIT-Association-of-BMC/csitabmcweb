@@ -12,7 +12,16 @@ export const NavLinkPaths = [
   },
   {
     title: "About",
-    path: "/about",
+    path: null,
+    content: [
+      { title: "CSITABMC", path: "/about/csitabmc" },
+      { title: "Our Team", path: "/about/our-team" },
+      { title: "Alumni", path: "/about/alumni" },
+    ],
+  },
+  {
+    title: "Blogs",
+    path: "/blogs",
     content: null,
   },
   {
@@ -385,7 +394,7 @@ export const TestimonialData = [
     Name: "Rabin Pandey",
     testimony: `Technology can be our closest companion, and technology can likewise be the greatest partypopper of our lives.It plays a major role in our lives.
     As a part of CSIT Association of BMC, the most challenging part for me was to make the changes in directions, systems as well college guidelines which somehow got solved and which was possible by our team. Majority of innovation will be exhibit soon and lastly working with an energetic team leading by me was a wonderful experience ever in my lifetime.`,
-    Post: `Senior Advisor of CSITA-BMC`,
+    Post: `Senior Advisor of CSITABMC`,
   },
   {
     id: 2,
@@ -402,8 +411,8 @@ export const TestimonialData = [
       "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191193/prakash_kaxftv.jpg",
     Name: "Prakash Dhakal",
     testimony:
-      "CSIT Association of BMC एउटा परिवार हो, म यो संस्थालाई, संस्था भन्दा पनि परिवार भन्न रुचाउने गर्छु। जहिले देखि यस संस्थाको जन्म भयो त्यसपछि नै सम्पुर्ण बिद्यार्थीको अभिभावकको रुपमा काम गरिरहेको छ,बिद्यार्थीहरुको आवाज उठाउने र सम्बोधन गराउने काम गरिरहेको छ। यस संस्थाले क्याम्पसमै उल्लेखनीय कामहरु त गरेको छ सङ्सङै बिद्यार्थी-बिद्यार्थी बिचको घनिष्ठ आत्मियता बढाउन महत्त्वपूर्ण योगदान गरेको छ। CSIT पढ्ने बिद्यार्थी एकजुट छन भन्ने सन्देश क्याम्पसभर दिएको छ। मैले आज सम्म धेरै संस्थामा काम गरेको छु,मलाइ ती संस्थामध्ये सबैभन्दा प्यारो संस्था CSITA-BMC नै हो।",
-    Post: `Former President at CSITA-BMC`,
+      "CSIT Association of BMC एउटा परिवार हो, म यो संस्थालाई, संस्था भन्दा पनि परिवार भन्न रुचाउने गर्छु। जहिले देखि यस संस्थाको जन्म भयो त्यसपछि नै सम्पुर्ण बिद्यार्थीको अभिभावकको रुपमा काम गरिरहेको छ,बिद्यार्थीहरुको आवाज उठाउने र सम्बोधन गराउने काम गरिरहेको छ। यस संस्थाले क्याम्पसमै उल्लेखनीय कामहरु त गरेको छ सङ्सङै बिद्यार्थी-बिद्यार्थी बिचको घनिष्ठ आत्मियता बढाउन महत्त्वपूर्ण योगदान गरेको छ। CSIT पढ्ने बिद्यार्थी एकजुट छन भन्ने सन्देश क्याम्पसभर दिएको छ। मैले आज सम्म धेरै संस्थामा काम गरेको छु,मलाइ ती संस्थामध्ये सबैभन्दा प्यारो संस्था CSITABMC नै हो।",
+    Post: `Former President at CSITABMC`,
   },
   {
     id: 4,
@@ -421,7 +430,7 @@ export const TestimonialData = [
     Name: "Mahendra Kandel",
     testimony:
       "I consider CSIT Association of BMC as a group of leaders of tech community who are always eager to impart knowledge and has willingness to see the change, Despite of being an organization inside academic boundary it always had contributed to national tech community, Proud to be a part of it and kudos to the new team.",
-    Post: `Former President at CSITA-BMC`,
+    Post: `Former President at CSITABMC`,
   },
   {
     id: 6,
@@ -447,6 +456,6 @@ export const TestimonialData = [
       "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191190/bishan_uso0w3.jpg",
     Name: "Bishan Bashyal",
     testimony: `CSIT Association of BMC a group of highly energetic tech enthusiast, I remember founding this organization from scratch and now the new tenures took this organization to next level, more than i imagined. `,
-    Post: `IT Officer and Founder President of CSITA-BMC`,
+    Post: `IT Officer and Founder President of CSITABMC`,
   },
 ];

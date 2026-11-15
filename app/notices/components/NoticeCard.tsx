@@ -8,6 +8,7 @@ import { getLocalDate } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { NoticePreviewModal } from "./NoticePreviewModal";
 import { startLoading } from "@/components/custom/LoadingIndicator";
+import { getNoticeSlug } from "@/lib/slugs";
 
 export const NoticeCardComponent = ({ notice }: { notice: NoticeTypes }) => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -40,7 +41,7 @@ export const NoticeCardComponent = ({ notice }: { notice: NoticeTypes }) => {
       : null;
 
   const router = useRouter();
-  const noticeUrl = `/notices/${notice.documentId}`;
+  const noticeUrl = `/notices/${getNoticeSlug(notice)}`;
 
   const handleCardClick = () => {
     if (window.innerWidth < 768) {

@@ -9,12 +9,12 @@ export const metadata: Metadata = generatePageMetadata({
   canonical: `${siteConfig.url}/contact`,
   ogImage: buildOgImageUrl({
     title: "Contact Us",
-    subtitle: "Get in Touch with CSITA-BMC",
+    subtitle: "Get in Touch with CSITABMC",
     type: "page",
   }),
   keywords: [
     "Contact CSIT Association",
-    "CSIT BMC Contact",
+    "CSITABMC Contact",
     "Tech Community Butwal",
     "Event Collaboration",
     "Workshop Inquiry",

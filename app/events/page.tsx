@@ -1,8 +1,8 @@
 import QueryString from "qs";
 import { fetchWithToken } from "@/lib/fetch";
-import NotFound from "../not-found";
 import { EventTypes } from "@/types/events";
 import { EventList } from "./components/EventList";
+import { SectionHeading } from "@/components/custom/SectionHeading";
 import { generatePageMetadata, siteConfig, buildOgImageUrl } from "@/lib/seo";
 import type { Metadata } from "next";
 
@@ -27,7 +27,15 @@ export const metadata: Metadata = generatePageMetadata({
   ],
 });
 
-export default async function Event() {
+interface EventPageProps {
+  searchParams?: Promise<{ q?: string; query?: string; category?: string }>;
+}
+
+export default async function Event({ searchParams }: EventPageProps) {
+  const params = await searchParams;
+  const initialQuery = params?.q || params?.query || "";
+  const initialCategory = params?.category || "all";
+
   const query = QueryString.stringify({
     populate: {
       image: {
@@ -36,26 +44,40 @@ export default async function Event() {
     },
   });
 
-  const res = await fetchWithToken(
-    `${process.env.STRAPI_API_URL}/events?${query}`
-  );
-  const resJson = await res.json();
-  const eventDetails: EventTypes[] = resJson.data;
-  if (!res || res.status !== 200) return <NotFound />;
+  let eventDetails: EventTypes[] = [];
+  try {
+    const res = await fetchWithToken(
+      `${process.env.STRAPI_API_URL}/events?${query}`
+    );
+    if (res && res.status === 200) {
+      const resJson = await res.json();
+      eventDetails = resJson.data || [];
+    }
+  } catch (err) {
+    console.error("Error loading events:", err);
+  }
 
   eventDetails.sort(
     (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
   );
+
   return (
     <section className="py-16 px-4 md:px-6 bg-gray-50">
       <div className="max-w-7xl mx-auto">
-        <h2 className="relative pb-2 text-2xl font-medium text-center mb-12">
-          <span className="text-red-600">Some Events</span> Organized By
-          CSITA-BMC
-          <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-60 h-[2px] bg-red-600" />
-        </h2>
+        <SectionHeading
+          highlight="Some Events"
+          title="Organized By CSITABMC"
+        />
 
-        <EventList events={eventDetails} itemsPerPage={16} />
+        {/* Section Divider */}
+        <hr className="border-t border-slate-200/90 my-8 sm:my-10" />
+
+        <EventList
+          events={eventDetails}
+          initialQuery={initialQuery}
+          initialCategory={initialCategory}
+          itemsPerPage={16}
+        />
       </div>
     </section>
   );

@@ -11,4 +11,5 @@ export type MemberTypes = {
   githubLink?: string;
   tags?: string;
   description?: string | null;
+  roleType?: "EXECUTIVE" | "ADVISOR" | "ALUMNI" | string;
 };

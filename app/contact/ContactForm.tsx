@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { MapPin, Phone, Mail, Send, MessageSquare } from "lucide-react";
+import { SectionHeading } from "@/components/custom/SectionHeading";
 
 const contactItems = [
   {
@@ -33,19 +34,12 @@ export default function ContactForm() {
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center space-y-5"
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-slate-600 shadow-sm">
-            <span className="h-2 w-2 rounded-full bg-[#2b3870] animate-pulse" />
-            <span>Get In Touch</span>
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
-            Let's build something together
-          </h1>
-          <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Have questions about our workshops, events, or community? We're here
-            to help and would love to hear from you.
-          </p>
+          <SectionHeading
+            highlight="Get In"
+            title="Touch"
+            subtitle="Have questions about our workshops, events, or community? We're here to help."
+          />
         </motion.div>
 
         <div className="grid gap-8 lg:grid-cols-2">

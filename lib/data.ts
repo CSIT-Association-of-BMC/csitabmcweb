@@ -1,4 +1,4 @@
-export const getLocalDate = (isoDate: Date) => {
+export const getLocalDate = (isoDate: Date | string) => {
   const date = new Date(isoDate);
 
   const normalDate = date.toLocaleDateString("en-US", {

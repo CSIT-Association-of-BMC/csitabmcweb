@@ -1,6 +1,7 @@
 export type EventTypes = {
   id: number;
   documentId: string;
+  slug?: string;
   title: string;
   description: string;
   startDate: Date;

@@ -6,6 +6,7 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { NavLinkPaths } from "@/app/data";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { isRouteActive } from "@/lib/utils";
 
 // ── Desktop dropdown ────────────────────────────────────────────────
 const DesktopDropdown = ({ item }: { item: (typeof NavLinkPaths)[0] }) => {
@@ -13,11 +14,8 @@ const DesktopDropdown = ({ item }: { item: (typeof NavLinkPaths)[0] }) => {
   const ref = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
-  const isAnyChildActive = item.content?.some(
-    (child) =>
-      pathname === child.path ||
-      pathname === "/" + child.path ||
-      (child.path && !child.path.startsWith("http") && pathname.startsWith(child.path))
+  const isAnyChildActive = item.content?.some((child) =>
+    isRouteActive(pathname, child.path)
   );
 
   useEffect(() => {
@@ -51,10 +49,7 @@ const DesktopDropdown = ({ item }: { item: (typeof NavLinkPaths)[0] }) => {
       {open && (
         <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-xl border border-slate-200 shadow-lg py-1 z-50">
           {item.content!.map((child, i) => {
-            const isActive =
-              pathname === child.path ||
-              pathname === "/" + child.path ||
-              (child.path && !child.path.startsWith("http") && pathname.startsWith(child.path));
+            const isActive = isRouteActive(pathname, child.path);
             return (
               <Link
                 key={i}
@@ -90,11 +85,8 @@ const MobileDropdown = ({
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
-  const isAnyChildActive = item.content?.some(
-    (child) =>
-      pathname === child.path ||
-      pathname === "/" + child.path ||
-      (child.path && !child.path.startsWith("http") && pathname.startsWith(child.path))
+  const isAnyChildActive = item.content?.some((child) =>
+    isRouteActive(pathname, child.path)
   );
 
   return (
@@ -113,10 +105,7 @@ const MobileDropdown = ({
       {open && (
         <div className="pb-2 pl-3 flex flex-col gap-1">
           {item.content!.map((child, i) => {
-            const isActive =
-              pathname === child.path ||
-              pathname === "/" + child.path ||
-              (child.path && !child.path.startsWith("http") && pathname.startsWith(child.path));
+            const isActive = isRouteActive(pathname, child.path);
             return (
               <Link
                 key={i}

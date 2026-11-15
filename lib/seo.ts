@@ -213,17 +213,20 @@ export function generateNoticeMetadata(notice: {
     description?: string;
     slug: string;
     publishedAt?: string;
+    image?: string;
 }): Metadata {
     const title = `${notice.title} - Notices | ${siteConfig.name}`;
     const description =
         notice.description ||
         `Official notice from ${siteConfig.name}: ${notice.title}`;
     const canonical = `${siteConfig.url}/notices/${notice.slug}`;
-    const ogImage = buildOgImageUrl({
-        title: notice.title,
-        subtitle: "Notice",
-        type: "notice",
-    });
+    const ogImage =
+        notice.image ||
+        buildOgImageUrl({
+            title: notice.title,
+            subtitle: "Notice",
+            type: "notice",
+        });
 
     return generatePageMetadata({
         title,
@@ -331,6 +334,45 @@ export function generatePastPaperMetadata(paper: {
       "BSc CSIT",
       "TU Question Paper",
       "CSIT Association BMC",
+    ],
+  });
+}
+
+// ── Per-blog detail page (e.g. /blogs/how-to-start-web-development) ───────────
+export function generateBlogMetadata(blog: {
+  title: string;
+  excerpt?: string;
+  slug: string;
+  image?: string;
+  publishedAt?: string | null;
+  authorName?: string;
+}): Metadata {
+  const title = `${blog.title} - ${siteConfig.name}`;
+  const description =
+    blog.excerpt ||
+    `Read ${blog.title} on CSIT Association of BMC. Explore tutorials, student tech insights, and community stories.`;
+  const canonical = `${siteConfig.url}/blogs/${blog.slug}`;
+
+  return generatePageMetadata({
+    title,
+    description,
+    canonical,
+    ogImage:
+      blog.image ||
+      buildOgImageUrl({
+        title: blog.title,
+        subtitle: blog.authorName ? `By ${blog.authorName}` : "CSITABMC Blog",
+        type: "page",
+      }),
+    ogType: "article",
+    publishedTime: blog.publishedAt || undefined,
+    authors: blog.authorName ? [blog.authorName] : undefined,
+    keywords: [
+      "CSIT Blog",
+      "CSIT Association Article",
+      "Tech Blog Butwal",
+      "BSc CSIT Insights",
+      "Student Tech Community Nepal",
     ],
   });
 }

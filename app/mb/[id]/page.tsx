@@ -1,11 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Facebook, Linkedin, Mail, Github } from "lucide-react";
-import { TeamDetails } from "@/app/data";
-import NotFound from "@/app/not-found";
-import QueryString from "qs";
 import { MemberTypes } from "@/types/Members";
-import { fetchWithToken } from "@/lib/fetch";
+import { getMemberProfile } from "@/lib/team";
 import Markdown from "react-markdown";
 import { generateMemberMetadata, siteConfig } from "@/lib/seo";
 
@@ -15,28 +13,13 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }) {
   const userId = (await params).id;
-  const query = QueryString.stringify(
-    {
-      populate: {
-        image: {
-          fields: ["url"],
-        },
-      },
-    },
-    { encodeValuesOnly: true }
-  );
-  const res = await fetchWithToken(
-    `${process.env.STRAPI_API_URL}/members/${userId}?${query}`
-  );
+  const profile = await getMemberProfile(userId);
 
-  if (!res || res.status !== 200) {
+  if (!profile) {
     return {
       title: `Member Not Found - ${siteConfig.name}`,
     };
   }
-
-  const resJson = await res.json();
-  const profile: MemberTypes = resJson.data;
 
   return generateMemberMetadata({
     fullName: profile.fullName,
@@ -53,22 +36,9 @@ export default async function Profile({
   params: Promise<{ id: string }>;
 }) {
   const userId = (await params).id;
-  const query = QueryString.stringify(
-    {
-      populate: {
-        image: {
-          fields: ["url"],
-        },
-      },
-    },
-    { encodeValuesOnly: true }
-  );
-  const res = await fetchWithToken(
-    `${process.env.STRAPI_API_URL}/members/${userId}?${query}`
-  );
-  if (!res || res.status !== 200) return <NotFound />;
-  const resJson = await res.json();
-  const profile: MemberTypes = resJson.data;
+  const profile = await getMemberProfile(userId);
+
+  if (!profile) return notFound();
 
   const firstName = profile.fullName.split(" ")[0] || profile.fullName;
   const socials = [
@@ -89,17 +59,16 @@ export default async function Profile({
     },
   ].filter((item) => Boolean(item.href));
 
-  const introCopy =
-    profile.description?.split("\n").find((line) => line.trim().length) ||
-    `Get to know ${profile.fullName}, ${profile.post} at CSIT Association of BMC.`;
-
-  const focusTags = profile.tags
-    ? profile.tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter(Boolean)
-        .slice(0, 3)
-    : [];
+  const badgeLabel =
+    profile.roleType === "ADVISOR" ||
+    profile.post?.toLowerCase().includes("advisor") ||
+    profile.post?.toLowerCase().includes("mentor")
+      ? "Advisor"
+      : profile.roleType === "ALUMNI" ||
+        profile.post?.toLowerCase().includes("alumni") ||
+        profile.post?.toLowerCase().includes("pass-out")
+      ? "Alumni Member"
+      : "Executive Member";
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-[#f0f4ff]">
@@ -123,22 +92,21 @@ export default async function Profile({
                         No image available
                       </div>
                     )}
+                    {/* Top-Right Member Role Badge Overlay */}
+                    <div className="absolute top-3.5 right-3.5 z-10 pointer-events-none">
+                      <span className="inline-flex items-center text-[11px] font-semibold text-[#2b3870] bg-white/95 backdrop-blur-xs border border-[#2b3870]/20 rounded-full px-3 py-1 shadow-xs">
+                        {badgeLabel}
+                      </span>
+                    </div>
                   </div>
-                  <div className="p-5 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-slate-500">
-                          {profile.post}
-                        </p>
-                        <p className="text-lg font-semibold text-slate-900">
-                          {profile.fullName}
-                        </p>
-                      </div>
-                      {profile.tags && (
-                        <span className="text-[11px] font-semibold text-[#2b3870] bg-[#2b3870]/10 rounded-full px-3 py-1">
-                          Executive Team
-                        </span>
-                      )}
+                  <div className="p-5 space-y-2.5">
+                    <div>
+                      <p className="text-xs uppercase tracking-wide text-slate-500 font-medium">
+                        {profile.post}
+                      </p>
+                      <h1 className="text-xl font-bold text-slate-900 leading-snug mt-0.5">
+                        {profile.fullName}
+                      </h1>
                     </div>
 
                     {profile.email ? (

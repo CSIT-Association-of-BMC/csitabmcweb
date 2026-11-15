@@ -1,6 +1,4 @@
-import DownloadCertificate from "./DownloadCertificate";
 import { format } from "date-fns";
-
 import NotFound from "@/app/not-found";
 import { fetchWithToken } from "@/lib/fetch";
 import { CertificateTypes } from "@/types/certificate";
@@ -8,12 +6,28 @@ import QueryString from "qs";
 import CertificateDisplay from "./CertificateDisplay";
 import CertificateVerification from "./CertificateVerification";
 import EventMentorDetails from "./EventMentorDetails";
+import { generatePageMetadata, siteConfig } from "@/lib/seo";
+import type { Metadata } from "next";
 
-const CertificateData = async ({
+export async function generateMetadata({
   params,
 }: {
   params: Promise<{ certificateId: string }>;
-}) => {
+}): Promise<Metadata> {
+  const { certificateId } = await params;
+  return generatePageMetadata({
+    title: `Certificate ${certificateId} - ${siteConfig.name}`,
+    description: `Official certificate verification for credential ID ${certificateId} issued by CSIT Association of BMC.`,
+    canonical: `${siteConfig.url}/certificate/${certificateId}`,
+    noIndex: true, // Verification query results should not pollute index
+  });
+}
+
+export default async function CertificateDetailPage({
+  params,
+}: {
+  params: Promise<{ certificateId: string }>;
+}) {
   const { certificateId } = await params;
   const query = QueryString.stringify({
     populate: {
@@ -32,29 +46,49 @@ const CertificateData = async ({
       },
     },
   });
+
   const res = await fetchWithToken(
-    `${process.env.STRAPI_API_URL}/certificates/${certificateId}?${query}`
+    `${process.env.STRAPI_API_URL}/certificates/${encodeURIComponent(certificateId)}?${query}`
   );
+
   if (!res || res.status !== 200) {
     return (
       <NotFound
         heading="Certificate Not Found"
-        message="The certificate you're looking for doesn't exist or has been moved."
+        message="The certificate you're looking for doesn't exist or could not be authenticated. Please double-check the Certificate ID."
       />
     );
   }
+
   const resJson = await res.json();
   const data: CertificateTypes = resJson.data;
 
+  // Resolve project completion eligibility across schema variants
+  const isEligible =
+    data.is_project_completed !== undefined
+      ? Boolean(data.is_project_completed)
+      : data.isProjectComplete !== undefined
+      ? Boolean(data.isProjectComplete)
+      : true;
+
+  const certId = data.certificateID || data.certificate_id || certificateId;
+  const recipient = data.fullName || data.full_name || "Recipient";
+  const course = data.event?.title || data.event_title || "CSIT Workshop";
+  const completionDate = data.event?.endDate
+    ? format(new Date(data.event.endDate), "MMMM d, yyyy")
+    : data.issued_at
+    ? format(new Date(data.issued_at), "MMMM d, yyyy")
+    : "Verified Date";
+
   const certificateDetails = {
-    id: data.certificateID,
-    recipientName: data.fullName,
-    courseName: data.event.title,
-    completionDate: format(new Date(data.event.endDate), "MMMM d, yyyy"),
+    id: certId,
+    recipientName: recipient,
+    courseName: course,
+    completionDate,
     signatures: [
       {
         name: "Mr. Sanchit Pandey",
-        title: "President ",
+        title: "President",
         institute: "CSIT Association of BMC",
         image: "/sanchit-sign.png",
       },
@@ -73,14 +107,14 @@ const CertificateData = async ({
     ],
   };
 
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=https://csitabmc.com/certificate/${certificateDetails.id}&size=200x200`;
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=https://csitabmc.com/certificate/${encodeURIComponent(certificateDetails.id)}&size=200x200`;
 
   return (
-    <div className="min-h-screen w-full mx-auto bg-gradient-to-br from-blue-50 via-white to-blue-50">
+    <div className="min-h-screen w-full mx-auto bg-slate-50/50 pb-16">
       <div className="container mx-auto">
         <CertificateVerification
           certificateDetails={certificateDetails}
-          isValid={data.isProjectComplete}
+          isValid={isEligible}
         />
 
         {/* Certificate Display */}
@@ -88,16 +122,16 @@ const CertificateData = async ({
           certificateDetails={certificateDetails}
           qrCodeUrl={qrCodeUrl}
           certificateData={data}
-          isValid={data.isProjectComplete}
+          isValid={isEligible}
         />
 
-        <EventMentorDetails
-          certificateDetails={certificateDetails}
-          eventData={data.event}
-        />
+        {data.event && (
+          <EventMentorDetails
+            certificateDetails={certificateDetails}
+            eventData={data.event}
+          />
+        )}
       </div>
     </div>
   );
-};
-
-export default CertificateData;
+}

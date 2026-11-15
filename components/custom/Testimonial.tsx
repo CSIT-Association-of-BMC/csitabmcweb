@@ -1,71 +1,89 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Quote } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TestimonialData } from "@/app/data";
+import { SectionHeading } from "@/components/custom/SectionHeading";
 
-interface Testimonial {
-  id: number;
-  name: string;
-  role: string;
-  content: string;
-  image: string;
+interface TestimonialProps {
+  showHeader?: boolean;
+  className?: string;
 }
 
-
-export default function Testimonial() {
+export default function Testimonial({
+  showHeader = true,
+  className = "",
+}: TestimonialProps) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveIndex((current) => (current + 1) % TestimonialData.length);
-    }, 5000); // Change slide every 5 seconds
+    }, 6000);
 
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 py-12">
-      <h2 className="relative text-2xl font-medium text-center mb-12 pb-2">Our 
-        <span className="text-red-600"> Testimonial </span>
-      <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-36 h-[2px] bg-red-600" />
-      </h2>
-      <div className="relative overflow-hidden">
+    <div className={cn("w-full max-w-4xl mx-auto", className)}>
+      {showHeader && (
+        <SectionHeading
+          highlight="Community"
+          title="Testimonials"
+          subtitle="Experiences and reflections from our community members and leaders."
+          className="mb-6 sm:mb-8"
+        />
+      )}
+
+      <div className="relative overflow-hidden py-1">
         <div
-          className="flex transition-transform duration-500 ease-in-out"
+          className="flex transition-transform duration-500 ease-out"
           style={{ transform: `translateX(-${activeIndex * 100}%)` }}
         >
           {TestimonialData.map((testimonial) => (
-            <div key={testimonial.id} className="w-full flex-shrink-0 px-4">
-              <Card className="p-6 md:p-8 flex flex-col items-center text-center">
-                <Avatar className="w-20 h-20 mb-4">
-                  <AvatarImage src={testimonial.image} alt={testimonial.Name} />
-                  <AvatarFallback>{testimonial.Name[0]}</AvatarFallback>
-                </Avatar>
-                <p className="text-lg md:text-xl line-clamp-5 mb-6 text-muted-foreground italic">
-                  "{testimonial.testimony}"
-                </p>
-                <div>
-                  <h3 className="font-semibold text-lg">{testimonial.Name}</h3>
-                  <p className="text-sm text-muted-foreground">
+            <div key={testimonial.id} className="w-full flex-shrink-0 px-2 sm:px-4">
+              <div className="rounded-xl bg-white border border-slate-200 p-6 sm:p-8 flex flex-col items-center text-center shadow-xs">
+                {/* Author Info (Top) */}
+                <div className="flex flex-col items-center mb-4 sm:mb-5">
+                  <Avatar className="w-14 h-14 mb-2.5 border-2 border-primary/20 shadow-xs">
+                    <AvatarImage src={testimonial.image} alt={testimonial.Name} className="object-cover" />
+                    <AvatarFallback className="bg-slate-100 text-slate-700 font-semibold text-xs">
+                      {testimonial.Name?.[0] || "T"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <h3 className="font-semibold text-base sm:text-lg text-slate-900">
+                    {testimonial.Name}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
                     {testimonial.Post}
                   </p>
                 </div>
-              </Card>
+
+                {/* Testimony Message in Center/Below (Height-stabilized) */}
+                <div className="min-h-[110px] sm:min-h-[130px] flex flex-col items-center justify-center max-w-2xl mx-auto w-full">
+                  <Quote className="w-6 h-6 text-primary/30 mb-2 shrink-0" />
+                  <p className="text-sm sm:text-base text-slate-700 italic leading-relaxed">
+                    &ldquo;{testimonial.testimony}&rdquo;
+                  </p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
-        <div className="flex justify-center mt-6 gap-2">
+
+        {/* Carousel Slide Indicators */}
+        <div className="flex justify-center items-center mt-6 gap-2">
           {TestimonialData.map((_, index) => (
             <button
               key={index}
               onClick={() => setActiveIndex(index)}
               className={cn(
-                "w-2 h-2 rounded-full transition-all",
-                activeIndex === index ? "bg-primary w-6" : "bg-primary/30"
+                "h-1.5 rounded-full transition-all duration-300",
+                activeIndex === index
+                  ? "bg-primary w-6"
+                  : "bg-slate-200 hover:bg-slate-300 w-1.5"
               )}
               aria-label={`Go to slide ${index + 1}`}
             />

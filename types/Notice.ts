@@ -1,6 +1,7 @@
 export interface NoticeTypes {
   id: string;
   documentId: string;
+  slug?: string;
   title: string;
   description: string;
   image: { url: string }[] | null;

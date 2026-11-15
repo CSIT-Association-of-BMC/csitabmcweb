@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { fetchWithToken } from "@/lib/fetch";
 import { EventTypes } from "@/types/events";
 import { EventCard } from "./EventCard";
+import { SectionHeading } from "@/components/custom/SectionHeading";
 
 export default async function HomeEvents() {
   const query = QueryString.stringify({
@@ -41,11 +42,10 @@ export default async function HomeEvents() {
     return (
       <section className="py-16 px-4 md:px-6 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <h2 className="relative pb-2 text-2xl font-medium text-center mb-12">
-            <span className="text-red-600">Latest Events</span> Organized By
-            CSITA-BMC
-            <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-60 h-[2px] bg-red-600" />
-          </h2>
+          <SectionHeading
+            highlight="Latest Events"
+            title="Organized By CSITABMC"
+          />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {latestEvents.map((event, index) => (

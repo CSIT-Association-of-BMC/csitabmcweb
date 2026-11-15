@@ -1,4 +1,4 @@
-import About from "./about/page";
+import { AboutSection } from "@/components/custom/AboutSection";
 import HomeEvents from "./events/components/HomeEvents";
 import HeroLander from "@/components/custom/HeroLander/HeroLander";
 import Testimonial from "@/components/custom/Testimonial";
@@ -32,11 +32,10 @@ export const metadata: Metadata = generatePageMetadata({
 export default function Home() {
   return (
     <>
-      {/* <Lander/> */}
       <HeroLander />
-      <About />
+      <AboutSection />
       <HomeEvents />
-      <Testimonial />
+      <Testimonial className="py-16 px-4 md:px-6" />
       <CommunityPartners />
     </>
   );

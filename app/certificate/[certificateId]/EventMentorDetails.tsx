@@ -27,6 +27,8 @@ export default function EventMentorDetails({
   certificateDetails,
   eventData,
 }: EventMentorDetailsProps) {
+  const mentors = eventData.mentors?.slice(0, 2) || [];
+
   return (
     <div className="pb-20 px-4 md:px-8 bg-slate-50">
       <div className="container mx-auto">
@@ -55,10 +57,6 @@ export default function EventMentorDetails({
             <h5 className="font-semibold text-slate-900 mb-3 text-lg">
               {certificateDetails.courseName}
             </h5>
-            {/* <p className="text-slate-700 text-sm leading-relaxed mb-4">
-              A professional development workshop focused on practical skills
-              and industry knowledge.
-            </p> */}
 
             <div className="space-y-3">
               <div className="flex items-center text-sm">
@@ -119,7 +117,7 @@ export default function EventMentorDetails({
             </div>
           </div>
 
-          {/* Faculty Card */}
+          {/* Expert Faculty Card: preserved with conditional state ready for routing */}
           <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
             <div className="flex items-center mb-4">
               <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
@@ -140,44 +138,55 @@ export default function EventMentorDetails({
               <h4 className="font-bold text-slate-900">Expert Faculty</h4>
             </div>
 
-            <div className="space-y-4">
-              {(eventData.mentors?.slice(0, 2) || []).map((mentor, index) => (
-                <div
-                  key={mentor.fullName}
-                  className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg"
-                >
-                  <div className="w-12 h-12 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
-                    {mentor.image?.url ? (
-                      <Image
-                        src={mentor.image.url}
-                        alt={mentor.fullName}
-                        width={48}
-                        height={48}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-slate-600 font-bold text-sm">
-                        {mentor.fullName
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
+            {mentors.length > 0 ? (
+              <div className="space-y-4">
+                {mentors.map((mentor, index) => (
+                  <div
+                    key={mentor.fullName}
+                    className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg"
+                  >
+                    <div className="w-12 h-12 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+                      {mentor.image?.url ? (
+                        <Image
+                          src={mentor.image.url}
+                          alt={mentor.fullName}
+                          width={48}
+                          height={48}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-slate-600 font-bold text-sm">
+                          {mentor.fullName
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h5 className="font-semibold text-slate-900 text-sm">
+                        {mentor.fullName}
+                      </h5>
+                      <p className="text-xs text-slate-600">{mentor.role}</p>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        {index === 0 ? "Lead" : "Expert"}
                       </span>
-                    )}
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h5 className="font-semibold text-slate-900 text-sm">
-                      {mentor.fullName}
-                    </h5>
-                    <p className="text-xs text-slate-600">{mentor.role}</p>
-                  </div>
-                  <div className="flex-shrink-0">
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {index === 0 ? "Lead" : "Expert"}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-6 px-4 text-center rounded-lg bg-slate-50 border border-dashed border-slate-200">
+                <p className="text-sm font-medium text-slate-600">
+                  Faculty details pending
+                </p>
+                <p className="text-xs text-slate-400 mt-1">
+                  Mentor profiles will appear here once assigned to this event.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

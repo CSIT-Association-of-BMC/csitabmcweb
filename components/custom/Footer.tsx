@@ -60,24 +60,36 @@ export default function Footer() {
             </div>
           </div>
           <div className="flex flex-wrap gap-3 text-sm text-slate-100/80">
-            <a
+            <Link
               href="/about"
               className="rounded-lg border border-white/20 px-4 py-2 hover:bg-white/10 transition-colors"
             >
               About
-            </a>
-            <a
+            </Link>
+            <Link
               href="/events"
               className="rounded-lg border border-white/20 px-4 py-2 hover:bg-white/10 transition-colors"
             >
               Events
-            </a>
-            <a
+            </Link>
+            <Link
+              href="/blogs"
+              className="rounded-lg border border-white/20 px-4 py-2 hover:bg-white/10 transition-colors"
+            >
+              Blogs
+            </Link>
+            <Link
               href="/contact"
               className="rounded-lg border border-white/20 px-4 py-2 hover:bg-white/10 transition-colors"
             >
               Contact
-            </a>
+            </Link>
+            <Link
+              href="/certificate"
+              className="rounded-lg border border-white/20 px-4 py-2 hover:bg-white/10 transition-colors"
+            >
+              Certificate Verification
+            </Link>
           </div>
         </div>
 

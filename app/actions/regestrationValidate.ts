@@ -7,6 +7,7 @@ export const getEvent = async () => {
     const response = await fetchWithToken(
       `${process.env.STRAPI_API_URL}/the-event-banner`
     );
+    if (!response) return null;
     const resJson = await response.json();
     return resJson.data;
   } catch (error) {

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SEMESTER_DEFINITIONS } from "@/lib/study-materials";
 import { generatePageMetadata, buildOgImageUrl, siteConfig } from "@/lib/seo";
 import { generateBreadcrumbSchema } from "@/lib/structured-data";
+import { SectionHeading } from "@/components/custom/SectionHeading";
 
 export const metadata: Metadata = generatePageMetadata({
   title: "Past Year Papers",
@@ -36,21 +37,20 @@ export default function SemesterExamPage() {
   ]);
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="bg-slate-50 py-12 md:py-16">
       {/* JSON-LD Schema */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
-        {/* Page Title */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-slate-900">Past Year Papers</h1>
-          <p className="mt-1.5 text-sm text-slate-500">
-            Select a semester to browse exam papers and model sets.
-          </p>
-        </div>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        {/* Section Heading */}
+        <SectionHeading
+          highlight="Past Year"
+          title="Papers"
+          subtitle="Select a semester to browse official TU board exam question papers and model sets."
+        />
 
         {/* Semesters Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">

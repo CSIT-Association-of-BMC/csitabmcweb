@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { ReactNode } from "react";
+import { isRouteActive } from "@/lib/utils";
 
 interface NavLinkProps {
   onClick?: () => void;
@@ -20,7 +21,7 @@ const NavLink = ({
 }: NavLinkProps) => {
   const pathname = usePathname();
 
-  const isActive = pathname === href || pathname === "/" + href;
+  const isActive = isRouteActive(pathname, href);
   const combinedClassName = isActive
     ? `${className} ${activeClassName}`
     : className;

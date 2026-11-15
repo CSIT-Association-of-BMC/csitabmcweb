@@ -2,8 +2,13 @@
 
 import { Partnerdata } from "@/app/data";
 import { useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
 
-export default function Component() {
+interface CommunityPartnersProps {
+  className?: string;
+}
+
+export default function Component({ className = "" }: CommunityPartnersProps) {
   const marqueeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,7 +37,7 @@ export default function Component() {
   }, []);
 
   return (
-    <div className="w-full max-w-7xl mx-auto py-12 overflow-hidden">
+    <div className={cn("w-full max-w-7xl mx-auto py-8 sm:py-10 overflow-hidden", className)}>
        <h2 className="relative text-2xl font-medium text-center mb-12 pb-2">We Have 
         <span className="text-red-600"> Worked With </span>
       <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-36 h-[2px] bg-red-600" />
@@ -52,7 +57,7 @@ export default function Component() {
               <div key={index} className="flex-shrink-0 mx-16">
                 <img
                   src={logo.Image}
-                  alt="CSIT - BMC Partner"
+                  alt="CSITABMC Partner"
                   className="h-20 w-auto object-contain"
                 />
               </div>

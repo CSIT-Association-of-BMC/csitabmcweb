@@ -8,6 +8,7 @@ import Markdown from "react-markdown";
 import { EventTypes } from "@/types/events";
 import { cn } from "@/lib/utils";
 import { startLoading } from "@/components/custom/LoadingIndicator";
+import { getEventSlug } from "@/lib/slugs";
 
 const MONTHS = [
   "Jan",
@@ -89,7 +90,7 @@ export function EventCard({ event }: { event: EventTypes }) {
 
   const formattedDate = formatDate(event.startDate, event.endDate);
   const formattedTime = formatTime(event.startTime, event.endTime);
-  const eventUrl = `/events/${event.documentId}`;
+  const eventUrl = `/events/${getEventSlug(event)}`;
   const imageUrl = event.image?.[0]?.url;
   const isVirtual = event.location === "Google Meet" || event.location?.toLowerCase().includes("online");
 
