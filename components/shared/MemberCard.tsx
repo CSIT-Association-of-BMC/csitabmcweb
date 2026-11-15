@@ -1,6 +1,10 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { slugify } from "@/lib/slugs";
+import { resolveImageUrl } from "@/lib/images";
 
 export interface MemberCardData {
   id?: string | number;
@@ -17,43 +21,88 @@ export interface MemberCardData {
   facebookLink?: string;
   linkedLink?: string;
   githubLink?: string;
+  tenureSlug?: string;
+  isAlumni?: boolean;
 }
 
 interface MemberCardProps {
   member: MemberCardData;
   className?: string;
+  tenureSlug?: string;
+  isAlumni?: boolean;
 }
 
-export function MemberCard({ member, className = "" }: MemberCardProps) {
-  const imageUrl =
-    typeof member.image === "string"
-      ? member.image
-      : member.image?.url || "/team.jpeg";
+export function MemberCard({
+  member,
+  className = "",
+  tenureSlug,
+  isAlumni,
+}: MemberCardProps) {
+  const initialImage =
+    resolveImageUrl(member.image, "/team.jpeg") || "/team.jpeg";
+  const [imgSrc, setImgSrc] = useState<string>(initialImage);
 
-  const profileHref = member.memberId
-    ? `/mb/${member.memberId}`
-    : member.slug
-    ? `/mb/${member.slug}`
-    : member.id
-    ? `/mb/${member.id}`
-    : null;
+  const memberSlug =
+    member.slug ||
+    (member.fullName ? slugify(member.fullName) : null) ||
+    String(member.memberId || member.id || "");
 
-  const subtitle =
-    member.passOutYear != null && member.passOutYear !== ""
-      ? String(member.passOutYear)
-      : member.post || member.role || "";
+  let profileHref: string | null = null;
+  if (memberSlug) {
+    if (isAlumni) {
+      // Explicit alumni context (e.g. from /about/alumni directory)
+      profileHref = `/al/${encodeURIComponent(memberSlug)}`;
+    } else if (tenureSlug || member.tenureSlug) {
+      // Explicit tenure context (e.g. from /about/our-team tenure view)
+      const activeTenure = tenureSlug || member.tenureSlug;
+      profileHref = `/mb/${encodeURIComponent(activeTenure!)}/${encodeURIComponent(memberSlug)}`;
+    } else if (
+      Boolean(member.isAlumni) ||
+      (member as any).roleType === "ALUMNI" ||
+      Boolean(member.post?.toLowerCase().includes("alumni")) ||
+      Boolean(member.role?.toLowerCase().includes("alumni"))
+    ) {
+      profileHref = `/al/${encodeURIComponent(memberSlug)}`;
+    } else {
+      profileHref = `/mb/${encodeURIComponent(memberSlug)}`;
+    }
+  }
+
+  const subtitle = (() => {
+    if (isAlumni) {
+      const year =
+        member.passOutYear ||
+        (typeof member.post === "string" ? member.post.match(/\d{4}/)?.[0] : null);
+      if (year) {
+        const cleanYear = String(year)
+          .replace(/^batch of\s*/i, "")
+          .replace(/^pass-?out\s*/i, "")
+          .replace(/^passed year:\s*/i, "")
+          .replace(/^passed out:\s*/i, "")
+          .trim();
+        return `Passed Year: ${cleanYear}`;
+      }
+      return "Alumnus Member";
+    }
+    return member.post || member.role || "";
+  })();
+
+  const isExternalImage =
+    imgSrc.startsWith("http://") || imgSrc.startsWith("https://");
 
   const cardContent = (
     <div
-      className={`group bg-white shadow-sm rounded-lg border border-slate-200/70 hover:-translate-y-1 hover:shadow-md transition-all duration-300 p-4 h-full flex flex-col justify-between ${className}`}
+      className={`group bg-white shadow-xs rounded-lg border border-slate-200/70 hover:-translate-y-1 hover:shadow-md transition-all duration-300 p-4 h-full flex flex-col justify-between ${className}`}
     >
       <div className="relative w-full aspect-square rounded-md overflow-hidden bg-slate-100 shrink-0">
         <Image
-          src={imageUrl}
+          src={imgSrc}
           alt={member.fullName}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
           className="rounded-md aspect-square object-cover"
+          onError={() => setImgSrc("/team.jpeg")}
+          unoptimized={isExternalImage}
         />
       </div>
 
@@ -65,10 +114,7 @@ export function MemberCard({ member, className = "" }: MemberCardProps) {
         </div>
         <div className="min-h-[1.25rem] sm:min-h-[1.5rem] flex items-center justify-center mt-1">
           {subtitle && (
-            <p
-              className="text-gray-600 text-xs sm:text-sm line-clamp-1"
-              title={subtitle}
-            >
+            <p className="text-xs sm:text-sm font-medium text-slate-500 line-clamp-1">
               {subtitle}
             </p>
           )}
@@ -79,7 +125,10 @@ export function MemberCard({ member, className = "" }: MemberCardProps) {
 
   if (profileHref) {
     return (
-      <Link href={profileHref} className="block h-full">
+      <Link
+        href={profileHref}
+        className="block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b3870] rounded-lg"
+      >
         {cardContent}
       </Link>
     );
@@ -87,5 +136,3 @@ export function MemberCard({ member, className = "" }: MemberCardProps) {
 
   return cardContent;
 }
-
-export default MemberCard;

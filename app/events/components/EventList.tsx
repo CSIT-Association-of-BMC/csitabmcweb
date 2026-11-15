@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search, X, SearchX, ChevronDown } from "lucide-react";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { useEvents } from "@/hooks/useEvents";
 
 interface EventListProps {
   events: EventTypes[];
@@ -26,22 +27,30 @@ export function EventList({
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [searchQuery, setSearchQuery] = useState(initialQuery);
 
+  const { data: dynamicEvents, isLoading } = useEvents({
+    search: searchQuery || undefined,
+    category: selectedCategory !== "all" ? selectedCategory : undefined,
+    initialData: events,
+  });
+
+  const sourceEvents = dynamicEvents.length > 0 ? dynamicEvents : events;
+
   // Extract unique categories dynamically from event records
   const availableCategories = useMemo(() => {
     const set = new Set<string>();
-    events.forEach((e) => {
+    sourceEvents.forEach((e) => {
       if (e.category) {
         set.add(e.category.trim());
       }
     });
     return Array.from(set);
-  }, [events]);
+  }, [sourceEvents]);
 
   // Filter events based on active category and search query (title-based only)
   const filteredEvents = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
 
-    return events.filter((event) => {
+    return sourceEvents.filter((event) => {
       // Category check
       const matchesCategory =
         selectedCategory === "all" ||
@@ -54,7 +63,7 @@ export function EventList({
 
       return Boolean(event.title?.toLowerCase().includes(q));
     });
-  }, [events, selectedCategory, searchQuery]);
+  }, [sourceEvents, selectedCategory, searchQuery]);
 
   // Handle category tab change
   const handleCategoryChange = (val: string) => {

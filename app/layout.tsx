@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { siteConfig, buildOgImageUrl } from "@/lib/seo";
 import { OrganizationJsonLd, WebsiteJsonLd } from "@/lib/structured-data";
 import MicrosoftClarity from "@/components/shared/MicrosoftClarity";
+import { QueryProvider } from "@/providers/QueryProvider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -99,7 +100,9 @@ export default function RootLayout({
         </nav>
         <Toaster />
         <div className="bg-white h-[72px]" />
-        {children}
+        <QueryProvider>
+          {children}
+        </QueryProvider>
         <Footer />
       </body>
     </html>

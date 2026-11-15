@@ -364,3 +364,48 @@ export function BlogJsonLd(
 ) {
   return <JsonLd data={generateBlogPostingSchema(props)} />;
 }
+
+export interface PersonSchema {
+  "@context": "https://schema.org";
+  "@type": "Person";
+  name: string;
+  jobTitle?: string;
+  worksFor?: {
+    "@type": "Organization";
+    name: string;
+    url: string;
+  };
+  image?: string;
+  url: string;
+  sameAs?: string[];
+  description?: string;
+}
+
+export function generatePersonSchema(props: {
+  name: string;
+  jobTitle?: string;
+  image?: string;
+  url: string;
+  sameAs?: string[];
+  description?: string;
+}): PersonSchema {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: props.name,
+    jobTitle: props.jobTitle,
+    worksFor: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+    image: props.image || siteConfig.defaultOgImage,
+    url: props.url,
+    sameAs: props.sameAs?.filter(Boolean),
+    description: props.description,
+  };
+}
+
+export function PersonJsonLd(props: Parameters<typeof generatePersonSchema>[0]) {
+  return <JsonLd data={generatePersonSchema(props)} />;
+}

@@ -3,6 +3,7 @@ import { Calendar, Clock, MapPin, Video } from "lucide-react";
 import type { EventTypes } from "@/types/events";
 import { EventPoster } from "./EventPoster";
 import { Container } from "@/components/shared/Container";
+import { resolveImageUrl } from "@/lib/images";
 
 const MONTHS = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -61,7 +62,7 @@ export function EventHero({ event }: EventHeroProps) {
   const isVirtual =
     event.location === "Google Meet" ||
     event.location?.toLowerCase().includes("online");
-  const posterUrl = event.image?.[0]?.url;
+  const posterUrl = resolveImageUrl(event.image) || undefined;
 
   // Derive a concise introductory excerpt that hooks visitors without repeating the full markdown body
   const summary = event.description

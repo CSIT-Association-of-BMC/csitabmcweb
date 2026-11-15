@@ -144,11 +144,13 @@ export default async function SubjectDetailPage({ params }: SubjectPageProps) {
           </div>
         </div>
 
-        {/* Papers Grid or Empty State */}
+        {/* Papers Grid or Empty State with TanStack Query Hydration */}
         <SubjectPapersClient
           papers={subjectPapers}
           subjectName={subject.name}
           subjectCode={subject.code}
+          semesterNumber={semester.number}
+          subjectSlug={subject.slug}
         />
       </div>
     </main>

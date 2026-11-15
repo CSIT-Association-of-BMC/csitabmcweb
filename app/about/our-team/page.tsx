@@ -29,7 +29,7 @@ export default async function OurTeamPage() {
   const tenures = await fetchTenuresWithMembers();
 
   return (
-    <div className="min-h-screen bg-gray-50/50 py-10 md:py-14">
+    <div className="bg-gray-50/50 py-8 sm:py-10">
       <Container as="main">
         <SectionHeading
           highlight="Our"
@@ -38,7 +38,7 @@ export default async function OurTeamPage() {
         />
 
         {/* Section Divider */}
-        <hr className="border-t border-slate-200/90 my-8 sm:my-10" />
+        <hr className="border-t border-slate-200/90 my-6 sm:my-8" />
 
         {/* Synchronized Tenure & Member View */}
         <TeamView tenures={tenures} />

@@ -2,6 +2,7 @@
  * CSIT Study Materials & Past Papers Domain Utilities
  * CSIT Association of Butwal Multiple Campus
  */
+import { getPastPapers } from "@/lib/api/study-materials";
 
 export interface PastPaperItem {
   id: number;
@@ -109,7 +110,7 @@ export function getSemesterByNumber(number: number): SemesterDefinition | undefi
 export const SUBJECT_CODE_MAP: Record<string, string> = {
   // First Semester
   CSC101: "Computer Fundamentals & Applications",
-  CSC114: "Computer Fundamentals & Applications",
+  CSC114: "Introduction to Information Technology",
   CSC102: "C Programming",
   CSC115: "C Programming",
   CSC103: "Digital Logic",
@@ -176,7 +177,7 @@ export const SUBJECT_CODE_MAP: Record<string, string> = {
 // ─── Primary Semester Curriculum Subjects ────────────────────────────────────
 
 export const SEMESTER_CURRICULUM_CODES: Record<number, string[]> = {
-  1: ["CSC101", "CSC102", "CSC103", "MTH117", "PHY118"],
+  1: ["CSC114", "CSC115", "CSC116", "MTH117", "PHY118"],
   2: ["CSC165", "CSC166", "CSC167", "MTH168", "STA169"],
   3: ["CSC211", "CSC212", "CSC213", "CSC214", "STA215"],
   4: ["CSC262", "CSC263", "CSC264", "CSC265", "CSC266"],
@@ -221,20 +222,35 @@ export function doesPaperMatchSubject(
     return true;
   }
 
-  // 2. Slug comparison (matches aliases like CSC101 & CSC114)
-  const paperSlug = subjectToSlug(paperCode);
-  if (paperSlug && paperSlug === subject.slug) {
+  // 2. Direct name match (case-insensitive)
+  if (
+    paper.subject_name &&
+    subject.name &&
+    paper.subject_name.toLowerCase().trim() === subject.name.toLowerCase().trim()
+  ) {
     return true;
   }
 
-  // 3. Normalized subject name match
+  // 3. Slug comparison
+  const paperSlug = subjectToSlug(paperCode);
+  if (paperSlug && (paperSlug === subject.slug || subject.slug.includes(paperSlug) || paperSlug.includes(subject.slug))) {
+    return true;
+  }
+
+  // 4. Normalized subject name match
   const paperNameSlug = generateSlug(
-    findSubjectName(paperCode).replace(/\(.*?\)/g, "").trim()
+    (paper.subject_name || findSubjectName(paperCode)).replace(/\(.*?\)/g, "").trim()
   );
   const targetNameSlug = generateSlug(
     subject.name.replace(/\(.*?\)/g, "").trim()
   );
-  if (paperNameSlug && targetNameSlug && paperNameSlug === targetNameSlug) {
+  if (
+    paperNameSlug &&
+    targetNameSlug &&
+    (paperNameSlug === targetNameSlug ||
+      targetNameSlug.includes(paperNameSlug) ||
+      paperNameSlug.includes(targetNameSlug))
+  ) {
     return true;
   }
 
@@ -290,246 +306,9 @@ export function getDriveEmbedUrl(driveLink: string): string | null {
   return null;
 }
 
-// ─── Curated Past Papers Data (Production fallback) ──────────────────────────
-
-export const FALLBACK_PAPERS: PastPaperItem[] = [
-  // Semester 1
-  {
-    id: 1,
-    subject_code: "CSC101",
-    subject_name: "Computer Fundamentals & Applications",
-    semester: 1,
-    model_set: false,
-    is_old_course: false,
-    exam_year: 2024,
-    drive_link: "https://drive.google.com/file/d/1672-yFZ49XqYhnMHXKt3rWf2IBqxw7xm/view?usp=sharing",
-    slug: "csc101-2024-board-exam",
-  },
-  {
-    id: 2,
-    subject_code: "CSC101",
-    subject_name: "Computer Fundamentals & Applications",
-    semester: 1,
-    model_set: true,
-    is_old_course: false,
-    exam_year: 2024,
-    drive_link: "https://drive.google.com/file/d/1672-yFZ49XqYhnMHXKt3rWf2IBqxw7xm/view?usp=sharing",
-    slug: "csc101-2024-model-set",
-  },
-  {
-    id: 3,
-    subject_code: "CSC102",
-    subject_name: "C Programming",
-    semester: 1,
-    model_set: false,
-    is_old_course: false,
-    exam_year: 2024,
-    drive_link: "https://drive.google.com/file/d/1672-yFZ49XqYhnMHXKt3rWf2IBqxw7xm/view?usp=sharing",
-    slug: "csc102-2024-board-exam",
-  },
-  {
-    id: 4,
-    subject_code: "CSC102",
-    subject_name: "C Programming",
-    semester: 1,
-    model_set: false,
-    is_old_course: false,
-    exam_year: 2023,
-    drive_link: "https://drive.google.com/file/d/1672-yFZ49XqYhnMHXKt3rWf2IBqxw7xm/view?usp=sharing",
-    slug: "csc102-2023-board-exam",
-  },
-  {
-    id: 5,
-    subject_code: "CSC103",
-    subject_name: "Digital Logic",
-    semester: 1,
-    model_set: false,
-    is_old_course: false,
-    exam_year: 2024,
-    drive_link: "https://drive.google.com/file/d/1672-yFZ49XqYhnMHXKt3rWf2IBqxw7xm/view?usp=sharing",
-    slug: "csc103-2024-board-exam",
-  },
-
-  // Semester 2
-  {
-    id: 6,
-    subject_code: "CSC166",
-    subject_name: "Object Oriented Programming (C++)",
-    semester: 2,
-    model_set: false,
-    is_old_course: false,
-    exam_year: 2024,
-    drive_link: "https://drive.google.com/file/d/1672-yFZ49XqYhnMHXKt3rWf2IBqxw7xm/view?usp=sharing",
-    slug: "csc166-2024-board-exam",
-  },
-  {
-    id: 7,
-    subject_code: "CSC167",
-    subject_name: "Microprocessor",
-    semester: 2,
-    model_set: false,
-    is_old_course: false,
-    exam_year: 2023,
-    drive_link: "https://drive.google.com/file/d/1672-yFZ49XqYhnMHXKt3rWf2IBqxw7xm/view?usp=sharing",
-    slug: "csc167-2023-board-exam",
-  },
-
-  // Semester 3
-  {
-    id: 8,
-    subject_code: "CSC211",
-    subject_name: "Data Structures & Algorithms",
-    semester: 3,
-    model_set: false,
-    is_old_course: false,
-    exam_year: 2024,
-    drive_link: "https://drive.google.com/file/d/1672-yFZ49XqYhnMHXKt3rWf2IBqxw7xm/view?usp=sharing",
-    slug: "csc211-2024-board-exam",
-  },
-  {
-    id: 9,
-    subject_code: "CSC213",
-    subject_name: "Computer Architecture",
-    semester: 3,
-    model_set: true,
-    is_old_course: false,
-    exam_year: 2024,
-    drive_link: "https://drive.google.com/file/d/1672-yFZ49XqYhnMHXKt3rWf2IBqxw7xm/view?usp=sharing",
-    slug: "csc213-2024-model-set",
-  },
-
-  // Semester 4
-  {
-    id: 10,
-    subject_code: "CSC264",
-    subject_name: "Operating Systems",
-    semester: 4,
-    model_set: false,
-    is_old_course: false,
-    exam_year: 2024,
-    drive_link: "https://drive.google.com/file/d/1672-yFZ49XqYhnMHXKt3rWf2IBqxw7xm/view?usp=sharing",
-    slug: "csc264-2024-board-exam",
-  },
-  {
-    id: 11,
-    subject_code: "CSC265",
-    subject_name: "Database Management System",
-    semester: 4,
-    model_set: false,
-    is_old_course: false,
-    exam_year: 2023,
-    drive_link: "https://drive.google.com/file/d/1672-yFZ49XqYhnMHXKt3rWf2IBqxw7xm/view?usp=sharing",
-    slug: "csc265-2023-board-exam",
-  },
-
-  // Semester 5
-  {
-    id: 12,
-    subject_code: "CSC325",
-    subject_name: "Design and Analysis of Algorithms",
-    semester: 5,
-    model_set: false,
-    is_old_course: false,
-    exam_year: 2024,
-    drive_link: "https://drive.google.com/file/d/1672-yFZ49XqYhnMHXKt3rWf2IBqxw7xm/view?usp=sharing",
-    slug: "csc325-2024-board-exam",
-  },
-
-  // Semester 6
-  {
-    id: 13,
-    subject_code: "CSC375",
-    subject_name: "Software Engineering",
-    semester: 6,
-    model_set: false,
-    is_old_course: false,
-    exam_year: 2024,
-    drive_link: "https://drive.google.com/file/d/1672-yFZ49XqYhnMHXKt3rWf2IBqxw7xm/view?usp=sharing",
-    slug: "csc375-2024-board-exam",
-  },
-
-  // Semester 7
-  {
-    id: 14,
-    subject_code: "CSC401",
-    subject_name: "Artificial Intelligence",
-    semester: 7,
-    model_set: false,
-    is_old_course: false,
-    exam_year: 2024,
-    drive_link: "https://drive.google.com/file/d/1672-yFZ49XqYhnMHXKt3rWf2IBqxw7xm/view?usp=sharing",
-    slug: "csc401-2024-board-exam",
-  },
-
-  // Semester 8
-  {
-    id: 15,
-    subject_code: "CSC451",
-    subject_name: "Distributed Systems",
-    semester: 8,
-    model_set: false,
-    is_old_course: false,
-    exam_year: 2024,
-    drive_link: "https://drive.google.com/file/d/1672-yFZ49XqYhnMHXKt3rWf2IBqxw7xm/view?usp=sharing",
-    slug: "csc451-2024-board-exam",
-  },
-];
-
-// ─── Backend API Client with Graceful Fallback ───────────────────────────────
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  process.env.API_URL ||
-  "http://127.0.0.1:8000";
+// ─── Pure Backend API Fetcher ────────────────────────────────────────────────
 
 export async function fetchPastPapersBySemester(semester: number): Promise<PastPaperItem[]> {
-  const fallback = FALLBACK_PAPERS.filter((p) => p.semester === semester);
-  try {
-    const res = await fetch(`${API_BASE_URL}/api/v1/past-papers/?semester=${semester}&page_size=100`, {
-      headers: {
-        Accept: "application/json",
-      },
-      next: { revalidate: 60 },
-    });
-
-    if (!res.ok) {
-      return fallback;
-    }
-
-    const data = await res.json();
-    const rawResults: any[] = Array.isArray(data) ? data : data.results || [];
-
-    if (rawResults.length === 0) {
-      return fallback;
-    }
-
-    const liveItems: PastPaperItem[] = rawResults.map((item) => {
-      const code = item.subject_name?.trim().toUpperCase() || "UNKNOWN";
-      return {
-        id: item.id,
-        subject_code: code,
-        subject_name: findSubjectName(code),
-        semester: item.semester,
-        model_set: Boolean(item.model_set),
-        is_old_course: Boolean(item.is_old_course),
-        exam_year: item.exam_year,
-        drive_link: item.drive_link || "",
-        slug: item.slug || `${code.toLowerCase()}-${item.exam_year}`,
-        created_at: item.created_at,
-        updated_at: item.updated_at,
-      };
-    });
-
-    // Complement with fallback papers for subjects that have 0 live records
-    const liveSubjectSlugs = new Set(
-      liveItems.map((p) => subjectToSlug(p.subject_code))
-    );
-    const supplementary = fallback.filter(
-      (p) => !liveSubjectSlugs.has(subjectToSlug(p.subject_code))
-    );
-
-    return [...liveItems, ...supplementary];
-  } catch {
-    return fallback;
-  }
+  const { papers } = await getPastPapers({ semester });
+  return papers;
 }

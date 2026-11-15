@@ -8,6 +8,7 @@ import { EventMarkdown } from "./EventMarkdown";
 import { EventSidebar } from "./EventSidebar";
 import { EventSpeakers } from "./EventSpeakers";
 import { Container } from "@/components/shared/Container";
+import { resolveImageUrl } from "@/lib/images";
 
 interface EventPageProps {
   params: Promise<{ slug: string }>;
@@ -44,7 +45,7 @@ export async function generateMetadata({
         ? event.startDate.toISOString()
         : event.startDate,
     location: event.location,
-    image: event.image?.[0]?.url,
+    image: resolveImageUrl(event.image) || undefined,
   });
 }
 
@@ -65,7 +66,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
   const posterUrl = event.image?.[0]?.url;
 
   return (
-    <article className="min-h-screen bg-slate-50/50">
+    <article className="bg-slate-50/50 pb-12">
       {/* Schema.org Structured Data */}
       <EventJsonLd
         name={event.title}

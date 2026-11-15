@@ -1,7 +1,4 @@
-import QueryString from "qs";
-import { fetchBackendResource } from "@/lib/fetch";
-import { fallbackEvents } from "@/data/events/fallback";
-import { EventTypes } from "@/types/events";
+import { getEvents } from "@/lib/api/events";
 import { EventList } from "./components/EventList";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { Container } from "@/components/shared/Container";
@@ -38,35 +35,17 @@ export default async function Event({ searchParams }: EventPageProps) {
   const initialQuery = params?.q || params?.query || "";
   const initialCategory = params?.category || "all";
 
-  const query = QueryString.stringify({
-    populate: {
-      image: {
-        fields: ["url"],
-      },
-    },
+  const { events } = await getEvents({
+    search: initialQuery || undefined,
+    category: initialCategory !== "all" ? initialCategory : undefined,
   });
 
-  let eventDetails: EventTypes[] = [];
-  try {
-    const result = await fetchBackendResource<EventTypes[]>(
-      `${process.env.STRAPI_API_URL}/events?${query}`
-    );
-    if (!result.isAvailabilityFailure && result.data) {
-      eventDetails = result.data;
-    } else if (result.isAvailabilityFailure) {
-      eventDetails = [...fallbackEvents];
-    }
-  } catch (err) {
-    console.error("Error loading events:", err);
-    eventDetails = [...fallbackEvents];
-  }
-
-  eventDetails.sort(
+  const sortedEvents = [...events].sort(
     (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
   );
 
   return (
-    <section className="w-full py-16 bg-gray-50">
+    <section className="w-full py-8 sm:py-12 bg-gray-50">
       <Container>
         <SectionHeading
           highlight="Some Events"
@@ -74,10 +53,10 @@ export default async function Event({ searchParams }: EventPageProps) {
         />
 
         {/* Section Divider */}
-        <hr className="border-t border-slate-200/90 my-8 sm:my-10" />
+        <hr className="border-t border-slate-200/90 my-6 sm:my-8" />
 
         <EventList
-          events={eventDetails}
+          events={sortedEvents}
           initialQuery={initialQuery}
           initialCategory={initialCategory}
           itemsPerPage={16}

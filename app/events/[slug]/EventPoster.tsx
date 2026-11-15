@@ -12,8 +12,9 @@ interface EventPosterProps {
 
 export function EventPoster({ imageUrl, title }: EventPosterProps) {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
-  if (!imageUrl) {
+  if (!imageUrl || hasError) {
     return (
       <div className="w-full max-w-[340px] sm:max-w-[380px] mx-auto rounded-2xl bg-white/10 border border-white/20 p-8 flex flex-col items-center justify-center text-center text-white/70 min-h-[300px]">
         <span className="text-sm font-medium">No poster available</span>
@@ -46,6 +47,8 @@ export function EventPoster({ imageUrl, title }: EventPosterProps) {
             priority
             sizes="(max-width: 768px) 90vw, 400px"
             className="w-auto h-auto max-h-[440px] max-w-full object-contain object-center rounded-xl sm:rounded-2xl block mx-auto transition-transform duration-200 group-hover:scale-[1.01]"
+            onError={() => setHasError(true)}
+            unoptimized={imageUrl.startsWith("http://") || imageUrl.startsWith("https://")}
           />
 
           {/* Top-right expand button */}

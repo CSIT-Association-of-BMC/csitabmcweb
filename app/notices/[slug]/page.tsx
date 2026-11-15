@@ -9,6 +9,7 @@ import { NoticeDetailPreview } from "./NoticeDetailPreview";
 import { NoticeInfo } from "./NoticeInfo";
 import { RelatedNotices } from "./RelatedNotices";
 import { Container } from "@/components/shared/Container";
+import { resolveImageUrl } from "@/lib/images";
 
 interface NoticePageProps {
   params: Promise<{ slug: string }>;
@@ -38,7 +39,7 @@ export async function generateMetadata({
     description: rawDescription.substring(0, 160) || `Notice issued by ${siteConfig.name}`,
     slug: canonicalSlug || slug,
     publishedAt: notice.publishedAt ? new Date(notice.publishedAt).toISOString() : undefined,
-    image: notice.image?.[0]?.url,
+    image: resolveImageUrl(notice.image) || undefined,
   });
 }
 
@@ -56,13 +57,13 @@ export default async function NoticeDetailPage({ params }: NoticePageProps) {
   }
 
   const canonicalUrl = `${siteConfig.url}/notices/${canonicalSlug || slug}`;
-  const documentUrl = notice.image?.[0]?.url;
+  const documentUrl = resolveImageUrl(notice.image) || undefined;
 
   // Fetch up to 3 contextual notice recommendations (excluding current notice)
   const relatedNotices = await getRelatedNotices(notice, 3);
 
   return (
-    <article className="min-h-screen bg-white">
+    <article className="bg-white py-6 sm:py-8">
       {/* Schema.org Structured Data */}
       <NoticeJsonLd
         headline={notice.title}

@@ -2,9 +2,7 @@ import { NoticeTypes } from "@/types/Notice";
 import { NoticeList } from "./components/NoticeList";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { Container } from "@/components/shared/Container";
-import { fetchBackendResource } from "@/lib/fetch";
-import { fallbackNotices } from "@/data/notices/fallback";
-import QueryString from "qs";
+import { getNotices } from "@/lib/api/notices";
 import { generatePageMetadata, siteConfig, buildOgImageUrl } from "@/lib/seo";
 import type { Metadata } from "next";
 
@@ -36,32 +34,14 @@ export default async function NoticePage({ searchParams }: NoticePageProps) {
   const initialQuery = params?.q || params?.query || "";
   const initialCategory = params?.category || "all";
 
-  const query = QueryString.stringify({
-    populate: {
-      image: {
-        fields: ["url"],
-      },
-    },
-    sort: ["publishedAt:desc"],
+  const { notices } = await getNotices({
+    search: initialQuery || undefined,
+    category: initialCategory !== "all" ? initialCategory : undefined,
+    ordering: "-created_at",
   });
 
-  let notices: NoticeTypes[] = [];
-  try {
-    const result = await fetchBackendResource<NoticeTypes[]>(
-      `${process.env.STRAPI_API_URL}/notices?${query}`
-    );
-    if (!result.isAvailabilityFailure && result.data) {
-      notices = result.data;
-    } else if (result.isAvailabilityFailure) {
-      notices = [...fallbackNotices];
-    }
-  } catch (err) {
-    console.error("Error loading notices:", err);
-    notices = [...fallbackNotices];
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50/50 py-10 md:py-14">
+    <div className="bg-gray-50/50 py-8 sm:py-10">
       <Container as="main">
         <SectionHeading
           highlight="Official Notices"
@@ -70,7 +50,7 @@ export default async function NoticePage({ searchParams }: NoticePageProps) {
         />
 
         {/* Section Divider */}
-        <hr className="border-t border-slate-200/90 my-8 sm:my-10" />
+        <hr className="border-t border-slate-200/90 my-6 sm:my-8" />
 
         <NoticeList
           notices={notices}

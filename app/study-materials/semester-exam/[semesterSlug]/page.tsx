@@ -87,14 +87,14 @@ export default async function SemesterDetailPage({ params }: SemesterPageProps) 
   ]);
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="bg-slate-50 py-8 sm:py-10">
       {/* JSON-LD Schema */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-4 py-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-4">
         {/* Back + Heading */}
         <div className="mb-8">
           <Link

@@ -9,6 +9,7 @@ import { EventTypes } from "@/types/events";
 import { cn } from "@/lib/utils";
 import { startLoading } from "@/components/shared/LoadingIndicator";
 import { getEventSlug } from "@/lib/slugs";
+import { resolveImageUrl } from "@/lib/images";
 
 const MONTHS = [
   "Jan",
@@ -91,7 +92,8 @@ export function EventCard({ event }: { event: EventTypes }) {
   const formattedDate = formatDate(event.startDate, event.endDate);
   const formattedTime = formatTime(event.startTime, event.endTime);
   const eventUrl = `/events/${getEventSlug(event)}`;
-  const imageUrl = event.image?.[0]?.url;
+  const initialImageUrl = resolveImageUrl(event.image);
+  const [imgSrc, setImgSrc] = useState<string | null>(initialImageUrl);
   const isVirtual = event.location === "Google Meet" || event.location?.toLowerCase().includes("online");
 
   const router = useRouter();
@@ -124,12 +126,13 @@ export function EventCard({ event }: { event: EventTypes }) {
       )}
 
       {/* Natural Centered Image Presentation: equal vertical spacing when smaller than row */}
-      {imageUrl ? (
+      {imgSrc ? (
         <img
-          src={imageUrl}
+          src={imgSrc}
           alt={event.title}
           className="w-full h-auto block object-contain object-center mx-auto my-auto transition-transform duration-300 group-hover:scale-[1.02]"
           loading="lazy"
+          onError={() => setImgSrc(null)}
         />
       ) : (
         <div className="w-full aspect-square bg-slate-100 flex items-center justify-center text-slate-400 text-xs font-medium">

@@ -6,7 +6,7 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { NavLinkPaths } from "@/data/nav/data";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { isRouteActive } from "@/lib/utils";
+import { isRouteActive, getNavActiveState } from "@/lib/nav";
 
 // ── Desktop dropdown ────────────────────────────────────────────────
 const DesktopDropdown = ({ item }: { item: (typeof NavLinkPaths)[0] }) => {
@@ -14,9 +14,7 @@ const DesktopDropdown = ({ item }: { item: (typeof NavLinkPaths)[0] }) => {
   const ref = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
-  const isAnyChildActive = item.content?.some((child) =>
-    isRouteActive(pathname, child.path)
-  );
+  const { isItemActive } = getNavActiveState(item, pathname);
 
   const handleClose = useCallback(() => {
     setOpen(false);
@@ -52,7 +50,7 @@ const DesktopDropdown = ({ item }: { item: (typeof NavLinkPaths)[0] }) => {
         aria-haspopup="true"
         aria-label={`${item.title} menu`}
         className={`relative flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm group
-          ${isAnyChildActive ? "text-primary font-semibold" : "text-slate-700"}`}
+          ${isItemActive ? "text-primary font-semibold" : "text-slate-700"}`}
       >
         {item.title}
         <ChevronDown
@@ -61,7 +59,7 @@ const DesktopDropdown = ({ item }: { item: (typeof NavLinkPaths)[0] }) => {
         {/* Underline indicator */}
         <span
           className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all ${
-            isAnyChildActive ? "w-full" : "w-0 group-hover:w-full"
+            isItemActive ? "w-full" : "w-0 group-hover:w-full"
           }`}
         />
       </button>
@@ -112,9 +110,7 @@ const MobileDropdown = ({
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
-  const isAnyChildActive = item.content?.some((child) =>
-    isRouteActive(pathname, child.path)
-  );
+  const { isItemActive } = getNavActiveState(item, pathname);
 
   return (
     <div className="border-b border-slate-100 last:border-0">
@@ -125,7 +121,7 @@ const MobileDropdown = ({
         aria-haspopup="true"
         aria-label={`${item.title} menu`}
         className={`w-full flex items-center justify-between py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm
-          ${isAnyChildActive ? "text-primary font-semibold" : "text-slate-700"}`}
+          ${isItemActive ? "text-primary font-semibold" : "text-slate-700"}`}
       >
         {item.title}
         <ChevronDown

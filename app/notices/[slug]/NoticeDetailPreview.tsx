@@ -93,6 +93,7 @@ export function NoticeDetailPreview({ imageUrl, title }: NoticeDetailPreviewProp
               priority
               sizes="(max-width: 1024px) 95vw, 55vw"
               className="w-auto h-auto max-h-[76vh] max-w-full object-contain object-center rounded-xl shadow-md border border-slate-200/70 bg-white block transition-transform duration-200 group-hover:scale-[1.008]"
+              unoptimized={imageUrl.startsWith("http://") || imageUrl.startsWith("https://")}
             />
           </div>
         )}

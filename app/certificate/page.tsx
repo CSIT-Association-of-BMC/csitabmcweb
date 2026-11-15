@@ -28,7 +28,7 @@ export const metadata: Metadata = generatePageMetadata({
 
 export default function CertificatePage() {
   return (
-    <div className="min-h-[75vh] flex flex-col justify-center bg-slate-50/50 py-12 md:py-20">
+    <div className="flex flex-col justify-center bg-slate-50/50 py-10 md:py-14">
       {/* Schema.org Breadcrumbs */}
       <BreadcrumbJsonLd
         items={[

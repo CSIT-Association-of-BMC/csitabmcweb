@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { NoticePreviewModal } from "./NoticePreviewModal";
 import { startLoading } from "@/components/shared/LoadingIndicator";
 import { getNoticeSlug } from "@/lib/slugs";
+import { resolveImageUrl } from "@/lib/images";
 
 export const NoticeCardComponent = ({ notice }: { notice: NoticeTypes }) => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -35,10 +36,8 @@ export const NoticeCardComponent = ({ notice }: { notice: NoticeTypes }) => {
     };
   }, [isExpanded]);
 
-  const imageUrl =
-    notice.image && notice.image.length > 0 && notice.image[0].url
-      ? (notice.image[0].url as string)
-      : null;
+  const initialImageUrl = resolveImageUrl(notice.image);
+  const [imgSrc, setImgSrc] = useState<string | null>(initialImageUrl);
 
   const router = useRouter();
   const noticeUrl = `/notices/${getNoticeSlug(notice)}`;
@@ -72,12 +71,13 @@ export const NoticeCardComponent = ({ notice }: { notice: NoticeTypes }) => {
         )}
 
         {/* Natural Document Presentation: w-full h-auto block without cropping */}
-        {imageUrl ? (
+        {imgSrc ? (
           <img
-            src={imageUrl}
+            src={imgSrc}
             alt={notice.title}
             className="w-full h-auto block mx-auto my-auto object-contain transition-transform duration-300 group-hover:scale-[1.02]"
             loading="lazy"
+            onError={() => setImgSrc(null)}
           />
         ) : (
           <div className="w-full aspect-[3/4] bg-slate-100 flex items-center justify-center text-slate-400 text-xs font-medium">
@@ -129,7 +129,7 @@ export const NoticeCardComponent = ({ notice }: { notice: NoticeTypes }) => {
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              if (imageUrl) {
+              if (imgSrc) {
                 setIsPreviewOpen(true);
               }
             }}
@@ -142,11 +142,11 @@ export const NoticeCardComponent = ({ notice }: { notice: NoticeTypes }) => {
       </div>
 
       {/* Full-Screen Interactive Lightbox Modal */}
-      {imageUrl && (
+      {imgSrc && (
         <NoticePreviewModal
           isOpen={isPreviewOpen}
           onClose={() => setIsPreviewOpen(false)}
-          imageUrl={imageUrl}
+          imageUrl={imgSrc}
           title={notice.title}
           triggerRef={triggerButtonRef}
         />

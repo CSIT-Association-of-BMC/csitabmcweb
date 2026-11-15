@@ -4,7 +4,7 @@ import { BlogListSkeleton } from "./components/BlogListSkeleton";
 
 export default function BlogsLoading() {
   return (
-    <div className="min-h-screen bg-slate-50/50 py-10 md:py-14">
+    <div className="bg-slate-50/50 py-8 sm:py-10">
       <Container as="main">
         <SectionHeading
           highlight="Our"

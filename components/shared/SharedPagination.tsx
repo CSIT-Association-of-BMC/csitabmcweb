@@ -32,14 +32,10 @@ export function SharedPagination({
 
   const handlePageSelect = (page: number) => {
     if (page < 1 || page > totalPages || page === currentPage) return;
-    startLoading();
     onPageChange(page);
     if (scrollToTop && typeof window !== "undefined") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-    setTimeout(() => {
-      stopLoading();
-    }, 250);
   };
 
   const renderPageNumbers = () => {

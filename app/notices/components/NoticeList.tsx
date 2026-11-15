@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search, X, SearchX, ChevronDown } from "lucide-react";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { useNotices } from "@/hooks/useNotices";
 
 interface NoticeListProps {
   notices: NoticeTypes[];
@@ -26,6 +27,14 @@ export function NoticeList({
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [searchQuery, setSearchQuery] = useState(initialQuery);
 
+  const { data: dynamicNotices, isLoading } = useNotices({
+    search: searchQuery || undefined,
+    category: selectedCategory !== "all" ? selectedCategory : undefined,
+    initialData: notices,
+  });
+
+  const sourceNotices = dynamicNotices.length > 0 ? dynamicNotices : notices;
+
   // Extract categories dynamically while preserving standard primary categories
   const availableCategories = useMemo(() => {
     const standard = ["administrative", "academic", "events"];
@@ -33,20 +42,20 @@ export function NoticeList({
 
     standard.forEach((cat) => set.add(cat));
 
-    notices.forEach((n) => {
+    sourceNotices.forEach((n) => {
       if (n.category) {
         set.add(n.category.trim().toLowerCase());
       }
     });
 
     return Array.from(set);
-  }, [notices]);
+  }, [sourceNotices]);
 
   // Filter notices based on active category and title-based search query
   const filteredNotices = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
 
-    return notices.filter((notice) => {
+    return sourceNotices.filter((notice) => {
       // Category check
       const matchesCategory =
         selectedCategory === "all" ||
@@ -58,7 +67,7 @@ export function NoticeList({
       if (!q) return true;
       return Boolean(notice.title?.toLowerCase().includes(q));
     });
-  }, [notices, selectedCategory, searchQuery]);
+  }, [sourceNotices, selectedCategory, searchQuery]);
 
   // Handle category tab change
   const handleCategoryChange = (val: string) => {

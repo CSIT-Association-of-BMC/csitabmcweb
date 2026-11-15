@@ -4,7 +4,7 @@ import { Container } from "@/components/shared/Container";
 import { fetchPublishedBlogs } from "@/lib/blogs";
 import { generatePageMetadata, siteConfig, buildOgImageUrl } from "@/lib/seo";
 import { BreadcrumbJsonLd } from "@/lib/structured-data";
-import { BlogCard } from "./components/BlogCard";
+import { BlogListView } from "./components/BlogListView";
 
 export const metadata: Metadata = generatePageMetadata({
   title: `Articles & Stories - ${siteConfig.name}`,
@@ -29,7 +29,7 @@ export default async function BlogsPage() {
   const blogs = await fetchPublishedBlogs();
 
   return (
-    <div className="min-h-screen bg-slate-50/50 py-10 md:py-14">
+    <div className="bg-slate-50/50 py-8 sm:py-10">
       {/* Structured Breadcrumb Schema */}
       <BreadcrumbJsonLd
         items={[
@@ -45,24 +45,10 @@ export default async function BlogsPage() {
           subtitle="Technical guides, roadmaps, and community stories written by members and mentors."
         />
 
-        <hr className="border-t border-slate-200/90 my-8 sm:my-10" />
+        <hr className="border-t border-slate-200/90 my-6 sm:my-8" />
 
-        {blogs && blogs.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {blogs.map((post) => (
-              <BlogCard key={post.id} post={post} />
-            ))}
-          </div>
-        ) : (
-          <div className="py-16 text-center text-slate-500">
-            <p className="text-base font-semibold text-slate-800">
-              No Articles Published Yet
-            </p>
-            <p className="text-sm text-slate-500 mt-1">
-              New community guides and technical writeups will appear here soon.
-            </p>
-          </div>
-        )}
+        {/* TanStack Query Hydrated Blog List */}
+        <BlogListView initialBlogs={blogs} />
       </Container>
     </div>
   );

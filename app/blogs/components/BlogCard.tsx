@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { BlogPost } from "@/lib/blogs";
 import { cn } from "@/lib/utils";
 import { startLoading } from "@/components/shared/LoadingIndicator";
+import { resolveImageUrl } from "@/lib/images";
 
 export function BlogCard({ post }: { post: BlogPost }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -37,9 +38,8 @@ export function BlogCard({ post }: { post: BlogPost }) {
     : null;
   const blogUrl = `/blogs/${post.slug}`;
   const authorName = post.author?.name || post.author_name || "CSITABMC Team";
-  const imageUrl =
-    post.featured_image_url ||
-    "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191227/frontendworkshop_r24n64.jpg";
+  const initialImageUrl = resolveImageUrl(post.featured_image_url);
+  const [imgSrc, setImgSrc] = useState<string | null>(initialImageUrl);
 
   const handleCardClick = () => {
     if (window.innerWidth < 768) {
@@ -62,84 +62,127 @@ export function BlogCard({ post }: { post: BlogPost }) {
       tabIndex={0}
       role="region"
       aria-label={post.title}
-      className="relative h-full w-full overflow-hidden rounded-2xl group bg-slate-100 flex items-center justify-center cursor-pointer shadow-xs hover:shadow-xl transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+      className={cn(
+        "relative h-full w-full overflow-hidden rounded-2xl group flex items-center justify-center cursor-pointer shadow-xs hover:shadow-xl transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+        imgSrc ? "bg-slate-100" : "bg-slate-900 border border-slate-800"
+      )}
     >
-      {/* Category Pill */}
-      <span className="bg-primary text-primary-foreground text-xs font-semibold px-3.5 py-1 rounded-full shadow-md absolute top-3.5 right-3.5 z-20 pointer-events-none">
-        Article
-      </span>
+      {/* 1. Image Presentation (when present) or Editorial Layout (when no image) */}
+      {imgSrc ? (
+        <img
+          src={imgSrc}
+          alt={post.featured_image_alt || post.title}
+          className="w-full h-auto block object-contain object-center mx-auto my-auto transition-transform duration-300 group-hover:scale-[1.02]"
+          loading="lazy"
+          onError={() => setImgSrc(null)}
+        />
+      ) : (
+        <div className="w-full h-full min-h-[300px] bg-gradient-to-br from-slate-900 via-slate-850 to-slate-950 p-6 flex flex-col justify-between text-white">
+          <div>
+            <div className="flex items-center justify-between gap-2 mb-4">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20">
+                Article
+              </span>
+              {formattedDate && (
+                <span className="inline-flex items-center gap-1.5 text-xs text-slate-400">
+                  <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <span>{formattedDate}</span>
+                </span>
+              )}
+            </div>
 
-      {/* Natural Centered Image Presentation: identical to Event/Notice cards */}
-      <img
-        src={imageUrl}
-        alt={post.featured_image_alt || post.title}
-        className="w-full h-auto block object-contain object-center mx-auto my-auto transition-transform duration-300 group-hover:scale-[1.02]"
-        loading="lazy"
-      />
+            <h3 className="text-base sm:text-lg font-bold leading-snug line-clamp-3 text-white group-hover:text-primary transition-colors">
+              {post.title}
+            </h3>
 
-      {/* Hover / Focus / Touch Overlay */}
-      <div
-        className={cn(
-          "absolute inset-0 z-10 bg-gradient-to-t from-slate-950/95 via-slate-900/85 to-slate-900/45 backdrop-blur-[2px] transition-all duration-300 p-5 text-white flex flex-col justify-end",
-          isExpanded
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto"
-        )}
-      >
-        {/* Mobile Close Button */}
-        {isExpanded && (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setIsExpanded(false);
-            }}
-            className="md:hidden absolute top-3.5 right-3.5 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-            aria-label="Close details"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        )}
+            <div className="text-xs text-slate-300 mt-2 font-medium truncate">
+              <span>By </span>
+              <span className="text-white font-semibold">{authorName}</span>
+            </div>
 
-        {/* 1. Blog Title */}
-        <h3 className="text-base font-bold leading-snug line-clamp-2 text-white">
-          {post.title}
-        </h3>
+            {post.excerpt && (
+              <p className="text-xs text-slate-300 line-clamp-3 mt-3 leading-relaxed">
+                {post.excerpt}
+              </p>
+            )}
+          </div>
 
-        {/* 2. Published Date */}
-        {formattedDate && (
-          <div className="flex items-center gap-2 text-xs text-slate-200 mt-2 flex-wrap">
-            <span className="inline-flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 text-slate-300 shrink-0" />
-              <span>{formattedDate}</span>
+          <div className="mt-5 pt-3 border-t border-white/10 flex items-center justify-between">
+            <span className="text-xs font-semibold text-white/90">
+              Read Article
+            </span>
+            <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-white/10 text-white group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+              <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </div>
-        )}
-
-        {/* 3. Author Name: Plain text, no profile redirect, no post */}
-        <div className="text-xs text-slate-300 mt-1 font-medium truncate">
-          <span>By </span>
-          <span className="text-white font-semibold">{authorName}</span>
         </div>
+      )}
 
-        {/* 4. Excerpt Summary */}
-        {post.excerpt && (
-          <p className="text-xs text-slate-300 line-clamp-2 mt-2 leading-relaxed">
-            {post.excerpt}
-          </p>
-        )}
+      {/* 2. Hover / Focus / Touch Overlay for cards with an image */}
+      {imgSrc && (
+        <div
+          className={cn(
+            "absolute inset-0 z-10 bg-gradient-to-t from-slate-950/95 via-slate-900/85 to-slate-900/45 backdrop-blur-[2px] transition-all duration-300 p-5 text-white flex flex-col justify-end",
+            isExpanded
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto"
+          )}
+        >
+          {/* Mobile Close Button */}
+          {isExpanded && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsExpanded(false);
+              }}
+              className="md:hidden absolute top-3.5 right-3.5 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              aria-label="Close details"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
 
-        {/* 5. Read Article Action */}
-        <div className="mt-3.5 pt-3 border-t border-white/10 flex items-center justify-between">
-          <span className="text-xs font-semibold text-white/90">
-            Read Article
-          </span>
-          <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-white/10 text-white group-hover:bg-primary group-hover:text-primary-foreground transition-all">
-            <ArrowRight className="w-3.5 h-3.5" />
-          </span>
+          {/* 1. Blog Title */}
+          <h3 className="text-base font-bold leading-snug line-clamp-2 text-white">
+            {post.title}
+          </h3>
+
+          {/* 2. Published Date */}
+          {formattedDate && (
+            <div className="flex items-center gap-2 text-xs text-slate-200 mt-2 flex-wrap">
+              <span className="inline-flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                <span>{formattedDate}</span>
+              </span>
+            </div>
+          )}
+
+          {/* 3. Author Name */}
+          <div className="text-xs text-slate-300 mt-1 font-medium truncate">
+            <span>By </span>
+            <span className="text-white font-semibold">{authorName}</span>
+          </div>
+
+          {/* 4. Excerpt Summary */}
+          {post.excerpt && (
+            <p className="text-xs text-slate-300 line-clamp-2 mt-2 leading-relaxed">
+              {post.excerpt}
+            </p>
+          )}
+
+          {/* 5. Read Article Action */}
+          <div className="mt-3.5 pt-3 border-t border-white/10 flex items-center justify-between">
+            <span className="text-xs font-semibold text-white/90">
+              Read Article
+            </span>
+            <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-white/10 text-white group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+              <ArrowRight className="w-3.5 h-3.5" />
+            </span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { NoticeListSkeleton } from "./components/NoticeListSkeleton";
 
 export default function NoticesLoading() {
   return (
-    <div className="min-h-screen bg-gray-50/50 py-10 md:py-14">
+    <div className="bg-gray-50/50 py-8 sm:py-10">
       <Container as="main">
         <SectionHeading
           highlight="Official Notices"

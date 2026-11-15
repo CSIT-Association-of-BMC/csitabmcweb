@@ -1,9 +1,7 @@
-import QueryString from "qs";
-import { fetchWithToken } from "@/lib/fetch";
 import type { EventTypes } from "@/types/events";
 import type { NoticeTypes } from "@/types/Notice";
-import { fallbackEvents } from "@/data/events/fallback";
-import { fallbackNotices } from "@/data/notices/fallback";
+import { getEventBySlug, getEvents } from "@/lib/api/events";
+import { getNoticeBySlug, getNotices } from "@/lib/api/notices";
 
 /**
  * Converts a string title into a URL-friendly slug.
@@ -41,30 +39,6 @@ export function getNoticeSlug(notice: { slug?: string; title: string; documentId
   return notice.documentId || String(notice.id || "");
 }
 
-const eventPopulateQuery = QueryString.stringify({
-  populate: {
-    image: {
-      fields: ["url", "alternativeText", "width", "height"],
-    },
-    mentors: {
-      fields: ["documentId", "fullName", "role", "socialLink"],
-      populate: {
-        image: {
-          fields: ["url"],
-        },
-      },
-    },
-  },
-});
-
-const noticePopulateQuery = QueryString.stringify({
-  populate: {
-    image: {
-      fields: ["url", "name", "width", "height"],
-    },
-  },
-});
-
 export interface EventLookupResult {
   event: EventTypes | null;
   shouldRedirect: boolean;
@@ -79,98 +53,44 @@ export interface NoticeLookupResult {
 
 /**
  * Resolves an event by its slug or legacy identifier with redirect detection.
+ * Consumes the custom Django API endpoint `/api/v1/events/<slug>/`.
  */
 export async function resolveEvent(identifier: string): Promise<EventLookupResult> {
   const decodedId = decodeURIComponent(identifier).trim();
 
-  // 1. Try querying directly by slug filter
+  // 1. Direct Django API lookup by slug or ID
   try {
-    const slugQuery = QueryString.stringify({
-      filters: {
-        slug: {
-          $eq: decodedId,
-        },
-      },
-      ...QueryString.parse(eventPopulateQuery),
-    });
-
-    const res = await fetchWithToken(`${process.env.STRAPI_API_URL}/events?${slugQuery}`);
-    if (res && res.status === 200) {
-      const data = await res.json();
-      if (data?.data && data.data.length > 0) {
-        const event: EventTypes = data.data[0];
-        const canonical = getEventSlug(event);
-        return {
-          event,
-          shouldRedirect: canonical !== decodedId,
-          canonicalSlug: canonical,
-        };
-      }
+    const { event } = await getEventBySlug(decodedId);
+    if (event) {
+      const canonical = getEventSlug(event);
+      return {
+        event,
+        shouldRedirect: canonical !== decodedId,
+        canonicalSlug: canonical,
+      };
     }
   } catch (err) {
     console.error("Error querying event by slug:", err);
   }
 
-  // 2. Try direct documentId / id lookup (legacy format)
+  // 2. Search published events listing for slug/title match
   try {
-    const res = await fetchWithToken(
-      `${process.env.STRAPI_API_URL}/events/${decodedId}?${eventPopulateQuery}`
-    );
-    if (res && res.status === 200) {
-      const data = await res.json();
-      if (data?.data) {
-        const event: EventTypes = data.data;
-        const canonical = getEventSlug(event);
-        return {
-          event,
-          shouldRedirect: canonical !== decodedId,
-          canonicalSlug: canonical,
-        };
-      }
-    }
-  } catch {
-    // Continue to fallback
-  }
+    const { events } = await getEvents();
+    const match = events.find((ev: EventTypes) => {
+      const slug = getEventSlug(ev);
+      return slug === decodedId || ev.documentId === decodedId || String(ev.id) === decodedId;
+    });
 
-  // 3. Fallback: Search across published events for title-slug match
-  try {
-    const listRes = await fetchWithToken(
-      `${process.env.STRAPI_API_URL}/events?${eventPopulateQuery}&pagination[pageSize]=100`
-    );
-    if (listRes && listRes.status === 200) {
-      const data = await listRes.json();
-      const events: EventTypes[] = data?.data || [];
-      const match = events.find((ev) => {
-        const slug = getEventSlug(ev);
-        return slug === decodedId || ev.documentId === decodedId || String(ev.id) === decodedId;
-      });
-
-      if (match) {
-        const canonical = getEventSlug(match);
-        return {
-          event: match,
-          shouldRedirect: canonical !== decodedId,
-          canonicalSlug: canonical,
-        };
-      }
+    if (match) {
+      const canonical = getEventSlug(match);
+      return {
+        event: match,
+        shouldRedirect: canonical !== decodedId,
+        canonicalSlug: canonical,
+      };
     }
   } catch (err) {
-    console.error("Fallback event resolution error:", err);
-  }
-
-  // 4. Offline / Backend Unavailable Fallback
-  const fallbackMatch = fallbackEvents.find((ev) => {
-    const slug = getEventSlug(ev);
-    return slug === decodedId || ev.documentId === decodedId || String(ev.id) === decodedId;
-  });
-
-  if (fallbackMatch) {
-    const canonical = getEventSlug(fallbackMatch);
-    return {
-      event: fallbackMatch,
-      shouldRedirect: canonical !== decodedId,
-      canonicalSlug: canonical,
-    };
+    console.error("Event resolution error:", err);
   }
 
   return { event: null, shouldRedirect: false, canonicalSlug: "" };
@@ -178,98 +98,44 @@ export async function resolveEvent(identifier: string): Promise<EventLookupResul
 
 /**
  * Resolves a notice by its slug or legacy identifier with redirect detection.
+ * Consumes the custom Django API endpoint `/api/v1/notices/<slug>/`.
  */
 export async function resolveNotice(identifier: string): Promise<NoticeLookupResult> {
   const decodedId = decodeURIComponent(identifier).trim();
 
-  // 1. Try querying directly by slug filter
+  // 1. Direct Django API lookup by slug or ID
   try {
-    const slugQuery = QueryString.stringify({
-      filters: {
-        slug: {
-          $eq: decodedId,
-        },
-      },
-      ...QueryString.parse(noticePopulateQuery),
-    });
-
-    const res = await fetchWithToken(`${process.env.STRAPI_API_URL}/notices?${slugQuery}`);
-    if (res && res.status === 200) {
-      const data = await res.json();
-      if (data?.data && data.data.length > 0) {
-        const notice: NoticeTypes = data.data[0];
-        const canonical = getNoticeSlug(notice);
-        return {
-          notice,
-          shouldRedirect: canonical !== decodedId,
-          canonicalSlug: canonical,
-        };
-      }
+    const { notice } = await getNoticeBySlug(decodedId);
+    if (notice) {
+      const canonical = getNoticeSlug(notice);
+      return {
+        notice,
+        shouldRedirect: canonical !== decodedId,
+        canonicalSlug: canonical,
+      };
     }
   } catch (err) {
     console.error("Error querying notice by slug:", err);
   }
 
-  // 2. Try direct documentId / id lookup (legacy format)
+  // 2. Search published notices listing for slug/title match
   try {
-    const res = await fetchWithToken(
-      `${process.env.STRAPI_API_URL}/notices/${decodedId}?${noticePopulateQuery}`
-    );
-    if (res && res.status === 200) {
-      const data = await res.json();
-      if (data?.data) {
-        const notice: NoticeTypes = data.data;
-        const canonical = getNoticeSlug(notice);
-        return {
-          notice,
-          shouldRedirect: canonical !== decodedId,
-          canonicalSlug: canonical,
-        };
-      }
-    }
-  } catch {
-    // Continue to fallback
-  }
+    const { notices } = await getNotices();
+    const match = notices.find((not: NoticeTypes) => {
+      const slug = getNoticeSlug(not);
+      return slug === decodedId || not.documentId === decodedId || String(not.id) === decodedId;
+    });
 
-  // 3. Fallback: Search across published notices for title-slug match
-  try {
-    const listRes = await fetchWithToken(
-      `${process.env.STRAPI_API_URL}/notices?${noticePopulateQuery}&pagination[pageSize]=100`
-    );
-    if (listRes && listRes.status === 200) {
-      const data = await listRes.json();
-      const notices: NoticeTypes[] = data?.data || [];
-      const match = notices.find((not) => {
-        const slug = getNoticeSlug(not);
-        return slug === decodedId || not.documentId === decodedId || String(not.id) === decodedId;
-      });
-
-      if (match) {
-        const canonical = getNoticeSlug(match);
-        return {
-          notice: match,
-          shouldRedirect: canonical !== decodedId,
-          canonicalSlug: canonical,
-        };
-      }
+    if (match) {
+      const canonical = getNoticeSlug(match);
+      return {
+        notice: match,
+        shouldRedirect: canonical !== decodedId,
+        canonicalSlug: canonical,
+      };
     }
   } catch (err) {
-    console.error("Fallback notice resolution error:", err);
-  }
-
-  // 4. Offline / Backend Unavailable Fallback
-  const fallbackNoticeMatch = fallbackNotices.find((not) => {
-    const slug = getNoticeSlug(not);
-    return slug === decodedId || not.documentId === decodedId || String(not.id) === decodedId;
-  });
-
-  if (fallbackNoticeMatch) {
-    const canonical = getNoticeSlug(fallbackNoticeMatch);
-    return {
-      notice: fallbackNoticeMatch,
-      shouldRedirect: canonical !== decodedId,
-      canonicalSlug: canonical,
-    };
+    console.error("Notice resolution error:", err);
   }
 
   return { notice: null, shouldRedirect: false, canonicalSlug: "" };

@@ -1,46 +1,69 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import {
-  TenureItem,
-  sortMembersByOrder,
-} from "@/lib/team";
+import React, { useMemo } from "react";
+import { TenureItem, sortMembersByOrder } from "@/lib/team";
 import { MemberCard } from "@/components/shared/MemberCard";
 import { ChevronDown } from "lucide-react";
+import { useTeam } from "@/hooks/useTeam";
 
 interface TeamViewProps {
   tenures: TenureItem[];
 }
 
 export function TeamView({ tenures }: TeamViewProps) {
-  const [selectedTenureId, setSelectedTenureId] = useState<string | number>(() => {
-    return tenures[0]?.id || "";
+  const {
+    tenures: queryTenures,
+    activeTenure: queryActiveTenure,
+    selectedSlug,
+    selectTenure,
+    isLoading,
+  } = useTeam({
+    initialTenures: tenures,
+    defaultTenureSlug: tenures[0]?.slug,
   });
 
-  const activeTenure = useMemo(() => {
-    return (
-      tenures.find((t) => String(t.id) === String(selectedTenureId)) ||
-      tenures[0] ||
-      null
-    );
-  }, [tenures, selectedTenureId]);
+  const availableTenures =
+    queryTenures.length > 0 ? queryTenures : tenures;
+
+  const currentActiveTenure =
+    queryActiveTenure ||
+    availableTenures.find(
+      (t) => t.slug === selectedSlug || String(t.id) === selectedSlug
+    ) ||
+    availableTenures[0] ||
+    null;
 
   // Sort Executive Committee strictly by backend `order` field ascending
   const sortedExecutives = useMemo(() => {
-    if (!activeTenure?.executives) return [];
-    return sortMembersByOrder(activeTenure.executives);
-  }, [activeTenure?.executives]);
+    if (!currentActiveTenure?.executives) return [];
+    return sortMembersByOrder(currentActiveTenure.executives);
+  }, [currentActiveTenure?.executives]);
 
   // Sort Advisors strictly by backend `order` field ascending
   const sortedAdvisors = useMemo(() => {
-    if (!activeTenure?.advisors) return [];
-    return sortMembersByOrder(activeTenure.advisors);
-  }, [activeTenure?.advisors]);
+    if (!currentActiveTenure?.advisors) return [];
+    return sortMembersByOrder(currentActiveTenure.advisors);
+  }, [currentActiveTenure?.advisors]);
 
-  if (!activeTenure || tenures.length === 0) {
+  if (isLoading && !currentActiveTenure) {
+    return (
+      <div className="space-y-12 animate-pulse">
+        <div className="h-10 w-48 bg-slate-200 rounded-lg" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div key={i} className="aspect-[4/5] bg-slate-200 rounded-lg" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentActiveTenure || availableTenures.length === 0) {
     return (
       <div className="py-12 text-center">
-        <p className="text-base font-semibold text-slate-800">No Tenures Available</p>
+        <p className="text-base font-semibold text-slate-800">
+          No Tenures Available
+        </p>
         <p className="text-sm text-slate-500 mt-1">
           Committee records are currently being compiled.
         </p>
@@ -61,12 +84,12 @@ export function TeamView({ tenures }: TeamViewProps) {
         <div className="relative inline-block">
           <select
             id="tenure-select"
-            value={selectedTenureId}
-            onChange={(e) => setSelectedTenureId(e.target.value)}
+            value={currentActiveTenure.slug || currentActiveTenure.id}
+            onChange={(e) => selectTenure(e.target.value)}
             className="appearance-none bg-white border border-slate-300 hover:border-slate-400 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg text-sm font-medium text-slate-800 py-2 pl-3.5 pr-9 transition-colors cursor-pointer shadow-2xs"
           >
-            {tenures.map((tenure) => (
-              <option key={tenure.id} value={tenure.id}>
+            {availableTenures.map((tenure) => (
+              <option key={tenure.id} value={tenure.slug || tenure.id}>
                 Tenure {tenure.name}
               </option>
             ))}
@@ -82,7 +105,7 @@ export function TeamView({ tenures }: TeamViewProps) {
             Executive Committee
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            The student leaders driving initiatives, technical workshops, and community events for Tenure {activeTenure.name}.
+            The student leaders driving initiatives, technical workshops, and community events for Tenure {currentActiveTenure.name}.
           </p>
         </div>
 
@@ -92,6 +115,7 @@ export function TeamView({ tenures }: TeamViewProps) {
               <MemberCard
                 key={member.memberId || member.id || index}
                 member={member}
+                tenureSlug={currentActiveTenure.slug || String(currentActiveTenure.id)}
               />
             ))}
           </div>
@@ -101,7 +125,7 @@ export function TeamView({ tenures }: TeamViewProps) {
               No Committee Members Found
             </p>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Records for Tenure {activeTenure.name} are currently being archived. Please choose another tenure above.
+              Records for Tenure {currentActiveTenure.name} are currently being archived. Please choose another tenure above.
             </p>
           </div>
         )}
@@ -114,7 +138,7 @@ export function TeamView({ tenures }: TeamViewProps) {
             Advisors
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Faculty and institutional advisors supporting the committee during Tenure {activeTenure.name}.
+            Faculty and institutional advisors supporting the committee during Tenure {currentActiveTenure.name}.
           </p>
         </div>
 
@@ -125,14 +149,17 @@ export function TeamView({ tenures }: TeamViewProps) {
                 key={advisor.id || index}
                 className="w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.35rem)] lg:w-[calc(25%-1.5rem)] min-w-[200px] max-w-[250px]"
               >
-                <MemberCard member={advisor} />
+                <MemberCard
+                  member={advisor}
+                  tenureSlug={currentActiveTenure.slug || String(currentActiveTenure.id)}
+                />
               </div>
             ))}
           </div>
         ) : (
           <div className="py-8 text-center text-slate-500">
             <p className="text-sm font-medium text-slate-600">
-              No advisors recorded for Tenure {activeTenure.name}.
+              No advisors recorded for Tenure {currentActiveTenure.name}.
             </p>
           </div>
         )}
@@ -140,5 +167,3 @@ export function TeamView({ tenures }: TeamViewProps) {
     </div>
   );
 }
-
-export default TeamView;

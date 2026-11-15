@@ -1,9 +1,9 @@
 import React from "react";
 import { SectionHeading } from "@/components/shared/SectionHeading";
-import { MemberCard } from "@/components/shared/MemberCard";
 import { Container } from "@/components/shared/Container";
 import { fetchAlumniMembers } from "@/lib/team";
 import { generatePageMetadata, siteConfig, buildOgImageUrl } from "@/lib/seo";
+import { AlumniView } from "./AlumniView";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = generatePageMetadata({
@@ -28,7 +28,7 @@ export default async function AlumniPage() {
   const alumni = await fetchAlumniMembers();
 
   return (
-    <div className="min-h-screen bg-gray-50/50 py-10 md:py-14">
+    <div className="bg-gray-50/50 py-8 sm:py-10">
       <Container as="main">
         <SectionHeading
           highlight="Our"
@@ -37,28 +37,10 @@ export default async function AlumniPage() {
         />
 
         {/* Section Divider */}
-        <hr className="border-t border-slate-200/90 my-8 sm:my-10" />
+        <hr className="border-t border-slate-200/90 my-6 sm:my-8" />
 
-        {/* Alumni Member Cards (5 per row on desktop, wider cards, centered) */}
-        {alumni && alumni.length > 0 ? (
-          <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
-            {alumni.map((member, index) => (
-              <div
-                key={member.id || index}
-                className="w-[calc(50%-0.5rem)] sm:w-[calc(33.333%-1rem)] md:w-[calc(25%-1.125rem)] lg:w-[calc(20%-1.25rem)] min-w-[160px] max-w-[240px]"
-              >
-                <MemberCard member={member} />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="py-14 text-center text-slate-500">
-            <p className="text-base font-semibold text-slate-800">No Alumni Records Found</p>
-            <p className="text-sm text-slate-500 mt-1">
-              Alumni directory records are currently being compiled.
-            </p>
-          </div>
-        )}
+        {/* TanStack Query Hydrated Alumni View */}
+        <AlumniView initialAlumni={alumni} />
       </Container>
     </div>
   );

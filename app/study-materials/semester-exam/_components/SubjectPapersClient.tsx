@@ -1,23 +1,54 @@
 "use client";
 
-import { useState } from "react";
-import { PastPaperItem } from "@/lib/study-materials";
+import { useState, useMemo } from "react";
+import { PastPaperItem, doesPaperMatchSubject, findSubjectBySlug } from "@/lib/study-materials";
 import QuestionPaperCard from "./QuestionPaperCard";
 import QuestionPaperViewer from "./QuestionPaperViewer";
 import { FileQuestion, AlertCircle } from "lucide-react";
+import { usePastPapers } from "@/hooks/usePastPapers";
 
 interface SubjectPapersClientProps {
   papers: PastPaperItem[];
   subjectName: string;
   subjectCode: string;
+  semesterNumber?: number;
+  subjectSlug?: string;
 }
 
 export default function SubjectPapersClient({
-  papers,
+  papers: initialPapers,
   subjectName,
   subjectCode,
+  semesterNumber,
+  subjectSlug,
 }: SubjectPapersClientProps) {
   const [viewingPaper, setViewingPaper] = useState<PastPaperItem | null>(null);
+
+  // TanStack Query for dynamic client-side caching & refetching
+  const { data: queriedPapers } = usePastPapers({
+    semester: semesterNumber,
+    enabled: typeof semesterNumber === "number",
+  });
+
+  const subjectMeta = useMemo(() => {
+    if (semesterNumber && subjectSlug) {
+      return findSubjectBySlug(semesterNumber, subjectSlug);
+    }
+    return {
+      code: subjectCode,
+      name: subjectName,
+      semester: semesterNumber || 1,
+      slug: subjectSlug || "",
+    };
+  }, [semesterNumber, subjectSlug, subjectCode, subjectName]);
+
+  const papers = useMemo(() => {
+    if (queriedPapers && queriedPapers.length > 0 && subjectMeta) {
+      const filtered = queriedPapers.filter((p) => doesPaperMatchSubject(p, subjectMeta));
+      if (filtered.length > 0) return filtered;
+    }
+    return initialPapers;
+  }, [queriedPapers, initialPapers, subjectMeta]);
 
   if (!papers || papers.length === 0) {
     return (
@@ -58,4 +89,3 @@ export default function SubjectPapersClient({
     </>
   );
 }
-

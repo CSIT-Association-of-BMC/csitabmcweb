@@ -1,37 +1,41 @@
-export interface BackendFetchResult<T> {
-  data: T | null;
-  status: number | null;
-  isAvailabilityFailure: boolean;
-  isEmpty: boolean;
-}
+import { apiGet, ApiResponse, getApiBaseUrl } from "./api/client";
+
+export type BackendFetchResult<T> = ApiResponse<T>;
+export { apiGet, getApiBaseUrl };
 
 export const isServerAvailabilityError = (status?: number | null): boolean => {
-  if (!status) return true; // network exception / no response
+  if (!status) return true; // network exception / no response / timeout
   return status >= 500 && status <= 599;
 };
 
-export const fetchWithToken = async (url: string, init?: RequestInit) => {
+/**
+ * Executes a clean anonymous HTTP fetch without attaching CMS dashboard credentials.
+ */
+export const fetchAnonymous = async (url: string, init?: RequestInit) => {
   try {
     return await globalThis.fetch(url, {
       ...init,
       headers: {
-        Authorization: `Bearer ${process.env.TOKEN}`,
+        Accept: "application/json",
         ...(init?.headers || {}),
       },
       next: { revalidate: 30, ...(init as any)?.next },
     });
   } catch (error) {
-    console.error(`fetchWithToken network error for ${url}:`, error);
+    console.error(`fetchAnonymous network error for ${url}:`, error);
     return null;
   }
 };
+
+// Alias kept for backward-compatibility during service migration
+export const fetchWithToken = fetchAnonymous;
 
 export async function fetchBackendResource<T>(
   url: string,
   options?: RequestInit
 ): Promise<BackendFetchResult<T>> {
   try {
-    const res = await fetchWithToken(url, options);
+    const res = await fetchAnonymous(url, options);
 
     if (!res) {
       // Network drop, timeout, connection refused
@@ -40,6 +44,7 @@ export async function fetchBackendResource<T>(
         status: null,
         isAvailabilityFailure: true,
         isEmpty: false,
+        error: "Network connection refused or timed out",
       };
     }
 
@@ -50,6 +55,7 @@ export async function fetchBackendResource<T>(
         status: res.status,
         isAvailabilityFailure: true,
         isEmpty: false,
+        error: `Server error (${res.status})`,
       };
     }
 
@@ -59,18 +65,26 @@ export async function fetchBackendResource<T>(
         status: 404,
         isAvailabilityFailure: false,
         isEmpty: false,
+        error: "Resource not found (404)",
       };
     }
 
     if (res.ok) {
       const json = await res.json();
-      const rawData = json?.data !== undefined ? json.data : json;
+      // Unpack Django DRF results or flat JSON
+      const rawData =
+        json && typeof json === "object" && "results" in json && Array.isArray(json.results)
+          ? json.results
+          : json?.data !== undefined
+          ? json.data
+          : json;
       const isEmpty = Array.isArray(rawData) ? rawData.length === 0 : !rawData;
       return {
         data: rawData as T,
         status: res.status,
         isAvailabilityFailure: false,
         isEmpty,
+        error: null,
       };
     }
 
@@ -80,6 +94,7 @@ export async function fetchBackendResource<T>(
       status: res.status,
       isAvailabilityFailure: false,
       isEmpty: false,
+      error: `Client error (${res.status})`,
     };
   } catch (err) {
     console.error(`fetchBackendResource error for ${url}:`, err);
@@ -88,6 +103,7 @@ export async function fetchBackendResource<T>(
       status: null,
       isAvailabilityFailure: true,
       isEmpty: false,
+      error: err instanceof Error ? err.message : "Unknown error",
     };
   }
 }

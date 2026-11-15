@@ -1,30 +1,27 @@
 "use server";
 
-import { fetchWithToken } from "@/lib/fetch";
+import { getEvents } from "@/lib/api/events";
 
 export const getEvent = async () => {
   try {
-    const response = await fetchWithToken(
-      `${process.env.STRAPI_API_URL}/the-event-banner`
-    );
-    if (!response) return null;
-    const resJson = await response.json();
-    return resJson.data;
+    const { events } = await getEvents();
+    return events[0] || null;
   } catch (error) {
     console.error("Error fetching event data:", error);
-    throw error;
+    return null;
   }
 };
 
 export const getAllRegistration = async () => {
   try {
-    const response = await fetch(process.env.REGESTATION_DATA_API as string);
+    const apiUrl = process.env.REGESTATION_DATA_API;
+    if (!apiUrl) return [];
+    const response = await fetch(apiUrl);
     const res = await response.json();
-    const data = res.data;
-    return data;
+    return res.data || [];
   } catch (error) {
     console.error("Error fetching registration data:", error);
-    throw error;
+    return [];
   }
 };
 
@@ -33,7 +30,7 @@ export const validateRegistration = async (name: string, email: string) => {
     const Data = await getAllRegistration();
     const user = Data.find(
       (item: any) =>
-        item.Email.toUpperCase().trim() === email.toUpperCase().trim()
+        item.Email?.toUpperCase().trim() === email.toUpperCase().trim()
     );
 
     if (!user) {
@@ -48,11 +45,19 @@ export const validateRegistration = async (name: string, email: string) => {
 
     return {
       exists: true,
-      paid: user.Paid,
-      IdCard: user.IdCard,
+      nameMatch: user.FullName?.toLowerCase().trim() === name.toLowerCase().trim(),
+      paid: Boolean(user.Paid),
+      name: { status: user.FullName?.toLowerCase().trim() === name.toLowerCase().trim() },
+      payment: { status: Boolean(user.Paid) },
     };
   } catch (error) {
     console.error("Error validating registration:", error);
-    throw error;
+    return {
+      exists: false,
+      nameMatch: false,
+      paid: false,
+      name: { status: false },
+      payment: { status: false },
+    };
   }
 };

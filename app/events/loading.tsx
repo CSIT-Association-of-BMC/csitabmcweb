@@ -4,7 +4,7 @@ import { EventListSkeleton } from "./components/EventListSkeleton";
 
 export default function EventsLoading() {
   return (
-    <section className="w-full py-16 bg-gray-50 min-h-screen">
+    <section className="w-full py-8 sm:py-10 bg-gray-50">
       <Container>
         <SectionHeading
           highlight="Some Events"

@@ -37,7 +37,7 @@ export default function SemesterExamPage() {
   ]);
 
   return (
-    <main className="bg-slate-50 py-12 md:py-16">
+    <main className="bg-slate-50 py-8 sm:py-10">
       {/* JSON-LD Schema */}
       <script
         type="application/ld+json"

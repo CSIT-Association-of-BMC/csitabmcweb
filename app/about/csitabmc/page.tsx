@@ -29,7 +29,7 @@ export const metadata: Metadata = generatePageMetadata({
 
 export default function CSITABMCPage() {
   return (
-    <div className="min-h-screen bg-white py-10 md:py-14">
+    <div className="bg-white py-8 sm:py-10">
       <Container as="main" className="space-y-12 sm:space-y-16">
         {/* 1. Page Header */}
         <div>

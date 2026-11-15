@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, redirect, RedirectType } from "next/navigation";
 import { format } from "date-fns";
 import { Calendar, ChevronRight, ArrowRight } from "lucide-react";
 import { fetchBlogBySlug, fetchPublishedBlogs } from "@/lib/blogs";
 import { generateBlogMetadata, siteConfig } from "@/lib/seo";
 import { BlogJsonLd, BreadcrumbJsonLd } from "@/lib/structured-data";
+import { resolveImageUrl } from "@/lib/images";
 import { BlogMarkdown } from "./BlogMarkdown";
 import { BlogCard } from "../components/BlogCard";
 import { Container } from "@/components/shared/Container";
@@ -33,7 +34,7 @@ export async function generateMetadata({
     title: blog.title,
     excerpt: blog.seo?.description || blog.excerpt,
     slug: blog.slug,
-    image: blog.featured_image_url || undefined,
+    image: resolveImageUrl(blog.featured_image_url) || undefined,
     publishedAt: blog.published_at || undefined,
     authorName,
   });
@@ -50,11 +51,17 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
     return notFound();
   }
 
+  // 301 Permanent redirect if accessed via numeric id or non-canonical slug
+  if (blog.slug && decodeURIComponent(slug).toLowerCase() !== blog.slug.toLowerCase()) {
+    redirect(`/blogs/${blog.slug}`, RedirectType.replace);
+  }
+
   const authorName = blog.author?.name || blog.author_name || "CSITABMC Team";
   const formattedDate = blog.published_at
     ? format(new Date(blog.published_at), "MMMM d, yyyy")
     : null;
   const canonicalUrl = `${siteConfig.url}/blogs/${blog.slug}`;
+  const featuredImageUrl = resolveImageUrl(blog.featured_image_url);
 
   // Recommendations: Other published blogs excluding current one
   const recommendations = allBlogs
@@ -62,13 +69,13 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
     .slice(0, 3);
 
   return (
-    <article className="min-h-screen bg-slate-50/60 pb-16">
+    <article className="bg-slate-50/60 py-6 sm:py-8">
       {/* Schema.org Structured Data */}
       <BlogJsonLd
         title={blog.title}
         description={blog.seo?.description || blog.excerpt}
         slug={blog.slug}
-        image={blog.featured_image_url || undefined}
+        image={featuredImageUrl || undefined}
         datePublished={blog.published_at || undefined}
         dateModified={blog.updated_at || blog.published_at || undefined}
         authorName={authorName}
@@ -157,12 +164,12 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       </header>
 
       {/* Featured Cover Image: Full view without cropping or zooming */}
-      {blog.featured_image_url && (
+      {featuredImageUrl && (
         <Container className="mb-8 sm:mb-12">
           <div className="w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-100/70 border border-slate-200/80 shadow-xs p-2 sm:p-4 flex items-center justify-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={blog.featured_image_url}
+              src={featuredImageUrl}
               alt={blog.featured_image_alt || blog.title}
               className="w-full h-auto max-h-[640px] object-contain rounded-xl sm:rounded-2xl mx-auto"
               loading="eager"
