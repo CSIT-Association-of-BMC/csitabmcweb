@@ -2,7 +2,7 @@ import { NavLinkPaths } from "@/app/data";
 import Link from "next/link";
 import Image from "next/image";
 import NavLink from "./NavBar/NavLinks";
-import { Linkedin, Instagram, Facebook, Github } from "lucide-react";
+import { Linkedin, Instagram, Facebook, Github, Youtube } from "lucide-react";
 
 const keyLinks = NavLinkPaths.slice(0, 4);
 const currentYear = new Date().getFullYear();
@@ -29,6 +29,11 @@ export default function Footer() {
       label: "GitHub",
       href: "https://github.com/CSIT-Association-of-BMC/csitabmcweb",
     },
+    {
+      icon: Youtube,
+      label: "YouTube",
+      href: "https://www.youtube.com/@csitabmc",
+    },
   ];
 
   const linkColumns = [
@@ -43,11 +48,11 @@ export default function Footer() {
           <div className="flex items-center gap-3">
             <Link href="/" aria-label="CSIT Association of BMC">
               <Image
-                src="https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191383/logohero_nsqj8h.png"
+                src="https://res.cloudinary.com/dol8m5gx7/image/upload/v1737813608/CSITABMC_09cb284d82.jpg"
                 alt="CSIT Association of BMC"
                 height={52}
                 width={52}
-                className="h-12 w-12 rounded-xl bg-white/10 p-2 backdrop-blur"
+                className="h-12 w-12 rounded-full bg-white/10 p-2 backdrop-blur"
               />
             </Link>
             <div>
@@ -102,10 +107,10 @@ export default function Footer() {
               team@csitabmc.com
             </a>
             <a
-              href="tel:+977-9841148149"
+              href="tel:+977-9762246074"
               className="rounded-lg w-full border border-white/10 bg-white/5 px-4 py-3 hover:border-white/25 transition-colors"
             >
-              +977-9841148149
+              +977-9762246074
             </a>
             <a
               href="https://share.google/mkIurTVtME2SvTP3G"

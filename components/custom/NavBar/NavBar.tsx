@@ -10,7 +10,7 @@ const NavBar = async () => {
         <div className="container mx-auto flex justify-between items-center h-20 px-4 sm:px-6">
           <Link href="/" className="group">
             <Image
-              src="https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191383/logohero_nsqj8h.png"
+              src="https://res.cloudinary.com/dol8m5gx7/image/upload/v1786551613/Logo_569c0a15d2.svg"
               alt="CSIT Association of BMC"
               height={48}
               width={48}

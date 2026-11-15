@@ -8,8 +8,8 @@ const contactItems = [
   {
     icon: Phone,
     label: "Phone",
-    value: "+977-9841148149",
-    href: "tel:+977-9841148149",
+    value: "+977-9762246074",
+    href: "tel:+977-9762246074",
   },
   {
     icon: Mail,

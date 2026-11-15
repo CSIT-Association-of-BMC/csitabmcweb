@@ -4,6 +4,8 @@ import { SEMESTER_DEFINITIONS, getSubjectsForSemester } from "@/lib/study-materi
 import { getEventSlug, getNoticeSlug } from "@/lib/slugs";
 import { fetchPublishedBlogs } from "@/lib/blogs";
 
+export const dynamic = "force-dynamic";
+
 type ChangeFrequency =
     | "always"
     | "hourly"
@@ -36,10 +38,34 @@ const staticRoutes: Array<{
         { path: "/study-materials/semester-exam", changeFrequency: "weekly", priority: 0.8 },
     ];
 
+// Fetch with timeout to prevent build hanging
+async function fetchWithTimeout(
+    url: string,
+    options: RequestInit = {},
+    timeoutMs = 5000
+): Promise<Response> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+        return await fetch(url, {
+            ...options,
+            signal: controller.signal,
+        });
+    } finally {
+        clearTimeout(timeout);
+    }
+}
+
 // Fetch dynamic events from Strapi
 async function fetchEvents(): Promise<
     Array<{ documentId: string; title: string; slug?: string; updatedAt: string }>
 > {
+    const apiUrl = process.env.STRAPI_API_URL;
+    const apiToken = process.env.STRAPI_API_TOKEN;
+
+    if (!apiUrl || !apiToken) return [];
+
     try {
         const res = await fetch(
             `${process.env.STRAPI_API_URL}/events?fields[0]=documentId&fields[1]=title&fields[2]=slug&fields[3]=updatedAt`,
@@ -63,6 +89,11 @@ async function fetchEvents(): Promise<
 async function fetchNotices(): Promise<
     Array<{ documentId: string; title: string; slug?: string; updatedAt: string }>
 > {
+    const apiUrl = process.env.STRAPI_API_URL;
+    const apiToken = process.env.STRAPI_API_TOKEN;
+
+    if (!apiUrl || !apiToken) return [];
+
     try {
         const res = await fetch(
             `${process.env.STRAPI_API_URL}/notices?fields[0]=documentId&fields[1]=title&fields[2]=slug&fields[3]=updatedAt`,
@@ -86,12 +117,17 @@ async function fetchNotices(): Promise<
 async function fetchMembers(): Promise<
     Array<{ documentId: string; updatedAt: string }>
 > {
+    const apiUrl = process.env.STRAPI_API_URL;
+    const apiToken = process.env.STRAPI_API_TOKEN;
+
+    if (!apiUrl || !apiToken) return [];
+
     try {
-        const res = await fetch(
-            `${process.env.STRAPI_API_URL}/members?fields[0]=documentId&fields[1]=updatedAt`,
+        const res = await fetchWithTimeout(
+            `${apiUrl}/members?fields[0]=documentId&fields[1]=updatedAt`,
             {
                 headers: {
-                    Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
+                    Authorization: `Bearer ${apiToken}`,
                 },
                 next: { revalidate: 3600 },
             }

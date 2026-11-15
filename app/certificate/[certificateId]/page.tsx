@@ -6,6 +6,7 @@ import QueryString from "qs";
 import CertificateDisplay from "./CertificateDisplay";
 import CertificateVerification from "./CertificateVerification";
 import EventMentorDetails from "./EventMentorDetails";
+import { Container } from "@/components/custom/Container";
 import { generatePageMetadata, siteConfig } from "@/lib/seo";
 import type { Metadata } from "next";
 
@@ -87,10 +88,10 @@ export default async function CertificateDetailPage({
     completionDate,
     signatures: [
       {
-        name: "Mr. Sanchit Pandey",
-        title: "President",
+        name: "Mr. Nischal Panthi",
+        title: "President ",
         institute: "CSIT Association of BMC",
-        image: "/sanchit-sign.png",
+        image: "/nischal-sign.png",
       },
       {
         name: "Dr. Arun Kumar Kshetree",
@@ -111,7 +112,7 @@ export default async function CertificateDetailPage({
 
   return (
     <div className="min-h-screen w-full mx-auto bg-slate-50/50 pb-16">
-      <div className="container mx-auto">
+      <Container>
         <CertificateVerification
           certificateDetails={certificateDetails}
           isValid={isEligible}
@@ -131,7 +132,7 @@ export default async function CertificateDetailPage({
             eventData={data.event}
           />
         )}
-      </div>
+      </Container>
     </div>
   );
 }
