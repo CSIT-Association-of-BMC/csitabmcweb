@@ -262,6 +262,21 @@ export const styles = StyleSheet.create({
     marginBottom: 4,
     position: "relative",
   },
+  signaturePresidentContainer: {
+    height: 128,
+    width: "100%",
+    display: "flex",
+    alignItems: "flex-end",
+    justifyContent: "center",
+    marginBottom: 4,
+  },
+  signaturePresidentImage: {
+    maxHeight: 52,
+    maxWidth: 130,
+    objectFit: "contain",
+    alignSelf: "center",
+    marginBottom: 6,
+  },
   signatureImage: {
     width: "150%",
     height: "100%",

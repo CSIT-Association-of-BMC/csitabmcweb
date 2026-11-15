@@ -11,8 +11,20 @@ import {
 } from "@react-pdf/renderer";
 import { styles } from "./style";
 import { CertificateTypes } from "@/types/certificate";
+import { resolveImageUrl } from "@/lib/images";
 
 const Certificate = ({ data }: { data: CertificateTypes }) => {
+  const rawPresidentName = data.president_name ? data.president_name.trim() : "";
+  const presidentName = rawPresidentName
+    ? (/^(mr\.|ms\.|mrs\.|dr\.)/i.test(rawPresidentName)
+        ? rawPresidentName
+        : `Mr. ${rawPresidentName}`)
+    : "President Name";
+
+  const presidentSignature = data.president_signature_url
+    ? (resolveImageUrl(data.president_signature_url) || "")
+    : "";
+
   const certificateDetails = {
     id: data.certificateID,
     recipientName: data.fullName,
@@ -20,10 +32,10 @@ const Certificate = ({ data }: { data: CertificateTypes }) => {
     completionDate: format(new Date(data.event.endDate), "MMMM d, yyyy"),
     signatures: [
       {
-        name: "Mr. Nischal Panthi",
+        name: presidentName,
         title: "President",
         institute: "CSIT Association of BMC",
-        image: "/nischal-sign.png",
+        image: presidentSignature,
       },
       {
         name: "Dr. Arun Kumar Kshetree",
@@ -103,28 +115,38 @@ const Certificate = ({ data }: { data: CertificateTypes }) => {
               {/* Signatures */}
               <View style={styles.signaturesSection}>
                 {certificateDetails.signatures.map((signature, index) => (
-                  <View key={signature.name} style={styles.signatureItem}>
-                    {signature.image ? (
-                      <View style={styles.signatureImageContainer}>
+                  <View key={signature.title || index} style={styles.signatureItem}>
+                    <View
+                      style={
+                        index === 0
+                          ? styles.signaturePresidentContainer
+                          : styles.signatureImageContainer
+                      }
+                    >
+                      {signature.image ? (
                         <Image
                           src={signature.image}
-                          style={styles.signatureImage}
-                        />
-                      </View>
-                    ) : (
-                      <Svg viewBox="0 0 180 8" style={styles.signatureLine}>
-                        <Path
-                          d={
-                            index % 2 === 0
-                              ? "M 10 6 Q 25 3, 45 5.6 Q 65 8, 85 5 Q 105 2, 125 6 Q 145 9, 165 5.6"
-                              : "M 10 5 Q 30 7, 50 4 Q 70 1, 90 5 Q 110 8, 130 4 Q 150 2, 170 6"
+                          style={
+                            index === 0
+                              ? styles.signaturePresidentImage
+                              : styles.signatureImage
                           }
-                          stroke="#374151"
-                          strokeWidth="1.5"
-                          fill="none"
                         />
-                      </Svg>
-                    )}
+                      ) : (
+                        <Svg viewBox="0 0 180 8" style={styles.signatureLine}>
+                          <Path
+                            d={
+                              index % 2 === 0
+                                ? "M 10 6 Q 25 3, 45 5.6 Q 65 8, 85 5 Q 105 2, 125 6 Q 145 9, 165 5.6"
+                                : "M 10 5 Q 30 7, 50 4 Q 70 1, 90 5 Q 110 8, 130 4 Q 150 2, 170 6"
+                            }
+                            stroke="#374151"
+                            strokeWidth="1.5"
+                            fill="none"
+                          />
+                        </Svg>
+                      )}
+                    </View>
                     <View style={styles.signatureDivider} />
                     <Text style={styles.signatureName}>{signature.name}</Text>
                     <Text style={styles.signatureTitle}>{signature.title}</Text>

@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import NotFound from "@/app/not-found";
 import { verifyCertificate } from "@/lib/api/certificates";
 import type { CertificateTypes } from "@/types/certificate";
+import { resolveImageUrl } from "@/lib/images";
 import CertificateDisplay from "./CertificateDisplay";
 import CertificateVerification from "./CertificateVerification";
 import EventMentorDetails from "./EventMentorDetails";
@@ -58,6 +59,17 @@ export default async function CertificateDetailPage({
     completionDate = "Verified Date";
   }
 
+  const rawPresidentName = cert.president_name ? cert.president_name.trim() : "";
+  const presidentName = rawPresidentName
+    ? (/^(mr\.|ms\.|mrs\.|dr\.)/i.test(rawPresidentName)
+        ? rawPresidentName
+        : `Mr. ${rawPresidentName}`)
+    : "President Name";
+
+  const presidentSignature = cert.president_signature_url
+    ? (resolveImageUrl(cert.president_signature_url) || "")
+    : "";
+
   const certificateDetails = {
     id: certId,
     recipientName: recipient,
@@ -65,10 +77,10 @@ export default async function CertificateDetailPage({
     completionDate,
     signatures: [
       {
-        name: "Mr. Nischal Panthi",
-        title: "President ",
+        name: presidentName,
+        title: "President",
         institute: "CSIT Association of BMC",
-        image: "/nischal-sign.png",
+        image: presidentSignature,
       },
       {
         name: "Dr. Arun Kumar Kshetree",
@@ -98,6 +110,8 @@ export default async function CertificateDetailPage({
     is_project_completed: isEligible,
     event_title: course,
     issued_at: cert.issued_at,
+    president_name: cert.president_name,
+    president_signature_url: cert.president_signature_url,
     event: {
       id: 1,
       title: course,

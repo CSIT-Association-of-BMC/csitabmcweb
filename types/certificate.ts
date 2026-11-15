@@ -11,4 +11,6 @@ export interface CertificateTypes {
   event: EventTypes;
   event_title?: string;
   issued_at?: string;
+  president_name?: string | null;
+  president_signature_url?: string | null;
 }

@@ -253,65 +253,108 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                     style={{ marginTop: "1.5em", gap: "2em" }}
                   >
                     {certificateDetails.signatures.map((signature, index) => (
-                      <div key={signature.name}>
-                        {signature.image ? (
-                          <div
-                            style={{
-                              height: "8em",
-                              display: "flex",
-                              alignItems: "flex-end",
-                              position: "relative",
-                            }}
-                          >
-                            <Image
-                              src={signature.image}
-                              alt={`${signature.name} signature`}
-                              width={2200}
-                              height={2200}
-                              className="object-contain absolute left-0 w-full scale-150 h-full"
-                              style={{ maxHeight: "9em" }}
-                            />
-                          </div>
-                        ) : (
-                          <div style={{ marginBottom: "0.5em" }}>
-                            <svg
-                              viewBox="0 0 180 50"
-                              style={{ width: "100%", height: "2em" }}
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d={
-                                  index % 2 === 0
-                                    ? "M 10 30 Q 25 15, 45 28 Q 65 40, 85 25 Q 105 10, 125 30 Q 145 45, 165 28"
-                                    : "M 10 25 Q 30 35, 50 20 Q 70 5, 90 25 Q 110 40, 130 20 Q 150 10, 170 30"
-                                }
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                fill="none"
-                                className="text-slate-700"
+                      <div key={signature.title || index} className="flex flex-col">
+                        {/* Fixed-height Signature Container (guarantees sign place and divider line never shift) */}
+                        <div
+                          style={{
+                            height: "8em",
+                            display: "flex",
+                            alignItems: "flex-end",
+                            justifyContent: "center",
+                            position: "relative",
+                          }}
+                        >
+                          {signature.image ? (
+                            index === 0 ? (
+                              <div
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  display: "flex",
+                                  alignItems: "flex-end",
+                                  justifyContent: "center",
+                                  paddingBottom: "0.5em",
+                                }}
+                              >
+                                <Image
+                                  src={signature.image}
+                                  alt={`${signature.name} signature`}
+                                  width={640}
+                                  height={320}
+                                  unoptimized={signature.image.startsWith("http://") || signature.image.startsWith("https://")}
+                                  className="object-contain"
+                                  style={{
+                                    maxHeight: "3.25em",
+                                    maxWidth: "75%",
+                                    width: "auto",
+                                    height: "auto",
+                                  }}
+                                />
+                              </div>
+                            ) : (
+                              <Image
+                                src={signature.image}
+                                alt={`${signature.name} signature`}
+                                width={2200}
+                                height={2200}
+                                unoptimized={signature.image.startsWith("http://") || signature.image.startsWith("https://")}
+                                className="object-contain absolute left-0 w-full scale-150 h-full"
+                                style={{ maxHeight: "9em" }}
                               />
-                            </svg>
-                          </div>
-                        )}
+                            )
+                          ) : (
+                            /* Fixed-position fallback when no signature image exists */
+                            <div
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                display: "flex",
+                                alignItems: "flex-end",
+                                justifyContent: "center",
+                                paddingBottom: "0.75em",
+                              }}
+                            >
+                              <svg
+                                viewBox="0 0 180 50"
+                                style={{ width: "65%", height: "2.5em" }}
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d={
+                                    index % 2 === 0
+                                      ? "M 10 30 Q 25 15, 45 28 Q 65 40, 85 25 Q 105 10, 125 30 Q 145 45, 165 28"
+                                      : "M 10 25 Q 30 35, 50 20 Q 70 5, 90 25 Q 110 40, 130 20 Q 150 10, 170 30"
+                                  }
+                                  stroke="currentColor"
+                                  strokeWidth="1.5"
+                                  fill="none"
+                                  className="text-slate-400"
+                                />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Divider Line & Details (locked at consistent baseline across all 3 columns) */}
                         <div
                           className="border-t border-slate-300 text-center"
                           style={{ paddingTop: "0.25em" }}
                         >
                           <p
-                            style={{ fontSize: "0.875em" }}
-                            className="font-semibold text-slate-900"
+                            style={{ fontSize: "0.875em", minHeight: "1.25em" }}
+                            className="font-semibold text-slate-900 leading-tight"
                           >
                             {signature.name}
                           </p>
                           <p
-                            style={{ fontSize: "0.75em" }}
-                            className="text-slate-600"
+                            style={{ fontSize: "0.75em", minHeight: "1.25em" }}
+                            className="text-slate-600 leading-tight"
                           >
                             {signature.title}
                           </p>
                           <p
-                            style={{ fontSize: "0.75em" }}
-                            className="text-slate-600"
+                            style={{ fontSize: "0.75em", minHeight: "1.25em" }}
+                            className="text-slate-600 leading-tight"
                           >
                             {signature.institute}
                           </p>

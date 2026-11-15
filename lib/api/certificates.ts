@@ -6,6 +6,8 @@ export interface CertificateData {
   event_title: string;
   is_project_completed: boolean;
   issued_at: string;
+  president_name?: string | null;
+  president_signature_url?: string | null;
 }
 
 export interface CertificateVerifyResult {
