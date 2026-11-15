@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { Container } from "@/components/shared/Container";
 import ReactFlow, {
   Node,
   Edge,
@@ -163,8 +164,8 @@ const HeroLander = () => {
       className="relative min-h-auto max-h-[800px] flex items-center bg-white"
       id="home"
     >
-      <div className="container mx-auto px-4 sm:px-6 pt-12 sm:py-12 lg:py-16">
-        <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+      <Container className="pt-12 sm:py-12 lg:py-16">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left */}
           <div className="space-y-6" data-aos="fade-up">
             <span className="inline-block text-xs font-medium tracking-widest text-[#2b3870] uppercase border rounded-full px-4 py-2">
@@ -258,7 +259,7 @@ const HeroLander = () => {
             </ReactFlow>
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

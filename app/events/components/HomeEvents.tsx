@@ -1,10 +1,12 @@
 import Link from "next/link";
 import QueryString from "qs";
 import { ArrowRight } from "lucide-react";
-import { fetchWithToken } from "@/lib/fetch";
+import { fetchBackendResource } from "@/lib/fetch";
+import { fallbackEvents } from "@/data/events/fallback";
 import { EventTypes } from "@/types/events";
 import { EventCard } from "./EventCard";
-import { SectionHeading } from "@/components/custom/SectionHeading";
+import { SectionHeading } from "@/components/shared/SectionHeading";
+import { Container } from "@/components/shared/Container";
 
 export default async function HomeEvents() {
   const query = QueryString.stringify({
@@ -16,16 +18,16 @@ export default async function HomeEvents() {
   });
 
   try {
-    const res = await fetchWithToken(
+    let eventDetails: EventTypes[] = [];
+    const result = await fetchBackendResource<EventTypes[]>(
       `${process.env.STRAPI_API_URL}/events?${query}`
     );
 
-    if (!res || res.status !== 200) {
-      return null;
+    if (!result.isAvailabilityFailure && result.data) {
+      eventDetails = result.data;
+    } else if (result.isAvailabilityFailure) {
+      eventDetails = [...fallbackEvents];
     }
-
-    const resJson = await res.json();
-    const eventDetails: EventTypes[] = resJson.data || [];
 
     // Sort by recency (newest start date first) and select up to 8 events
     const latestEvents = eventDetails
@@ -40,8 +42,8 @@ export default async function HomeEvents() {
     }
 
     return (
-      <section className="py-16 px-4 md:px-6 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
+      <section className="w-full py-16 bg-gray-50">
+        <Container>
           <SectionHeading
             highlight="Latest Events"
             title="Organized By CSITABMC"
@@ -65,7 +67,7 @@ export default async function HomeEvents() {
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-        </div>
+        </Container>
       </section>
     );
   } catch (error) {

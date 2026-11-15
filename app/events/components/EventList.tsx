@@ -3,11 +3,11 @@
 import { useState, useMemo } from "react";
 import { EventTypes } from "@/types/events";
 import { EventCard } from "./EventCard";
-import { SharedPagination } from "@/components/custom/SharedPagination";
+import { SharedPagination } from "@/components/shared/SharedPagination";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search, X, SearchX, ChevronDown } from "lucide-react";
-import { EmptyState } from "@/components/custom/EmptyState";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 interface EventListProps {
   events: EventTypes[];

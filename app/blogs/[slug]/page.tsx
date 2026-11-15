@@ -3,12 +3,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
-import { Calendar, Clock, ChevronRight, ArrowRight } from "lucide-react";
+import { Calendar, ChevronRight, ArrowRight } from "lucide-react";
 import { fetchBlogBySlug, fetchPublishedBlogs } from "@/lib/blogs";
 import { generateBlogMetadata, siteConfig } from "@/lib/seo";
 import { BlogJsonLd, BreadcrumbJsonLd } from "@/lib/structured-data";
 import { BlogMarkdown } from "./BlogMarkdown";
 import { BlogCard } from "../components/BlogCard";
+import { Container } from "@/components/shared/Container";
 
 interface BlogDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -82,7 +83,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
 
       {/* Header Container */}
       <header className="pt-8 sm:pt-12 pb-6 sm:pb-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        <Container>
           {/* Breadcrumbs Navigation */}
           <nav
             aria-label="Breadcrumb"
@@ -122,7 +123,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             </p>
           )}
 
-          {/* Metadata Row: Shows author avatar image + name (no profile redirect, no post/designation), date & read time */}
+          {/* Metadata Row: Shows author avatar image + name (no profile redirect, no post/designation), date */}
           <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-slate-200/90 text-sm">
             <div className="flex items-center gap-3">
               {blog.author?.image ? (
@@ -145,27 +146,19 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 text-xs sm:text-sm text-slate-500 font-medium">
-              {formattedDate && (
-                <span className="flex items-center gap-1.5">
-                  <Calendar className="w-4 h-4 text-slate-400" />
-                  <span>{formattedDate}</span>
-                </span>
-              )}
-              {blog.read_time && (
-                <span className="flex items-center gap-1.5">
-                  <Clock className="w-4 h-4 text-slate-400" />
-                  <span>{blog.read_time}</span>
-                </span>
-              )}
-            </div>
+            {formattedDate && (
+              <div className="flex items-center gap-1.5 text-xs sm:text-sm text-slate-500 font-medium">
+                <Calendar className="w-4 h-4 text-slate-400" />
+                <span>{formattedDate}</span>
+              </div>
+            )}
           </div>
-        </div>
+        </Container>
       </header>
 
       {/* Featured Cover Image: Full view without cropping or zooming */}
       {blog.featured_image_url && (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 mb-8 sm:mb-12">
+        <Container className="mb-8 sm:mb-12">
           <div className="w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-100/70 border border-slate-200/80 shadow-xs p-2 sm:p-4 flex items-center justify-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -175,18 +168,22 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
               loading="eager"
             />
           </div>
-        </div>
+        </Container>
       )}
 
       {/* Main Article Body */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6">
-        <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 p-6 sm:p-10 lg:p-12 shadow-xs">
-          <BlogMarkdown content={blog.content} />
-        </div>
+      <main className="w-full">
+        <Container>
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 p-6 sm:p-10 lg:p-12 shadow-xs">
+            <BlogMarkdown content={blog.content} />
+          </div>
+        </Container>
+      </main>
 
-        {/* Recommended Articles Section */}
-        {recommendations.length > 0 && (
-          <section className="mt-14 pt-12 border-t border-slate-200">
+      {/* Recommended Articles Section */}
+      {recommendations.length > 0 && (
+        <section className="mt-14 pt-12 border-t border-slate-200">
+          <Container>
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
               <div>
                 <span className="text-xs font-semibold text-primary uppercase tracking-wider block mb-1">
@@ -211,9 +208,9 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
                 <BlogCard key={item.id} post={item} />
               ))}
             </div>
-          </section>
-        )}
-      </main>
+          </Container>
+        </section>
+      )}
     </article>
   );
 }

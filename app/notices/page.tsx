@@ -1,7 +1,9 @@
 import { NoticeTypes } from "@/types/Notice";
 import { NoticeList } from "./components/NoticeList";
-import { SectionHeading } from "@/components/custom/SectionHeading";
-import { fetchWithToken } from "@/lib/fetch";
+import { SectionHeading } from "@/components/shared/SectionHeading";
+import { Container } from "@/components/shared/Container";
+import { fetchBackendResource } from "@/lib/fetch";
+import { fallbackNotices } from "@/data/notices/fallback";
 import QueryString from "qs";
 import { generatePageMetadata, siteConfig, buildOgImageUrl } from "@/lib/seo";
 import type { Metadata } from "next";
@@ -45,20 +47,22 @@ export default async function NoticePage({ searchParams }: NoticePageProps) {
 
   let notices: NoticeTypes[] = [];
   try {
-    const res = await fetchWithToken(
-      `${process.env.STRAPI_API_URL}/notices?${query}`,
+    const result = await fetchBackendResource<NoticeTypes[]>(
+      `${process.env.STRAPI_API_URL}/notices?${query}`
     );
-    if (res && res.status === 200) {
-      const resJson = await res.json();
-      notices = resJson.data || [];
+    if (!result.isAvailabilityFailure && result.data) {
+      notices = result.data;
+    } else if (result.isAvailabilityFailure) {
+      notices = [...fallbackNotices];
     }
   } catch (err) {
     console.error("Error loading notices:", err);
+    notices = [...fallbackNotices];
   }
 
   return (
     <div className="min-h-screen bg-gray-50/50 py-10 md:py-14">
-      <main className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Container as="main">
         <SectionHeading
           highlight="Official Notices"
           title="& Announcements"
@@ -74,7 +78,7 @@ export default async function NoticePage({ searchParams }: NoticePageProps) {
           initialCategory={initialCategory}
           itemsPerPage={16}
         />
-      </main>
+      </Container>
     </div>
   );
 }

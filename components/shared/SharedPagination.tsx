@@ -11,7 +11,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
-import { startLoading, stopLoading } from "@/components/custom/LoadingIndicator";
+import { startLoading, stopLoading } from "@/components/shared/LoadingIndicator";
 
 export interface SharedPaginationProps {
   currentPage: number;

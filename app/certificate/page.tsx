@@ -2,7 +2,8 @@ import React from "react";
 import InputForm from "./InputForm";
 import { generatePageMetadata, siteConfig, buildOgImageUrl } from "@/lib/seo";
 import type { Metadata } from "next";
-import { SectionHeading } from "@/components/custom/SectionHeading";
+import { SectionHeading } from "@/components/shared/SectionHeading";
+import { Container } from "@/components/shared/Container";
 import { ShieldCheck, Award } from "lucide-react";
 import { BreadcrumbJsonLd } from "@/lib/structured-data";
 
@@ -36,7 +37,7 @@ export default function CertificatePage() {
         ]}
       />
 
-      <main className="container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Container as="main" className="max-w-4xl">
         <SectionHeading
           highlight="Verify"
           title="Your Certificate"
@@ -76,7 +77,7 @@ export default function CertificatePage() {
             .
           </p>
         </div>
-      </main>
+      </Container>
     </div>
   );
 }

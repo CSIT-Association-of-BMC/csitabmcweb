@@ -1,6 +1,7 @@
 import QueryString from "qs";
 import { fetchWithToken } from "@/lib/fetch";
 import type { NoticeTypes } from "@/types/Notice";
+import { fallbackNotices } from "@/data/notices/fallback";
 
 /**
  * Fetches up to `limit` related notices for a given notice.
@@ -77,9 +78,25 @@ export async function getRelatedNotices(
       }
     }
 
+    if (related.length === 0) {
+      return fallbackNotices
+        .filter(
+          (n) =>
+            String(n.id) !== String(currentId) &&
+            n.documentId !== currentNotice.documentId
+        )
+        .slice(0, limit);
+    }
+
     return related;
   } catch (err) {
     console.error("Error fetching related notices:", err);
-    return [];
+    return fallbackNotices
+      .filter(
+        (n) =>
+          String(n.id) !== String(currentId) &&
+          n.documentId !== currentNotice.documentId
+      )
+      .slice(0, limit);
   }
 }

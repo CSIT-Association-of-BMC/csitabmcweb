@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Quote } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { TestimonialData } from "@/app/data";
-import { SectionHeading } from "@/components/custom/SectionHeading";
+import { TestimonialData } from "@/data/about/data";
+import { SectionHeading } from "@/components/shared/SectionHeading";
 
 interface TestimonialProps {
   showHeader?: boolean;

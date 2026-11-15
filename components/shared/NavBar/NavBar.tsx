@@ -2,12 +2,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import NavLinkList from "./NavLinkList";
+import { Container } from "@/components/shared/Container";
+import { fetchPublishedBlogs } from "@/lib/blogs";
 
 const NavBar = async () => {
+  let showBlogs = true;
+  try {
+    const blogs = await fetchPublishedBlogs();
+    showBlogs = blogs.length > 0;
+  } catch {
+    showBlogs = true;
+  }
+
   return (
     <>
       <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-slate-200/50 shadow-sm">
-        <div className="container mx-auto flex justify-between items-center h-20 px-4 sm:px-6">
+        <Container className="flex justify-between items-center h-20">
           <Link href="/" className="group">
             <Image
               src="https://res.cloudinary.com/dol8m5gx7/image/upload/v1786551613/Logo_569c0a15d2.svg"
@@ -18,8 +28,8 @@ const NavBar = async () => {
               priority
             />
           </Link>
-          <NavLinkList />
-        </div>
+          <NavLinkList showBlogs={showBlogs} />
+        </Container>
       </nav>
     </>
   );

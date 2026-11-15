@@ -3,8 +3,8 @@ import qs from "qs";
 import { fetchWithToken } from "@/lib/fetch";
 import NotFound from "@/app/not-found";
 import { membersListFormatter } from "@/lib/members";
-import { SectionHeading } from "@/components/custom/SectionHeading";
-import { MemberCard } from "@/components/custom/MemberCard";
+import { SectionHeading } from "@/components/shared/SectionHeading";
+import { MemberCard } from "@/components/shared/MemberCard";
 
 export default async function TeamList() {
   const query = qs.stringify(

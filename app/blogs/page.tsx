@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { SectionHeading } from "@/components/custom/SectionHeading";
+import { SectionHeading } from "@/components/shared/SectionHeading";
+import { Container } from "@/components/shared/Container";
 import { fetchPublishedBlogs } from "@/lib/blogs";
 import { generatePageMetadata, siteConfig, buildOgImageUrl } from "@/lib/seo";
 import { BreadcrumbJsonLd } from "@/lib/structured-data";
@@ -37,7 +38,7 @@ export default async function BlogsPage() {
         ]}
       />
 
-      <main className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Container as="main">
         <SectionHeading
           highlight="Our"
           title="Articles"
@@ -62,7 +63,7 @@ export default async function BlogsPage() {
             </p>
           </div>
         )}
-      </main>
+      </Container>
     </div>
   );
 }

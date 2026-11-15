@@ -4,6 +4,10 @@
 @tailwind utilities;
 
 @layer utilities {
+  .site-container {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
   .animate-spin-slow {
     animation: spin 20s linear infinite;
   }

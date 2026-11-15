@@ -2,34 +2,36 @@
 
 import { motion } from "framer-motion";
 import { MapPin, Phone, Mail, Send, MessageSquare } from "lucide-react";
-import { SectionHeading } from "@/components/custom/SectionHeading";
+import { SectionHeading } from "@/components/shared/SectionHeading";
+import { Container } from "@/components/shared/Container";
+import { contactDetails } from "@/data/contact/data";
 
 const contactItems = [
   {
     icon: Phone,
     label: "Phone",
-    value: "+977-9762246074",
-    href: "tel:+977-9762246074",
+    value: contactDetails.phone,
+    href: `tel:${contactDetails.phone.replace(/[^0-9+]/g, "")}`,
   },
   {
     icon: Mail,
     label: "Email",
-    value: "team@csitabmc.com",
-    href: "mailto:team@csitabmc.com",
+    value: contactDetails.inquiryEmail,
+    href: `mailto:${contactDetails.inquiryEmail}`,
   },
   {
     icon: MapPin,
     label: "Visit Us",
-    value: "Butwal Multiple Campus",
+    value: contactDetails.campus,
     href: "https://maps.app.goo.gl/o9GhaQJSkUmjHuc1A",
-    description: "Golpark-3, Butwal, Rupandehi",
+    description: contactDetails.address,
   },
 ];
 
 export default function ContactForm() {
   return (
-    <section className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white py-16 md:py-16 px-4 md:px-6">
-      <div className="max-w-6xl mx-auto space-y-12">
+    <section className="w-full bg-gradient-to-b from-white via-slate-50 to-white py-12 md:py-16">
+      <Container className="space-y-12">
         <motion.div
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -174,7 +176,7 @@ export default function ContactForm() {
             </div>
           </motion.div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

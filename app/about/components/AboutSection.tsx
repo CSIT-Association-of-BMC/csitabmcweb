@@ -1,45 +1,26 @@
 import React from "react";
 import Image from "next/image";
+import { Container } from "@/components/shared/Container";
+import { cn } from "@/lib/utils";
+import { associationStats, associationPillars } from "@/data/about/data";
 
 interface AboutSectionProps {
   className?: string;
+  withContainer?: boolean;
 }
 
-export function AboutSection({ className = "" }: AboutSectionProps) {
-  const stats = [
-    { label: "Founded", value: "2016 AD" },
-    { label: "Executive members", value: "16" },
-    { label: "Community events", value: "110+" },
-    { label: "Students Impacted", value: "10000+" },
-    { label: "Partnered Org.", value: "100+" },
-  ];
+export function AboutSection({
+  className = "",
+  withContainer = true,
+}: AboutSectionProps) {
+  const stats = associationStats;
+  const pillars = associationPillars;
 
-  const pillars = [
-    {
-      title: "Skill building & participation",
-      description:
-        "Workshops, training, and guided participation to help students learn and grow.",
-    },
-    {
-      title: "Industry mentoring & networking",
-      description:
-        "Connecting students with professionals, alumni, and tech communities.",
-    },
-    {
-      title: "Student welfare & campus support",
-      description:
-        "Working with the CSIT department to support events and student initiatives.",
-    },
-    {
-      title: "Hackathons & innovation",
-      description:
-        "Hackathons and challenges that drive innovation and real-world problem solving.",
-    },
-  ];
+  const ContentWrapper = withContainer ? Container : "div";
 
   return (
-    <section className={`bg-white py-16 px-4 md:px-6 lg:px-8 ${className}`}>
-      <div className="max-w-6xl mx-auto space-y-12">
+    <section className={cn("w-full bg-white py-16", className)}>
+      <ContentWrapper className="space-y-12">
         <div className="flex flex-col gap-3 text-left">
           <h1 className="text-4xl md:text-5xl font-semibold text-slate-900 leading-tight">
             Student-Led Community for Learners at Butwal
@@ -119,7 +100,7 @@ export function AboutSection({ className = "" }: AboutSectionProps) {
             </div>
           ))}
         </div>
-      </div>
+      </ContentWrapper>
     </section>
   );
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Calendar, Clock, MapPin, Video } from "lucide-react";
 import type { EventTypes } from "@/types/events";
 import { EventPoster } from "./EventPoster";
+import { Container } from "@/components/shared/Container";
 
 const MONTHS = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -79,7 +80,7 @@ export function EventHero({ event }: EventHeroProps) {
 
   return (
     <section className="relative w-full bg-[#2b3870] text-white pt-10 sm:pt-14 pb-14 sm:pb-18 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Container>
         {/* Breadcrumb Navigation on Hero Background */}
         <nav
           aria-label="Breadcrumb"
@@ -160,7 +161,7 @@ export function EventHero({ event }: EventHeroProps) {
             <EventPoster imageUrl={posterUrl} title={event.title} />
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

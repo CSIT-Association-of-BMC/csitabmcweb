@@ -1,6 +1,7 @@
 import React from "react";
-import { SectionHeading } from "@/components/custom/SectionHeading";
-import { MemberCard } from "@/components/custom/MemberCard";
+import { SectionHeading } from "@/components/shared/SectionHeading";
+import { MemberCard } from "@/components/shared/MemberCard";
+import { Container } from "@/components/shared/Container";
 import { fetchAlumniMembers } from "@/lib/team";
 import { generatePageMetadata, siteConfig, buildOgImageUrl } from "@/lib/seo";
 import type { Metadata } from "next";
@@ -28,7 +29,7 @@ export default async function AlumniPage() {
 
   return (
     <div className="min-h-screen bg-gray-50/50 py-10 md:py-14">
-      <main className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Container as="main">
         <SectionHeading
           highlight="Our"
           title="Alumni"
@@ -58,7 +59,7 @@ export default async function AlumniPage() {
             </p>
           </div>
         )}
-      </main>
+      </Container>
     </div>
   );
 }

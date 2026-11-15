@@ -2,11 +2,11 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Calendar, Clock, ArrowRight, X } from "lucide-react";
+import { Calendar, ArrowRight, X } from "lucide-react";
 import { format } from "date-fns";
 import { BlogPost } from "@/lib/blogs";
 import { cn } from "@/lib/utils";
-import { startLoading } from "@/components/custom/LoadingIndicator";
+import { startLoading } from "@/components/shared/LoadingIndicator";
 
 export function BlogCard({ post }: { post: BlogPost }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -107,24 +107,15 @@ export function BlogCard({ post }: { post: BlogPost }) {
           {post.title}
         </h3>
 
-        {/* 2. Published Date & Read Time */}
-        <div className="flex items-center gap-2 text-xs text-slate-200 mt-2 flex-wrap">
-          {formattedDate && (
+        {/* 2. Published Date */}
+        {formattedDate && (
+          <div className="flex items-center gap-2 text-xs text-slate-200 mt-2 flex-wrap">
             <span className="inline-flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5 text-slate-300 shrink-0" />
               <span>{formattedDate}</span>
             </span>
-          )}
-          {post.read_time && (
-            <>
-              <span className="text-slate-500">•</span>
-              <span className="inline-flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-slate-300 shrink-0" />
-                <span>{post.read_time}</span>
-              </span>
-            </>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* 3. Author Name: Plain text, no profile redirect, no post */}
         <div className="text-xs text-slate-300 mt-1 font-medium truncate">

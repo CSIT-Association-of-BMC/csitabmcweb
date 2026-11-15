@@ -1,14 +1,19 @@
 "use client";
 
-import { Partnerdata } from "@/app/data";
+import { Partnerdata } from "@/data/about/data";
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { Container } from "@/components/shared/Container";
 
 interface CommunityPartnersProps {
   className?: string;
+  withContainer?: boolean;
 }
 
-export default function Component({ className = "" }: CommunityPartnersProps) {
+export default function Component({
+  className = "",
+  withContainer = true,
+}: CommunityPartnersProps) {
   const marqueeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,8 +41,8 @@ export default function Component({ className = "" }: CommunityPartnersProps) {
     };
   }, []);
 
-  return (
-    <div className={cn("w-full max-w-7xl mx-auto py-8 sm:py-10 overflow-hidden", className)}>
+  const content = (
+    <div className={cn("w-full py-8 sm:py-10 overflow-hidden", className)}>
        <h2 className="relative text-2xl font-medium text-center mb-12 pb-2">We Have 
         <span className="text-red-600"> Worked With </span>
       <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-36 h-[2px] bg-red-600" />
@@ -67,4 +72,10 @@ export default function Component({ className = "" }: CommunityPartnersProps) {
       </div>
     </div>
   );
+
+  if (!withContainer) {
+    return content;
+  }
+
+  return <Container>{content}</Container>;
 }

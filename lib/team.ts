@@ -1,7 +1,12 @@
-import { MemberCardData } from "@/components/custom/MemberCard";
-import { fetchWithToken } from "@/lib/fetch";
+import { MemberCardData } from "@/components/shared/MemberCard";
+import { fetchWithToken, fetchBackendResource } from "@/lib/fetch";
 import { MemberTypes } from "@/types/Members";
-import { TeamDetails } from "@/app/data";
+import { defaultTenureOrder } from "@/data/team/data";
+import {
+  fallbackLatestExecutives,
+  fallbackLatestAdvisors,
+  fallbackMemberProfiles,
+} from "@/data/team/fallback";
 import qs from "qs";
 
 export interface MemberItem extends MemberCardData {
@@ -391,11 +396,10 @@ export async function fetchTenuresWithMembers(): Promise<TenureItem[]> {
     );
 
     const strapiUrl = `${process.env.STRAPI_API_URL}/members?${query}`;
-    const res = await fetchWithToken(strapiUrl);
+    const result = await fetchBackendResource<MemberTypes[]>(strapiUrl);
 
-    if (res && res.status === 200) {
-      const resJson = await res.json();
-      const rawMembers: MemberTypes[] = resJson.data || [];
+    if (!result.isAvailabilityFailure && result.data) {
+      const rawMembers: MemberTypes[] = result.data || [];
 
       liveExecutives = rawMembers.map((m: any, idx: number) => ({
         id: m.id || m.memberId || idx,
@@ -410,30 +414,13 @@ export async function fetchTenuresWithMembers(): Promise<TenureItem[]> {
             ? m.order
             : (defaultTenureOrder[m.post] ?? idx + 13),
       }));
+    } else if (result.isAvailabilityFailure) {
+      // Confirmed backend availability failure - activate curated static fallback
+      liveExecutives = [...fallbackLatestExecutives];
     }
   } catch (error) {
     console.error("fetchTenuresWithMembers strapi error:", error);
-  }
-
-  // 3. Fallback to local sample dataset with authoritative order 1-15
-  if (liveExecutives.length === 0) {
-    liveExecutives = [
-      { id: "ex-1", memberId: "082JSNP5", fullName: "Nischal Panthi", role: "President", post: "President", image: "/team.jpeg", roleType: "EXECUTIVE", order: 1 },
-      { id: "ex-2", memberId: "082EMRK15", fullName: "Rupesh Kharal", role: "Vice-President", post: "Vice-President", image: "/team.jpeg", roleType: "EXECUTIVE", order: 2 },
-      { id: "ex-3", memberId: "082ATLSA9", fullName: "Swikrity A.C.", role: "Secretary", post: "Secretary", image: "/team.jpeg", roleType: "EXECUTIVE", order: 3 },
-      { id: "ex-4", memberId: "082EMJP13", fullName: "Jasteena Poudel", role: "Treasurer", post: "Treasurer", image: "/team.jpeg", roleType: "EXECUTIVE", order: 4 },
-      { id: "ex-5", memberId: "082ATLSG10", fullName: "Sabin Ghimire", role: "Tech Lead", post: "Tech Lead", image: "/team.jpeg", roleType: "EXECUTIVE", order: 5 },
-      { id: "ex-6", memberId: "082EMSA14", fullName: "Sarbesh Adhikari", role: "Event Lead", post: "Event Lead", image: "/team.jpeg", roleType: "EXECUTIVE", order: 6 },
-      { id: "ex-7", memberId: "076JNF45", fullName: "Aakash Neupane", role: "Graphic Designer", post: "Graphic Designer", image: "/team.jpeg", roleType: "EXECUTIVE", order: 7 },
-      { id: "ex-8", memberId: "231BTMRMR09", fullName: "Omit Arjel", role: "Joint Secretary", post: "Joint Secretary", image: "/team.jpeg", roleType: "EXECUTIVE", order: 8 },
-      { id: "ex-9", memberId: "957HZE4", fullName: "Sarina Kharel", role: "Ast. Tech Lead", post: "Ast. Tech Lead", image: "/team.jpeg", roleType: "EXECUTIVE", order: 9 },
-      { id: "ex-10", memberId: "280VDHOSM05", fullName: "Anuska Sharma Bhattarai", role: "Ast. Tech Lead", post: "Ast. Tech Lead", image: "/team.jpeg", roleType: "EXECUTIVE", order: 10 },
-      { id: "ex-11", memberId: "742FJE06", fullName: "Nikesh Bhandari", role: "Ast. Event Lead", post: "Ast. Event Lead", image: "/team.jpeg", roleType: "EXECUTIVE", order: 11 },
-      { id: "ex-12", memberId: "491GSFO4", fullName: "Sudip Pandey", role: "Executive Member", post: "Executive Member", image: "/team.jpeg", roleType: "EXECUTIVE", order: 12 },
-      { id: "ex-13", memberId: "017HVPR8", fullName: "Sneha Chaudhary", role: "Executive Member", post: "Executive Member", image: "/team.jpeg", roleType: "EXECUTIVE", order: 13 },
-      { id: "ex-14", memberId: "369BPEAZ90", fullName: "Niroj Gyawali", role: "Executive Member", post: "Executive Member", image: "/team.jpeg", roleType: "EXECUTIVE", order: 14 },
-      { id: "ex-15", memberId: "468GYBXHA98", fullName: "Prabesh thapa", role: "Executive Member", post: "Executive Member", image: "/team.jpeg", roleType: "EXECUTIVE", order: 15 },
-    ];
+    liveExecutives = [...fallbackLatestExecutives];
   }
 
   // Construct realistic tenures for UI navigation & testing
@@ -507,17 +494,14 @@ export async function getMemberProfile(id: string): Promise<MemberTypes | null> 
       },
       { encodeValuesOnly: true }
     );
-    const res = await fetchWithToken(
-      `${process.env.STRAPI_API_URL}/members/${id}?${query}`
-    );
-    if (res && res.status === 200) {
-      const resJson = await res.json();
-      if (resJson?.data) {
-        return {
-          ...resJson.data,
-          roleType: "EXECUTIVE",
-        };
-      }
+    const strapiUrl = `${process.env.STRAPI_API_URL}/members/${id}?${query}`;
+    const result = await fetchBackendResource<MemberTypes>(strapiUrl);
+
+    if (!result.isAvailabilityFailure && result.data) {
+      return {
+        ...result.data,
+        roleType: "EXECUTIVE",
+      };
     }
   } catch (err) {
     console.error("Strapi fetch member profile error:", err);
@@ -645,25 +629,15 @@ export async function getMemberProfile(id: string): Promise<MemberTypes | null> 
     };
   }
 
-  // 5. Search legacy TeamDetails dataset
-  const teamDetail = TeamDetails.find(
-    (t: any) => String(t.id).toLowerCase() === String(id).toLowerCase()
+  // 5. Search fallbackMemberProfiles dataset
+  const foundFallback = fallbackMemberProfiles.find(
+    (p) =>
+      String(p.memberId).toLowerCase() === String(id).toLowerCase() ||
+      String(p.fullName).toLowerCase() === String(id).toLowerCase()
   );
 
-  if (teamDetail) {
-    return {
-      memberId: String(teamDetail.id),
-      fullName: teamDetail.Name,
-      post: teamDetail.Post || "Team Member",
-      image: { url: teamDetail.img || "/team.jpeg" },
-      email: teamDetail.Email || "team@csitabmc.com",
-      tags: "Executive Leadership, Community Impact, BMC",
-      description: `${teamDetail.Name} served as ${teamDetail.Post} at CSIT Association of BMC, driving initiatives and student growth.`,
-      facebookLink: teamDetail.Facebook || "https://facebook.com/csitabmc",
-      linkedLink: teamDetail.LinkedIn || "https://linkedin.com/company/csitabmc",
-      githubLink: teamDetail.Github || "https://github.com/CSIT-Association-of-BMC",
-      roleType: "EXECUTIVE",
-    };
+  if (foundFallback) {
+    return foundFallback;
   }
 
   return null;

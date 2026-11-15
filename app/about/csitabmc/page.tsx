@@ -1,8 +1,9 @@
 import React from "react";
-import { SectionHeading } from "@/components/custom/SectionHeading";
-import { AboutSection } from "@/components/custom/AboutSection";
-import CommunityPartners from "@/components/custom/CommunityPartners";
-import Testimonial from "@/components/custom/Testimonial";
+import { SectionHeading } from "@/components/shared/SectionHeading";
+import { AboutSection } from "@/app/about/components/AboutSection";
+import CommunityPartners from "@/app/about/components/CommunityPartners";
+import Testimonial from "@/app/about/components/Testimonial";
+import { Container } from "@/components/shared/Container";
 import { generatePageMetadata, siteConfig, buildOgImageUrl } from "@/lib/seo";
 import type { Metadata } from "next";
 
@@ -29,7 +30,7 @@ export const metadata: Metadata = generatePageMetadata({
 export default function CSITABMCPage() {
   return (
     <div className="min-h-screen bg-white py-10 md:py-14">
-      <main className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16">
+      <Container as="main" className="space-y-12 sm:space-y-16">
         {/* 1. Page Header */}
         <div>
           <SectionHeading
@@ -41,18 +42,18 @@ export default function CSITABMCPage() {
         </div>
 
         {/* 2. Core About Section (matches Home page font and layout exactly) */}
-        <AboutSection className="py-0 px-0 md:px-0 lg:px-0" />
+        <AboutSection className="py-0 px-0 md:px-0 lg:px-0" withContainer={false} />
 
         {/* 3. Community Partners (We Have Worked With) */}
         <section className="pt-6 border-t border-slate-200/90">
-          <CommunityPartners />
+          <CommunityPartners className="py-0" withContainer={false} />
         </section>
 
         {/* 4. Community Testimonials */}
         <section className="pt-6 border-t border-slate-200/90">
           <Testimonial showHeader={true} />
         </section>
-      </main>
+      </Container>
     </div>
   );
 }

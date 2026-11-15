@@ -7,7 +7,7 @@ import { NoticeTypes } from "@/types/Notice";
 import { getLocalDate } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { NoticePreviewModal } from "./NoticePreviewModal";
-import { startLoading } from "@/components/custom/LoadingIndicator";
+import { startLoading } from "@/components/shared/LoadingIndicator";
 import { getNoticeSlug } from "@/lib/slugs";
 
 export const NoticeCardComponent = ({ notice }: { notice: NoticeTypes }) => {

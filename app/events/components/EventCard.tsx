@@ -7,7 +7,7 @@ import { Calendar, Clock, MapPin, Video, ArrowRight, X } from "lucide-react";
 import Markdown from "react-markdown";
 import { EventTypes } from "@/types/events";
 import { cn } from "@/lib/utils";
-import { startLoading } from "@/components/custom/LoadingIndicator";
+import { startLoading } from "@/components/shared/LoadingIndicator";
 import { getEventSlug } from "@/lib/slugs";
 
 const MONTHS = [

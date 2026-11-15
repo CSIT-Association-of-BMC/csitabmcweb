@@ -6,6 +6,7 @@ import { MemberTypes } from "@/types/Members";
 import { getMemberProfile } from "@/lib/team";
 import Markdown from "react-markdown";
 import { generateMemberMetadata, siteConfig } from "@/lib/seo";
+import { Container } from "@/components/shared/Container";
 
 export async function generateMetadata({
   params,
@@ -72,8 +73,8 @@ export default async function Profile({
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-[#f0f4ff]">
-      <section className="py-14 md:py-20 px-4 md:px-6">
-        <div className="max-w-6xl mx-auto">
+      <section className="w-full py-14 md:py-20">
+        <Container>
           <div className="grid lg:grid-cols-[320px_1fr] gap-8">
             <div className="lg:col-span-1">
               <div className="sticky top-8 space-y-6">
@@ -242,7 +243,7 @@ export default async function Profile({
               </div>
             </div>
           </div>
-        </div>
+        </Container>
       </section>
     </main>
   );

@@ -8,6 +8,7 @@ import { BreadcrumbJsonLd, NoticeJsonLd } from "@/lib/structured-data";
 import { NoticeDetailPreview } from "./NoticeDetailPreview";
 import { NoticeInfo } from "./NoticeInfo";
 import { RelatedNotices } from "./RelatedNotices";
+import { Container } from "@/components/shared/Container";
 
 interface NoticePageProps {
   params: Promise<{ slug: string }>;
@@ -82,7 +83,7 @@ export default async function NoticeDetailPage({ params }: NoticePageProps) {
         ]}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <Container className="py-8 sm:py-12">
         {/* Breadcrumb Navigation */}
         <nav aria-label="Breadcrumb" className="mb-8">
           <div className="text-xs sm:text-sm text-slate-500 flex items-center space-x-2 min-w-0">
@@ -113,7 +114,7 @@ export default async function NoticeDetailPage({ params }: NoticePageProps) {
             <RelatedNotices notices={relatedNotices} />
           </div>
         </div>
-      </div>
+      </Container>
     </article>
   );
 }

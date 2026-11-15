@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Calendar, ArrowRight, MapPin } from "lucide-react";
 import type { EventTypes } from "@/types/events";
 import { getEventSlug } from "@/lib/slugs";
-import { SectionHeading } from "@/components/custom/SectionHeading";
+import { SectionHeading } from "@/components/shared/SectionHeading";
 
 const MONTHS = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",

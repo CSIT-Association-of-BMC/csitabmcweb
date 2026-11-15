@@ -6,7 +6,7 @@ import QueryString from "qs";
 import CertificateDisplay from "./CertificateDisplay";
 import CertificateVerification from "./CertificateVerification";
 import EventMentorDetails from "./EventMentorDetails";
-import { Container } from "@/components/custom/Container";
+import { Container } from "@/components/shared/Container";
 import { generatePageMetadata, siteConfig } from "@/lib/seo";
 import type { Metadata } from "next";
 

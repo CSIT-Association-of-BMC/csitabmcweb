@@ -2,6 +2,8 @@ import QueryString from "qs";
 import { fetchWithToken } from "@/lib/fetch";
 import type { EventTypes } from "@/types/events";
 import type { NoticeTypes } from "@/types/Notice";
+import { fallbackEvents } from "@/data/events/fallback";
+import { fallbackNotices } from "@/data/notices/fallback";
 
 /**
  * Converts a string title into a URL-friendly slug.
@@ -156,6 +158,21 @@ export async function resolveEvent(identifier: string): Promise<EventLookupResul
     console.error("Fallback event resolution error:", err);
   }
 
+  // 4. Offline / Backend Unavailable Fallback
+  const fallbackMatch = fallbackEvents.find((ev) => {
+    const slug = getEventSlug(ev);
+    return slug === decodedId || ev.documentId === decodedId || String(ev.id) === decodedId;
+  });
+
+  if (fallbackMatch) {
+    const canonical = getEventSlug(fallbackMatch);
+    return {
+      event: fallbackMatch,
+      shouldRedirect: canonical !== decodedId,
+      canonicalSlug: canonical,
+    };
+  }
+
   return { event: null, shouldRedirect: false, canonicalSlug: "" };
 }
 
@@ -238,6 +255,21 @@ export async function resolveNotice(identifier: string): Promise<NoticeLookupRes
     }
   } catch (err) {
     console.error("Fallback notice resolution error:", err);
+  }
+
+  // 4. Offline / Backend Unavailable Fallback
+  const fallbackNoticeMatch = fallbackNotices.find((not) => {
+    const slug = getNoticeSlug(not);
+    return slug === decodedId || not.documentId === decodedId || String(not.id) === decodedId;
+  });
+
+  if (fallbackNoticeMatch) {
+    const canonical = getNoticeSlug(fallbackNoticeMatch);
+    return {
+      notice: fallbackNoticeMatch,
+      shouldRedirect: canonical !== decodedId,
+      canonicalSlug: canonical,
+    };
   }
 
   return { notice: null, shouldRedirect: false, canonicalSlug: "" };

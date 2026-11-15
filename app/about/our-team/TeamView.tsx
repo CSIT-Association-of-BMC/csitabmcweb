@@ -5,7 +5,7 @@ import {
   TenureItem,
   sortMembersByOrder,
 } from "@/lib/team";
-import { MemberCard } from "@/components/custom/MemberCard";
+import { MemberCard } from "@/components/shared/MemberCard";
 import { ChevronDown } from "lucide-react";
 
 interface TeamViewProps {

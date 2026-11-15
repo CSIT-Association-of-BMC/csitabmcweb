@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SEMESTER_DEFINITIONS } from "@/lib/study-materials";
 import { generatePageMetadata, buildOgImageUrl, siteConfig } from "@/lib/seo";
 import { generateBreadcrumbSchema } from "@/lib/structured-data";
-import { SectionHeading } from "@/components/custom/SectionHeading";
+import { SectionHeading } from "@/components/shared/SectionHeading";
 
 export const metadata: Metadata = generatePageMetadata({
   title: "Past Year Papers",

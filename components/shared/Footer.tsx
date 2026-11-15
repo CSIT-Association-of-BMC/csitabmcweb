@@ -1,8 +1,9 @@
-import { NavLinkPaths } from "@/app/data";
+import { NavLinkPaths } from "@/data/nav/data";
 import Link from "next/link";
 import Image from "next/image";
 import NavLink from "./NavBar/NavLinks";
 import { Linkedin, Instagram, Facebook, Github, Youtube } from "lucide-react";
+import { Container } from "@/components/shared/Container";
 
 const keyLinks = NavLinkPaths.slice(0, 4);
 const currentYear = new Date().getFullYear();
@@ -43,7 +44,7 @@ export default function Footer() {
 
   return (
     <footer className="relative overflow-hidden text-slate-50 bg-[#2b3870]">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-16 space-y-10 relative z-10">
+      <Container className="py-14 md:py-16 space-y-10 relative z-10">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <Link href="/" aria-label="CSIT Association of BMC">
@@ -139,7 +140,7 @@ export default function Footer() {
             ))}
           </div>
         </div>
-      </div>
+      </Container>
     </footer>
   );
 }

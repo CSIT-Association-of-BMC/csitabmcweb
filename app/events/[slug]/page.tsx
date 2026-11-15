@@ -7,6 +7,7 @@ import { EventHero } from "./EventHero";
 import { EventMarkdown } from "./EventMarkdown";
 import { EventSidebar } from "./EventSidebar";
 import { EventSpeakers } from "./EventSpeakers";
+import { Container } from "@/components/shared/Container";
 
 interface EventPageProps {
   params: Promise<{ slug: string }>;
@@ -95,27 +96,29 @@ export default async function EventDetailPage({ params }: EventPageProps) {
       <EventHero event={event} />
 
       {/* Main Content Layout */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
-          {/* Main Content Column: Description Card + Speakers Card */}
-          <div className="lg:col-span-8 space-y-8">
-            <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-10 shadow-xs">
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-6 tracking-tight pb-3 border-b border-slate-100">
-                About the Event
-              </h2>
-              <EventMarkdown content={event.description} />
+      <section className="w-full py-10 lg:py-14">
+        <Container>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
+            {/* Main Content Column: Description Card + Speakers Card */}
+            <div className="lg:col-span-8 space-y-8">
+              <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-10 shadow-xs">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-6 tracking-tight pb-3 border-b border-slate-100">
+                  About the Event
+                </h2>
+                <EventMarkdown content={event.description} />
+              </div>
+
+              <EventSpeakers mentors={event.mentors} />
             </div>
 
-            <EventSpeakers mentors={event.mentors} />
-          </div>
-
-          {/* Structured Details Sidebar (Sticky on desktop) */}
-          <div className="lg:col-span-4">
-            <div className="lg:sticky lg:top-24 max-h-[calc(100vh-7rem)] overflow-y-auto">
-              <EventSidebar event={event} />
+            {/* Structured Details Sidebar (Sticky on desktop) */}
+            <div className="lg:col-span-4">
+              <div className="lg:sticky lg:top-24 max-h-[calc(100vh-7rem)] overflow-y-auto">
+                <EventSidebar event={event} />
+              </div>
             </div>
           </div>
-        </div>
+        </Container>
       </section>
     </article>
   );

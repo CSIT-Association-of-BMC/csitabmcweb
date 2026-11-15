@@ -1,8 +1,9 @@
-import { AboutSection } from "@/components/custom/AboutSection";
+import { AboutSection } from "@/app/about/components/AboutSection";
 import HomeEvents from "./events/components/HomeEvents";
-import HeroLander from "@/components/custom/HeroLander/HeroLander";
-import Testimonial from "@/components/custom/Testimonial";
-import CommunityPartners from "@/components/custom/CommunityPartners";
+import HeroLander from "@/app/components/HeroLander/HeroLander";
+import Testimonial from "@/app/about/components/Testimonial";
+import CommunityPartners from "@/app/about/components/CommunityPartners";
+import { Container } from "@/components/shared/Container";
 import { generatePageMetadata, siteConfig } from "@/lib/seo";
 import type { Metadata } from "next";
 
@@ -35,7 +36,11 @@ export default function Home() {
       <HeroLander />
       <AboutSection />
       <HomeEvents />
-      <Testimonial className="py-16 px-4 md:px-6" />
+      <section className="w-full py-16">
+        <Container>
+          <Testimonial />
+        </Container>
+      </section>
       <CommunityPartners />
     </>
   );
