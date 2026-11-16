@@ -28,7 +28,7 @@ const contactItems = [
   },
 ];
 
-export default function ContactForm() {
+export default function ContactView() {
   return (
     <section className="w-full bg-gradient-to-b from-white via-slate-50 to-white py-12 md:py-16">
       <Container className="space-y-12">

@@ -10,11 +10,8 @@ export const metadata: Metadata = generatePageMetadata({
   description:
     "Access CSIT past year board exam papers and model sets for all 8 semesters. Free study resources for BSc.CSIT students at Butwal Multiple Campus.",
   canonical: `${siteConfig.url}/study-materials/semester-exam`,
-  ogImage: buildOgImageUrl({
-    title: "Past Year Papers",
-    subtitle: "Board Exams & Model Sets",
-    type: "page",
-  }),
+  ogImage: siteConfig.defaultOgImage,
+  ogImageAlt: "Past Year Papers & Model Sets - CSIT Association of BMC",
   keywords: [
     "CSIT Past Papers",
     "BSc CSIT Exam Papers",

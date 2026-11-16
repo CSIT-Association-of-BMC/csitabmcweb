@@ -14,7 +14,8 @@ export const getEvent = async () => {
 
 export const getAllRegistration = async () => {
   try {
-    const apiUrl = process.env.REGESTATION_DATA_API;
+    const apiUrl =
+      process.env.REGISTRATION_DATA_API || process.env.REGESTATION_DATA_API;
     if (!apiUrl) return [];
     const response = await fetch(apiUrl);
     const res = await response.json();

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { slugify } from "@/lib/slugs";
 import { resolveImageUrl } from "@/lib/images";
+import { formatDesignation } from "@/lib/formatting";
 
 export interface MemberCardData {
   id?: string | number;
@@ -84,7 +85,7 @@ export function MemberCard({
       }
       return "Alumnus Member";
     }
-    return member.post || member.role || "";
+    return formatDesignation(member.post || member.role || "");
   })();
 
   const isExternalImage =

@@ -29,6 +29,9 @@ export const metadata: Metadata = {
   authors: [...siteConfig.authors],
   creator: siteConfig.creator,
   publisher: siteConfig.publisher,
+  alternates: {
+    canonical: siteConfig.url,
+  },
   openGraph: {
     type: "website",
     locale: siteConfig.locale,
@@ -41,7 +44,7 @@ export const metadata: Metadata = {
         url: "/logo.png",
         width: 1200,
         height: 630,
-        alt: "Logo | CSIT Asociation of BMC | Butwal, Nepal",
+        alt: "Logo | CSIT Association of BMC | Butwal, Nepal",
         type: "image/jpeg",
       },
     ],
@@ -68,6 +71,8 @@ export const metadata: Metadata = {
   },
 };
 
+const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -76,17 +81,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Google tag (gtag.js) */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-1PYDC70JVG"
-        ></script>
-        <script>
-          {`window.dataLayer = window.dataLayer || [];
+        {/* Google Analytics 4 */}
+        {GA_ID && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+            ></script>
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', 'G-1PYDC70JVG');`}
-        </script>
+          gtag('config', '${GA_ID}');`,
+              }}
+            />
+          </>
+        )}
 
         <MicrosoftClarity />
 

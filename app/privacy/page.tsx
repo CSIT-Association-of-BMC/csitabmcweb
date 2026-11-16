@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/shared/Container";
+import { generatePageMetadata, siteConfig } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = generatePageMetadata({
   title: "Privacy Policy | CSIT Association of BMC Notice App",
   description:
     "Privacy Policy explaining how CSIT Association of BMC's Notice App collects, uses, stores, and protects user and device information.",
-};
+  canonical: `${siteConfig.url}/privacy`,
+  ogImage: siteConfig.defaultOgImage,
+  ogImageAlt: "Privacy Policy - CSIT Association of BMC",
+});
 
 const APP_NAME = "CSIT Association of BMC App";
 

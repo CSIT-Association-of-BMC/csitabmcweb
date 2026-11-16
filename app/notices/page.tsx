@@ -11,11 +11,8 @@ export const metadata: Metadata = generatePageMetadata({
   description:
     "Stay updated with the latest notices, announcements, and important information from CSIT Association of BMC. Official updates for CSIT students at Butwal Multiple Campus.",
   canonical: `${siteConfig.url}/notices`,
-  ogImage: buildOgImageUrl({
-    title: "Notices",
-    subtitle: "Official Announcements & Updates",
-    type: "notice",
-  }),
+  ogImage: siteConfig.defaultOgImage,
+  ogImageAlt: "Official Notices & Announcements - CSIT Association of BMC",
   keywords: [
     "CSIT Notices",
     "BMC Announcements",

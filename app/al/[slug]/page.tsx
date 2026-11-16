@@ -8,6 +8,7 @@ import { generateAlumniProfileMetadata, siteConfig } from "@/lib/seo";
 import { PersonJsonLd, BreadcrumbJsonLd } from "@/lib/structured-data";
 import { Container } from "@/components/shared/Container";
 import { resolveImageUrl } from "@/lib/images";
+import { formatDesignation } from "@/lib/formatting";
 
 export async function generateMetadata({
   params,
@@ -228,7 +229,7 @@ export default async function AlumniProfilePage({
                         className="group flex flex-col p-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-[#2b3870]/40 transition-all shadow-xs"
                       >
                         <span className="text-xs font-semibold text-[#2b3870] group-hover:underline">
-                          {h.designation}
+                          {formatDesignation(h.designation)}
                         </span>
                         <span className="text-xs text-slate-500 mt-1">
                           Tenure: {h.tenure_name}
@@ -266,7 +267,7 @@ export default async function AlumniProfilePage({
                     <a
                       href={alumni.facebookLink}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       className="flex items-start gap-3 p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-[#2b3870]/40 hover:bg-[#2b3870]/5 transition-colors"
                     >
                       <Facebook className="h-5 w-5 text-[#2b3870] mt-0.5 shrink-0" />
@@ -285,7 +286,7 @@ export default async function AlumniProfilePage({
                     <a
                       href={alumni.linkedLink}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       className="flex items-start gap-3 p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-[#2b3870]/40 hover:bg-[#2b3870]/5 transition-colors"
                     >
                       <Linkedin className="h-5 w-5 text-[#2b3870] mt-0.5 shrink-0" />
@@ -304,7 +305,7 @@ export default async function AlumniProfilePage({
                     <a
                       href={alumni.githubLink}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       className="flex items-start gap-3 p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-[#2b3870]/40 hover:bg-[#2b3870]/5 transition-colors"
                     >
                       <Github className="h-5 w-5 text-[#2b3870] mt-0.5 shrink-0" />

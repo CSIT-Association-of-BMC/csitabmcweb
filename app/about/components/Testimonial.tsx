@@ -16,15 +16,17 @@ export default function Testimonial({
   showHeader = true,
   className = "",
 }: TestimonialProps) {
+  const testimonials = TestimonialData.slice(0, 3);
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
+    if (testimonials.length <= 1) return;
     const timer = setInterval(() => {
-      setActiveIndex((current) => (current + 1) % TestimonialData.length);
+      setActiveIndex((current) => (current + 1) % testimonials.length);
     }, 6000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [testimonials.length]);
 
   return (
     <div className={cn("w-full max-w-4xl mx-auto", className)}>
@@ -42,7 +44,7 @@ export default function Testimonial({
           className="flex transition-transform duration-500 ease-out"
           style={{ transform: `translateX(-${activeIndex * 100}%)` }}
         >
-          {TestimonialData.map((testimonial) => (
+          {testimonials.map((testimonial) => (
             <div key={testimonial.id} className="w-full flex-shrink-0 px-2 sm:px-4">
               <div className="rounded-xl bg-white border border-slate-200 p-6 sm:p-8 flex flex-col items-center text-center shadow-xs">
                 {/* Author Info (Top) */}
@@ -75,7 +77,7 @@ export default function Testimonial({
 
         {/* Carousel Slide Indicators */}
         <div className="flex justify-center items-center mt-6 gap-2">
-          {TestimonialData.map((_, index) => (
+          {testimonials.map((_, index) => (
             <button
               key={index}
               onClick={() => setActiveIndex(index)}

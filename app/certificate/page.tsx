@@ -12,11 +12,8 @@ export const metadata: Metadata = generatePageMetadata({
   description:
     "Verify your certificates from CSIT Association of BMC. Enter your certificate ID to authenticate workshop, hackathon, and event participation credentials.",
   canonical: `${siteConfig.url}/certificate`,
-  ogImage: buildOgImageUrl({
-    title: "Certificate Verification",
-    subtitle: "Verify Credentials",
-    type: "page",
-  }),
+  ogImage: siteConfig.defaultOgImage,
+  ogImageAlt: "Certificate Verification Portal - CSIT Association of BMC",
   keywords: [
     "Certificate Verification",
     "CSIT Certificate",

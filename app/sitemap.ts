@@ -5,7 +5,7 @@ import { getEventSlug, getNoticeSlug, slugify } from "@/lib/slugs";
 import { getPublishedBlogs } from "@/lib/api/blogs";
 import { getEvents } from "@/lib/api/events";
 import { getNotices } from "@/lib/api/notices";
-import { getMembers } from "@/lib/api/team";
+import { getTenures, getAlumni } from "@/lib/api/team";
 
 export const dynamic = "force-dynamic";
 
@@ -79,17 +79,50 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  // Dynamic member routes from Django API / fallback with canonical slugs
-  const { members } = await getMembers();
-  const memberEntries: SitemapEntry[] = members.map((member) => {
-    const slug = member.slug || slugify(member.fullName);
-    return {
-      url: `${baseUrl}/mb/${slug}`,
-      lastModified: now,
-      changeFrequency: "monthly" as ChangeFrequency,
-      priority: 0.5,
-    };
-  });
+  // Dynamic member routes scoped by tenure (/mb/[tenure]/[slug])
+  const memberEntries: SitemapEntry[] = [];
+  const seenMemberUrls = new Set<string>();
+
+  const { tenures } = await getTenures();
+  for (const tenure of tenures) {
+    const tenureSlug = tenure.slug || String(tenure.id);
+    const committee = [...(tenure.executives || []), ...(tenure.advisors || [])];
+    for (const member of committee) {
+      const memberSlug = member.slug || slugify(member.fullName);
+      if (memberSlug && tenureSlug) {
+        const url = `${baseUrl}/mb/${encodeURIComponent(tenureSlug)}/${encodeURIComponent(memberSlug)}`;
+        if (!seenMemberUrls.has(url)) {
+          seenMemberUrls.add(url);
+          memberEntries.push({
+            url,
+            lastModified: now,
+            changeFrequency: "monthly" as ChangeFrequency,
+            priority: 0.6,
+          });
+        }
+      }
+    }
+  }
+
+  // Dynamic alumni routes (/al/[slug])
+  const alumniEntries: SitemapEntry[] = [];
+  const seenAlumniUrls = new Set<string>();
+  const { alumni } = await getAlumni();
+  for (const alum of alumni) {
+    const alumSlug = alum.slug || slugify(alum.fullName);
+    if (alumSlug) {
+      const url = `${baseUrl}/al/${encodeURIComponent(alumSlug)}`;
+      if (!seenAlumniUrls.has(url)) {
+        seenAlumniUrls.add(url);
+        alumniEntries.push({
+          url,
+          lastModified: now,
+          changeFrequency: "monthly" as ChangeFrequency,
+          priority: 0.6,
+        });
+      }
+    }
+  }
 
   // Dynamic blog routes from Django API / fallback
   const { blogs } = await getPublishedBlogs();
@@ -130,6 +163,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...eventEntries,
     ...noticeEntries,
     ...memberEntries,
+    ...alumniEntries,
     ...blogEntries,
     ...studyEntries,
   ];

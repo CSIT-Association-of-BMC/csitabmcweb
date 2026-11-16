@@ -11,11 +11,8 @@ export const metadata: Metadata = generatePageMetadata({
   description:
     "Meet the people who lead, guide, and contribute to CSITABMC across different tenures. Explore executive committee members and faculty advisors.",
   canonical: `${siteConfig.url}/about/our-team`,
-  ogImage: buildOgImageUrl({
-    title: "Our Team",
-    subtitle: "Leadership & Advisors Across Tenures",
-    type: "page",
-  }),
+  ogImage: `${siteConfig.url}/team.jpeg`,
+  ogImageAlt: "CSIT Association of BMC Executive Committee and Advisors",
   keywords: [
     "CSITABMC Team",
     "Executive Committee",

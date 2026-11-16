@@ -10,11 +10,8 @@ export const metadata: Metadata = generatePageMetadata({
   description:
     "Discover workshops, hackathons, seminars, and tech events organized by CSIT Association of BMC in Butwal, Nepal. Join our community events and grow your skills.",
   canonical: `${siteConfig.url}/events`,
-  ogImage: buildOgImageUrl({
-    title: "Events",
-    subtitle: "Workshops, Hackathons & Tech Talks",
-    type: "event",
-  }),
+  ogImage: siteConfig.defaultOgImage,
+  ogImageAlt: "Events & Workshops - CSIT Association of BMC",
   keywords: [
     "Tech Events Butwal",
     "CSIT Workshops",

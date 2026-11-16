@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { resolveImageUrl } from "./images";
 
 // =============================================================================
 // Global SEO Configuration (Fallback values only)
@@ -9,7 +10,7 @@ export const siteConfig = {
     shortName: "CSITABMC",
     description:
         "CSIT Association of Butwal Multiple Campus is a non-profit, student-led tech community empowering IT and CSIT students through workshops, hackathons, and tech events in Butwal, Rupandehi, Nepal.",
-    url: "https://csitabmc.com",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://csitabmc.com",
     ogImage: "https://csitabmc.com/api/og",
     defaultOgImage:
         "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191383/logohero_nsqj8h.png",
@@ -65,6 +66,7 @@ export interface PageSEO {
     keywords?: string[];
     canonical?: string;
     ogImage?: string;
+    ogImageAlt?: string;
     ogType?: "website" | "article" | "profile";
     noIndex?: boolean;
     publishedTime?: string;
@@ -77,6 +79,22 @@ export interface EventSEO extends PageSEO {
     eventDate: string;
     eventLocation?: string;
     eventImage?: string;
+}
+
+// =============================================================================
+// Absolute OpenGraph Image URL Resolver
+// =============================================================================
+
+export function resolveAbsoluteOgImageUrl(image?: unknown, fallback?: string): string {
+    const defaultFallback = fallback || siteConfig.defaultOgImage;
+    if (!image) return defaultFallback;
+    const resolved = resolveImageUrl(image, defaultFallback);
+    if (!resolved) return defaultFallback;
+    if (resolved.startsWith("http://") || resolved.startsWith("https://")) {
+        return resolved;
+    }
+    const cleanPath = resolved.startsWith("/") ? resolved : `/${resolved}`;
+    return `${siteConfig.url}${cleanPath}`;
 }
 
 // =============================================================================
@@ -104,7 +122,8 @@ export function generatePageMetadata(seo: PageSEO): Metadata {
     const description = seo.description || siteConfig.description;
     const canonical = seo.canonical || siteConfig.url;
     const keywords = seo.keywords?.length ? seo.keywords : siteConfig.keywords;
-    const ogImage = seo.ogImage || buildOgImageUrl({ title: seo.title });
+    const ogImage = resolveAbsoluteOgImageUrl(seo.ogImage);
+    const ogImageAlt = seo.ogImageAlt || title;
 
     return {
         title,
@@ -129,7 +148,7 @@ export function generatePageMetadata(seo: PageSEO): Metadata {
                     url: ogImage,
                     width: 1200,
                     height: 630,
-                    alt: title,
+                    alt: ogImageAlt,
                 },
             ],
             ...(seo.publishedTime && { publishedTime: seo.publishedTime }),
@@ -178,19 +197,14 @@ export function generateEventMetadata(event: {
         event.description ||
         `Join us for ${event.title}, a ${event.category || "tech event"} organized by ${siteConfig.name} in Butwal, Nepal.`;
     const canonical = `${siteConfig.url}/events/${event.slug}`;
-    const ogImage =
-        event.image ||
-        buildOgImageUrl({
-            title: event.title,
-            subtitle: event.category || "Event",
-            type: "event",
-        });
+    const ogImage = resolveAbsoluteOgImageUrl(event.image);
 
     return generatePageMetadata({
         title,
         description,
         canonical,
         ogImage,
+        ogImageAlt: `${event.title} - Event | ${siteConfig.name}`,
         ogType: "article",
         keywords: [
             event.title,
@@ -220,19 +234,14 @@ export function generateNoticeMetadata(notice: {
         notice.description ||
         `Official notice from ${siteConfig.name}: ${notice.title}`;
     const canonical = `${siteConfig.url}/notices/${notice.slug}`;
-    const ogImage =
-        notice.image ||
-        buildOgImageUrl({
-            title: notice.title,
-            subtitle: "Notice",
-            type: "notice",
-        });
+    const ogImage = resolveAbsoluteOgImageUrl(notice.image);
 
     return generatePageMetadata({
         title,
         description,
         canonical,
         ogImage,
+        ogImageAlt: `${notice.title} - Official Notice | ${siteConfig.name}`,
         ogType: "article",
         keywords: ["Notice", "CSIT Association", "BMC", "Announcement"],
         ...(notice.publishedAt && { publishedTime: notice.publishedAt }),
@@ -255,19 +264,14 @@ export function generateMemberMetadata(member: {
         member.description?.substring(0, 160) ||
         `Learn about ${member.fullName}, ${member.post || "Team Member"} at ${siteConfig.name}.`;
     const canonical = `${siteConfig.url}/mb/${member.slug}`;
-    const ogImage =
-        member.image ||
-        buildOgImageUrl({
-            title: member.fullName,
-            subtitle: member.post || "Team Member",
-            type: "page",
-        });
+    const ogImage = resolveAbsoluteOgImageUrl(member.image);
 
     return generatePageMetadata({
         title,
         description,
         canonical,
         ogImage,
+        ogImageAlt: `${member.fullName} (${member.post || "Team Member"}) - ${siteConfig.name}`,
         ogType: "profile",
         keywords: [member.fullName, member.post || "", "CSIT Association", "Team"],
     });
@@ -282,26 +286,22 @@ export function generateTenureMemberMetadata(member: {
     slug: string;
     image?: string;
 }): Metadata {
-    const title = `${member.fullName} (${member.post || "Team Member"}, ${member.tenureName}) - ${siteConfig.name}`;
+    const roleTitle = member.post || "Team Member";
+    const title = `${member.fullName} (${roleTitle}, ${member.tenureName}) - ${siteConfig.name}`;
     const description =
         member.description?.substring(0, 160) ||
-        `Learn about ${member.fullName}, ${member.post || "Team Member"} (${member.tenureName}) at ${siteConfig.name}.`;
+        `Learn about ${member.fullName}, ${roleTitle} (${member.tenureName}) at ${siteConfig.name}.`;
     const canonical = `${siteConfig.url}/mb/${member.tenureSlug}/${member.slug}`;
-    const ogImage =
-        member.image ||
-        buildOgImageUrl({
-            title: member.fullName,
-            subtitle: `${member.post || "Team Member"} • ${member.tenureName}`,
-            type: "page",
-        });
+    const ogImage = resolveAbsoluteOgImageUrl(member.image);
 
     return generatePageMetadata({
         title,
         description,
         canonical,
         ogImage,
+        ogImageAlt: `${member.fullName} (${roleTitle}, ${member.tenureName}) - ${siteConfig.name}`,
         ogType: "profile",
-        keywords: [member.fullName, member.post || "", member.tenureName, "CSIT Association", "Team"],
+        keywords: [member.fullName, roleTitle, member.tenureName, "CSIT Association", "Team"],
     });
 }
 
@@ -318,19 +318,14 @@ export function generateAlumniProfileMetadata(alumni: {
         alumni.bio?.substring(0, 160) ||
         `Learn about ${alumni.fullName}, distinguished alumnus (${batchText}) of ${siteConfig.name}.`;
     const canonical = `${siteConfig.url}/al/${alumni.slug}`;
-    const ogImage =
-        alumni.image ||
-        buildOgImageUrl({
-            title: alumni.fullName,
-            subtitle: `Alumni • ${batchText}`,
-            type: "page",
-        });
+    const ogImage = resolveAbsoluteOgImageUrl(alumni.image);
 
     return generatePageMetadata({
         title,
         description,
         canonical,
         ogImage,
+        ogImageAlt: `${alumni.fullName} (${batchText}) - Distinguished Alumni | ${siteConfig.name}`,
         ogType: "profile",
         keywords: [alumni.fullName, "Alumni", batchText, "CSIT Association", "BMC"],
     });
@@ -415,18 +410,14 @@ export function generateBlogMetadata(blog: {
     blog.excerpt ||
     `Read ${blog.title} on CSIT Association of BMC. Explore tutorials, student tech insights, and community stories.`;
   const canonical = `${siteConfig.url}/blogs/${blog.slug}`;
+  const ogImage = resolveAbsoluteOgImageUrl(blog.image);
 
   return generatePageMetadata({
     title,
     description,
     canonical,
-    ogImage:
-      blog.image ||
-      buildOgImageUrl({
-        title: blog.title,
-        subtitle: blog.authorName ? `By ${blog.authorName}` : "CSITABMC Blog",
-        type: "page",
-      }),
+    ogImage,
+    ogImageAlt: `${blog.title} - Article by ${blog.authorName || "CSITABMC"}`,
     ogType: "article",
     publishedTime: blog.publishedAt || undefined,
     authors: blog.authorName ? [blog.authorName] : undefined,

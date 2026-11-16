@@ -11,11 +11,8 @@ export const metadata: Metadata = generatePageMetadata({
   description:
     "Recognizing the individuals who have been part of CSITABMC's journey and continue to contribute to the wider community. Explore former members and past leaders.",
   canonical: `${siteConfig.url}/about/alumni`,
-  ogImage: buildOgImageUrl({
-    title: "Our Alumni",
-    subtitle: "Recognizing Past Members & Leaders",
-    type: "page",
-  }),
+  ogImage: `${siteConfig.url}/team.jpeg`,
+  ogImageAlt: "Distinguished Alumni of CSIT Association of BMC",
   keywords: [
     "CSITABMC Alumni",
     "Former Executive Members",

@@ -11,11 +11,8 @@ export const metadata: Metadata = generatePageMetadata({
   description:
     "Explore practical engineering roadmaps, student tutorials, and tech stories from the CSIT Association of Butwal Multiple Campus.",
   canonical: `${siteConfig.url}/blogs`,
-  ogImage: buildOgImageUrl({
-    title: "Articles & Stories",
-    subtitle: "CSITABMC Community Blog",
-    type: "page",
-  }),
+  ogImage: siteConfig.defaultOgImage,
+  ogImageAlt: "Articles & Community Stories - CSIT Association of BMC",
   keywords: [
     "CSIT Blog",
     "CSITABMC Articles",

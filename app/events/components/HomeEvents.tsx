@@ -8,11 +8,12 @@ export default async function HomeEvents() {
     const { events } = await getEvents({ ordering: "-date" });
 
     return (
-      <section className="w-full py-16 bg-gray-50">
+      <section className="w-full py-12 sm:py-16 bg-slate-50/60 border-t border-slate-200/60">
         <Container>
           <SectionHeading
-            highlight="Latest Events"
-            title="Organized By CSITABMC"
+            highlight="Featured"
+            title="Events & Workshops"
+            subtitle="Hands-on bootcamps, hackathons, and interactive tech sessions organized by CSITABMC."
           />
 
           <HomeEventsList initialEvents={events} />

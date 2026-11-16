@@ -4,15 +4,18 @@ import { Partnerdata } from "@/data/about/data";
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/Container";
+import { SectionHeading } from "@/components/shared/SectionHeading";
 
 interface CommunityPartnersProps {
   className?: string;
   withContainer?: boolean;
+  showHeader?: boolean;
 }
 
 export default function Component({
   className = "",
   withContainer = true,
+  showHeader = true,
 }: CommunityPartnersProps) {
   const marqueeRef = useRef<HTMLDivElement>(null);
 
@@ -42,11 +45,15 @@ export default function Component({
   }, []);
 
   const content = (
-    <div className={cn("w-full py-8 sm:py-10 overflow-hidden", className)}>
-       <h2 className="relative text-2xl font-medium text-center mb-12 pb-2">We Have 
-        <span className="text-red-600"> Worked With </span>
-      <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-36 h-[2px] bg-red-600" />
-      </h2>
+    <div className={cn("w-full py-4 overflow-hidden", className)}>
+      {showHeader && (
+        <SectionHeading
+          highlight="Brand"
+          title="Collaborations"
+          subtitle="Organizations and community partners we have collaborated with to empower students."
+          className="mb-8 sm:mb-10"
+        />
+      )}
       <div className="relative">
         <div
           className="flex items-center overflow-hidden"

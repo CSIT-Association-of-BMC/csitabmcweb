@@ -12,11 +12,8 @@ export const metadata: Metadata = generatePageMetadata({
   description:
     "Learn about CSIT Association of BMC, a non-profit student-led tech community founded in 2016, empowering CSIT and IT students at Butwal Multiple Campus through workshops, hackathons, and mentorship.",
   canonical: `${siteConfig.url}/about/csitabmc`,
-  ogImage: buildOgImageUrl({
-    title: "About CSITABMC",
-    subtitle: "Student-Led Community for Learners at Butwal",
-    type: "page",
-  }),
+  ogImage: `${siteConfig.url}/team.jpeg`,
+  ogImageAlt: "About CSIT Association of BMC at Butwal Multiple Campus",
   keywords: [
     "About CSITABMC",
     "CSIT Association of BMC",

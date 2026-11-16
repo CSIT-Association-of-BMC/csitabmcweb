@@ -13,14 +13,9 @@ export interface ApiResponse<T> {
   error?: string | null;
 }
 
-const DEFAULT_DJANGO_API_URL = "https://cms-dashbaord-ben2.onrender.com/api/v1";
-
 export function getApiBaseUrl(): string {
-  const url =
-    process.env.NEXT_PUBLIC_DJANGO_API_URL ||
-    process.env.DJANGO_API_URL ||
-    DEFAULT_DJANGO_API_URL;
-  return url.replace(/\/+$/, "");
+  const url = process.env.NEXT_PUBLIC_API_BASE_URL;
+  return url!.replace(/\/+$/, "");
 }
 
 export interface RequestOptions extends RequestInit {
