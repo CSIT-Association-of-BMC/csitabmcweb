@@ -1,0 +1,37 @@
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+
+export default function EventNotFound() {
+  return (
+    <div className="min-h-[70vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16 bg-white">
+      <div className="max-w-md w-full text-center">
+        <p className="text-6xl sm:text-7xl font-extrabold text-primary tracking-tight">
+          404
+        </p>
+
+        <h1 className="mt-4 text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+          Event Not Found
+        </h1>
+
+        <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
+          This event may have concluded, been archived, or the link may have changed. You can browse our active and upcoming events.
+        </p>
+
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link
+            href="/events"
+            className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold transition-colors shadow-2xs"
+          >
+            Explore All Events
+          </Link>
+          <Link
+            href="/"
+            className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-medium transition-colors"
+          >
+            Go to Homepage
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}

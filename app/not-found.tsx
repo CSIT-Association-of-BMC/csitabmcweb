@@ -1,41 +1,49 @@
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowLeft, CloudOff } from "lucide-react";
+import { Container } from "@/components/shared/Container";
 
 export default function NotFound({
   heading = "Page Not Found",
-  message = " Oops! The page you're looking for doesn't exist or has been moved.",
+  message = "The page you are looking for may have been removed, had its name changed, or is temporarily unavailable.",
+}: {
+  heading?: string;
+  message?: string;
 }) {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="max-w-lg w-full space-y-8 text-center">
-        <div>
-          <CloudOff className="mx-auto h-24 w-24 text-gray-400" />
-          <h1 className="mt-6 text-4xl font-extrabold text-gray-900 sm:text-5xl">
-            404 - {heading}
-          </h1>
-          <p className="mt-4 text-lg text-gray-600">{message}</p>
-        </div>
-
-        <div className="mt-10">
-          <Link href="/" passHref>
-            <Button className="inline-flex items-center px-6 py-3 ">
-              <ArrowLeft className="mr-2 h-5 w-5" />
-              Back to Homepage
-            </Button>
-          </Link>
-        </div>
-
-        <div className="mt-8 text-sm text-gray-500">
-          <p>
-            If you believe this is a mistake, please{" "}
-            <Link href="/contact" className="text-primary hover:underline">
-              contact our support team
-            </Link>
-            .
+    <div className="min-h-[70vh] flex items-center justify-center py-16 bg-white">
+      <Container className="flex items-center justify-center">
+        <div className="max-w-md w-full text-center">
+          {/* Clean, prominent 404 numeral */}
+          <p className="text-6xl sm:text-7xl font-extrabold text-primary tracking-tight">
+            404
           </p>
+
+          {/* Heading */}
+          <h1 className="mt-4 text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+            {heading}
+          </h1>
+
+          {/* Short explanation */}
+          <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
+            {message}
+          </p>
+
+          {/* Primary and secondary actions */}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href="/"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold transition-colors shadow-2xs"
+            >
+              Go to Homepage
+            </Link>
+            <Link
+              href="/contact"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-medium transition-colors"
+            >
+              Contact Support
+            </Link>
+          </div>
         </div>
-      </div>
+      </Container>
     </div>
   );
 }

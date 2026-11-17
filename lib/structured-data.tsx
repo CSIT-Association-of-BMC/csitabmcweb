@@ -216,6 +216,33 @@ export function generateBreadcrumbSchema(
   };
 }
 
+export function generateNoticeSchema(notice: {
+  headline: string;
+  description: string;
+  datePublished?: string;
+  image?: string;
+  url: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: notice.headline,
+    description: notice.description,
+    ...(notice.datePublished && { datePublished: notice.datePublished }),
+    ...(notice.image && { image: notice.image }),
+    url: notice.url,
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: siteConfig.url,
+      logo: {
+        "@type": "ImageObject",
+        url: siteConfig.defaultOgImage,
+      },
+    },
+  };
+}
+
 // =============================================================================
 // JSON-LD Script Component
 // =============================================================================
@@ -252,8 +279,133 @@ export function EventJsonLd(props: Parameters<typeof generateEventSchema>[0]) {
   return <JsonLd data={generateEventSchema(props)} />;
 }
 
-export function BreadcrumbJsonLd(
-  props: Parameters<typeof generateBreadcrumbSchema>[0]
+export function BreadcrumbJsonLd(props: {
+  items: Array<{ name: string; url?: string }>;
+}) {
+  return <JsonLd data={generateBreadcrumbSchema(props.items)} />;
+}
+
+export function NoticeJsonLd(props: Parameters<typeof generateNoticeSchema>[0]) {
+  return <JsonLd data={generateNoticeSchema(props)} />;
+}
+
+export interface BlogPostingSchema {
+  "@context": "https://schema.org";
+  "@type": "BlogPosting";
+  headline: string;
+  description: string;
+  image?: string;
+  datePublished?: string;
+  dateModified?: string;
+  author?: {
+    "@type": "Person";
+    name: string;
+    url?: string;
+  };
+  publisher: {
+    "@type": "Organization";
+    name: string;
+    logo: {
+      "@type": "ImageObject";
+      url: string;
+    };
+  };
+  mainEntityOfPage: {
+    "@type": "WebPage";
+    "@id": string;
+  };
+}
+
+export function generateBlogPostingSchema(props: {
+  title: string;
+  description: string;
+  slug: string;
+  image?: string;
+  datePublished?: string;
+  dateModified?: string;
+  authorName?: string;
+  authorSlug?: string;
+}): BlogPostingSchema {
+  const url = `${siteConfig.url}/blogs/${props.slug}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: props.title,
+    description: props.description,
+    image: props.image || siteConfig.defaultOgImage,
+    datePublished: props.datePublished,
+    dateModified: props.dateModified || props.datePublished,
+    author: props.authorName
+      ? {
+          "@type": "Person",
+          name: props.authorName,
+          url: props.authorSlug
+            ? `${siteConfig.url}/mb/${props.authorSlug}`
+            : undefined,
+        }
+      : undefined,
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteConfig.url}/logo.png`,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+  };
+}
+
+export function BlogJsonLd(
+  props: Parameters<typeof generateBlogPostingSchema>[0]
 ) {
-  return <JsonLd data={generateBreadcrumbSchema(props)} />;
+  return <JsonLd data={generateBlogPostingSchema(props)} />;
+}
+
+export interface PersonSchema {
+  "@context": "https://schema.org";
+  "@type": "Person";
+  name: string;
+  jobTitle?: string;
+  worksFor?: {
+    "@type": "Organization";
+    name: string;
+    url: string;
+  };
+  image?: string;
+  url: string;
+  sameAs?: string[];
+  description?: string;
+}
+
+export function generatePersonSchema(props: {
+  name: string;
+  jobTitle?: string;
+  image?: string;
+  url: string;
+  sameAs?: string[];
+  description?: string;
+}): PersonSchema {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: props.name,
+    jobTitle: props.jobTitle,
+    worksFor: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+    image: props.image || siteConfig.defaultOgImage,
+    url: props.url,
+    sameAs: props.sameAs?.filter(Boolean),
+    description: props.description,
+  };
+}
+
+export function PersonJsonLd(props: Parameters<typeof generatePersonSchema>[0]) {
+  return <JsonLd data={generatePersonSchema(props)} />;
 }

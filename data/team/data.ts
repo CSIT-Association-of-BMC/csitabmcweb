@@ -1,0 +1,18 @@
+export const defaultTenureOrder: Record<string, number> = {
+  President: 1,
+  "Vice-President": 2,
+  "Vice President": 2,
+  Secretary: 3,
+  Treasurer: 4,
+  "Tech Lead": 5,
+  "Technical Lead": 5,
+  "Event Lead": 6,
+  "Graphic Designer": 7,
+  "Joint Secretary": 8,
+  "Joint-Secretary": 8,
+  "Ast. Tech Lead": 9,
+  "Assistant Tech Lead": 9,
+  "Ast. Event Lead": 11,
+  "Assistant Event Lead": 11,
+  "Executive Member": 12,
+};

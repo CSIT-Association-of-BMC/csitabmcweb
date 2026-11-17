@@ -1,16 +1,30 @@
 import type { Metadata } from "next";
+import { resolveImageUrl } from "./images";
 
 // =============================================================================
 // Global SEO Configuration (Fallback values only)
 // =============================================================================
+
+function getCanonicalSiteUrl(): string {
+    const raw = process.env.NEXT_PUBLIC_SITE_URL;
+    if (!raw) return "https://csitabmc.com";
+    // Support comma-separated URLs (e.g. multiple deployment/preview domains in env)
+    const candidate = raw.split(",")[0].trim().replace(/\/+$/, "");
+    try {
+        const parsed = new URL(candidate);
+        return parsed.origin;
+    } catch {
+        return "https://csitabmc.com";
+    }
+}
 
 export const siteConfig = {
     name: "CSIT Association of BMC",
     shortName: "CSITABMC",
     description:
         "CSIT Association of Butwal Multiple Campus is a non-profit, student-led tech community empowering IT and CSIT students through workshops, hackathons, and tech events in Butwal, Rupandehi, Nepal.",
-    url: "https://csitabmc.com",
-    ogImage: "https://csitabmc.com/api/og",
+    url: getCanonicalSiteUrl(),
+    ogImage: `${getCanonicalSiteUrl()}/api/og`,
     defaultOgImage:
         "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191383/logohero_nsqj8h.png",
     keywords: [
@@ -65,6 +79,7 @@ export interface PageSEO {
     keywords?: string[];
     canonical?: string;
     ogImage?: string;
+    ogImageAlt?: string;
     ogType?: "website" | "article" | "profile";
     noIndex?: boolean;
     publishedTime?: string;
@@ -77,6 +92,22 @@ export interface EventSEO extends PageSEO {
     eventDate: string;
     eventLocation?: string;
     eventImage?: string;
+}
+
+// =============================================================================
+// Absolute OpenGraph Image URL Resolver
+// =============================================================================
+
+export function resolveAbsoluteOgImageUrl(image?: unknown, fallback?: string): string {
+    const defaultFallback = fallback || siteConfig.defaultOgImage;
+    if (!image) return defaultFallback;
+    const resolved = resolveImageUrl(image, defaultFallback);
+    if (!resolved) return defaultFallback;
+    if (resolved.startsWith("http://") || resolved.startsWith("https://")) {
+        return resolved;
+    }
+    const cleanPath = resolved.startsWith("/") ? resolved : `/${resolved}`;
+    return `${siteConfig.url}${cleanPath}`;
 }
 
 // =============================================================================
@@ -104,7 +135,8 @@ export function generatePageMetadata(seo: PageSEO): Metadata {
     const description = seo.description || siteConfig.description;
     const canonical = seo.canonical || siteConfig.url;
     const keywords = seo.keywords?.length ? seo.keywords : siteConfig.keywords;
-    const ogImage = seo.ogImage || buildOgImageUrl({ title: seo.title });
+    const ogImage = resolveAbsoluteOgImageUrl(seo.ogImage);
+    const ogImageAlt = seo.ogImageAlt || title;
 
     return {
         title,
@@ -129,7 +161,7 @@ export function generatePageMetadata(seo: PageSEO): Metadata {
                     url: ogImage,
                     width: 1200,
                     height: 630,
-                    alt: title,
+                    alt: ogImageAlt,
                 },
             ],
             ...(seo.publishedTime && { publishedTime: seo.publishedTime }),
@@ -178,19 +210,14 @@ export function generateEventMetadata(event: {
         event.description ||
         `Join us for ${event.title}, a ${event.category || "tech event"} organized by ${siteConfig.name} in Butwal, Nepal.`;
     const canonical = `${siteConfig.url}/events/${event.slug}`;
-    const ogImage =
-        event.image ||
-        buildOgImageUrl({
-            title: event.title,
-            subtitle: event.category || "Event",
-            type: "event",
-        });
+    const ogImage = resolveAbsoluteOgImageUrl(event.image);
 
     return generatePageMetadata({
         title,
         description,
         canonical,
         ogImage,
+        ogImageAlt: `${event.title} - Event | ${siteConfig.name}`,
         ogType: "article",
         keywords: [
             event.title,
@@ -213,23 +240,21 @@ export function generateNoticeMetadata(notice: {
     description?: string;
     slug: string;
     publishedAt?: string;
+    image?: string;
 }): Metadata {
     const title = `${notice.title} - Notices | ${siteConfig.name}`;
     const description =
         notice.description ||
         `Official notice from ${siteConfig.name}: ${notice.title}`;
     const canonical = `${siteConfig.url}/notices/${notice.slug}`;
-    const ogImage = buildOgImageUrl({
-        title: notice.title,
-        subtitle: "Notice",
-        type: "notice",
-    });
+    const ogImage = resolveAbsoluteOgImageUrl(notice.image);
 
     return generatePageMetadata({
         title,
         description,
         canonical,
         ogImage,
+        ogImageAlt: `${notice.title} - Official Notice | ${siteConfig.name}`,
         ogType: "article",
         keywords: ["Notice", "CSIT Association", "BMC", "Announcement"],
         ...(notice.publishedAt && { publishedTime: notice.publishedAt }),
@@ -252,21 +277,70 @@ export function generateMemberMetadata(member: {
         member.description?.substring(0, 160) ||
         `Learn about ${member.fullName}, ${member.post || "Team Member"} at ${siteConfig.name}.`;
     const canonical = `${siteConfig.url}/mb/${member.slug}`;
-    const ogImage =
-        member.image ||
-        buildOgImageUrl({
-            title: member.fullName,
-            subtitle: member.post || "Team Member",
-            type: "page",
-        });
+    const ogImage = resolveAbsoluteOgImageUrl(member.image);
 
     return generatePageMetadata({
         title,
         description,
         canonical,
         ogImage,
+        ogImageAlt: `${member.fullName} (${member.post || "Team Member"}) - ${siteConfig.name}`,
         ogType: "profile",
         keywords: [member.fullName, member.post || "", "CSIT Association", "Team"],
+    });
+}
+
+export function generateTenureMemberMetadata(member: {
+    fullName: string;
+    post?: string;
+    description?: string;
+    tenureSlug: string;
+    tenureName: string;
+    slug: string;
+    image?: string;
+}): Metadata {
+    const roleTitle = member.post || "Team Member";
+    const title = `${member.fullName} (${roleTitle}, ${member.tenureName}) - ${siteConfig.name}`;
+    const description =
+        member.description?.substring(0, 160) ||
+        `Learn about ${member.fullName}, ${roleTitle} (${member.tenureName}) at ${siteConfig.name}.`;
+    const canonical = `${siteConfig.url}/mb/${member.tenureSlug}/${member.slug}`;
+    const ogImage = resolveAbsoluteOgImageUrl(member.image);
+
+    return generatePageMetadata({
+        title,
+        description,
+        canonical,
+        ogImage,
+        ogImageAlt: `${member.fullName} (${roleTitle}, ${member.tenureName}) - ${siteConfig.name}`,
+        ogType: "profile",
+        keywords: [member.fullName, roleTitle, member.tenureName, "CSIT Association", "Team"],
+    });
+}
+
+export function generateAlumniProfileMetadata(alumni: {
+    fullName: string;
+    graduationYear?: number | string | null;
+    bio?: string;
+    slug: string;
+    image?: string;
+}): Metadata {
+    const batchText = alumni.graduationYear ? `Batch of ${alumni.graduationYear}` : "Alumni";
+    const title = `${alumni.fullName} (${batchText}) - Alumni | ${siteConfig.name}`;
+    const description =
+        alumni.bio?.substring(0, 160) ||
+        `Learn about ${alumni.fullName}, distinguished alumnus (${batchText}) of ${siteConfig.name}.`;
+    const canonical = `${siteConfig.url}/al/${alumni.slug}`;
+    const ogImage = resolveAbsoluteOgImageUrl(alumni.image);
+
+    return generatePageMetadata({
+        title,
+        description,
+        canonical,
+        ogImage,
+        ogImageAlt: `${alumni.fullName} (${batchText}) - Distinguished Alumni | ${siteConfig.name}`,
+        ogType: "profile",
+        keywords: [alumni.fullName, "Alumni", batchText, "CSIT Association", "BMC"],
     });
 }
 
@@ -279,7 +353,7 @@ export function generatePastPapersListMetadata(): Metadata {
     title: `Past Year Papers - ${siteConfig.name}`,
     description:
       "Access CSIT past year board exam papers and model sets for all 8 semesters. Free study resources for BSc.CSIT students at Butwal Multiple Campus.",
-    canonical: `${siteConfig.url}/study-material/past-papers`,
+    canonical: `${siteConfig.url}/study-materials/past-papers`,
     ogImage: buildOgImageUrl({
       title: "Past Year Papers",
       subtitle: "Board Exams & Model Sets",
@@ -315,7 +389,7 @@ export function generatePastPaperMetadata(paper: {
   return generatePageMetadata({
     title,
     description,
-    canonical: `${siteConfig.url}/study-material/past-papers/${paper.slug}`,
+    canonical: `${siteConfig.url}/study-materials/past-papers/${paper.slug}`,
     ogImage: buildOgImageUrl({
       title: `${paper.subject_code} ${paper.exam_year}`,
       subtitle: `${label} · Semester ${paper.semester}`,
@@ -331,6 +405,41 @@ export function generatePastPaperMetadata(paper: {
       "BSc CSIT",
       "TU Question Paper",
       "CSIT Association BMC",
+    ],
+  });
+}
+
+// ── Per-blog detail page (e.g. /blogs/how-to-start-web-development) ───────────
+export function generateBlogMetadata(blog: {
+  title: string;
+  excerpt?: string;
+  slug: string;
+  image?: string;
+  publishedAt?: string | null;
+  authorName?: string;
+}): Metadata {
+  const title = `${blog.title} - ${siteConfig.name}`;
+  const description =
+    blog.excerpt ||
+    `Read ${blog.title} on CSIT Association of BMC. Explore tutorials, student tech insights, and community stories.`;
+  const canonical = `${siteConfig.url}/blogs/${blog.slug}`;
+  const ogImage = resolveAbsoluteOgImageUrl(blog.image);
+
+  return generatePageMetadata({
+    title,
+    description,
+    canonical,
+    ogImage,
+    ogImageAlt: `${blog.title} - Article by ${blog.authorName || "CSITABMC"}`,
+    ogType: "article",
+    publishedTime: blog.publishedAt || undefined,
+    authors: blog.authorName ? [blog.authorName] : undefined,
+    keywords: [
+      "CSIT Blog",
+      "CSIT Association Article",
+      "Tech Blog Butwal",
+      "BSc CSIT Insights",
+      "Student Tech Community Nepal",
     ],
   });
 }

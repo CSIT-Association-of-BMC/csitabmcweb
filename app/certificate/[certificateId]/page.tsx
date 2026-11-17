@@ -1,62 +1,86 @@
-import DownloadCertificate from "./DownloadCertificate";
 import { format } from "date-fns";
-
 import NotFound from "@/app/not-found";
-import { fetchWithToken } from "@/lib/fetch";
-import { CertificateTypes } from "@/types/certificate";
-import QueryString from "qs";
+import { verifyCertificate } from "@/lib/api/certificates";
+import type { CertificateTypes } from "@/types/certificate";
+import { resolveImageUrl } from "@/lib/images";
 import CertificateDisplay from "./CertificateDisplay";
 import CertificateVerification from "./CertificateVerification";
 import EventMentorDetails from "./EventMentorDetails";
+import { Container } from "@/components/shared/Container";
+import { generatePageMetadata, siteConfig } from "@/lib/seo";
+import type { Metadata } from "next";
 
-const CertificateData = async ({
+export async function generateMetadata({
   params,
 }: {
   params: Promise<{ certificateId: string }>;
-}) => {
+}): Promise<Metadata> {
   const { certificateId } = await params;
-  const query = QueryString.stringify({
-    populate: {
-      event: {
-        fields: ["title", "startDate", "endDate"],
-        populate: {
-          mentors: {
-            fields: ["fullName", "role"],
-            populate: {
-              image: {
-                fields: ["url"],
-              },
-            },
-          },
-        },
-      },
-    },
+  return generatePageMetadata({
+    title: `Certificate ${certificateId} - ${siteConfig.name}`,
+    description: `Official certificate verification for credential ID ${certificateId} issued by CSIT Association of BMC.`,
+    canonical: `${siteConfig.url}/certificate/${certificateId}`,
+    noIndex: true, // Verification query results should not pollute search index
   });
-  const res = await fetchWithToken(
-    `${process.env.STRAPI_API_URL}/certificates/${certificateId}?${query}`
-  );
-  if (!res || res.status !== 200) {
+}
+
+export default async function CertificateDetailPage({
+  params,
+}: {
+  params: Promise<{ certificateId: string }>;
+}) {
+  const { certificateId } = await params;
+  const result = await verifyCertificate(certificateId);
+
+  if (!result.valid || !result.certificate) {
     return (
       <NotFound
         heading="Certificate Not Found"
-        message="The certificate you're looking for doesn't exist or has been moved."
+        message={
+          result.detail ||
+          "The certificate you're looking for doesn't exist or could not be authenticated. Please double-check the Certificate ID or UUID."
+        }
       />
     );
   }
-  const resJson = await res.json();
-  const data: CertificateTypes = resJson.data;
+
+  const cert = result.certificate;
+  const isEligible = Boolean(cert.is_project_completed);
+  const certId = cert.certificate_id || certificateId;
+  const recipient = cert.full_name || "Recipient";
+  const course = cert.event_title || "CSIT Workshop";
+
+  let completionDate = "Verified Date";
+  try {
+    if (cert.issued_at) {
+      completionDate = format(new Date(cert.issued_at), "MMMM d, yyyy");
+    }
+  } catch {
+    completionDate = "Verified Date";
+  }
+
+  const rawPresidentName = cert.president_name ? cert.president_name.trim() : "";
+  const presidentName = rawPresidentName
+    ? (/^(mr\.|ms\.|mrs\.|dr\.)/i.test(rawPresidentName)
+        ? rawPresidentName
+        : `Mr. ${rawPresidentName}`)
+    : "President Name";
+
+  const presidentSignature = cert.president_signature_url
+    ? (resolveImageUrl(cert.president_signature_url) || "")
+    : "";
 
   const certificateDetails = {
-    id: data.certificateID,
-    recipientName: data.fullName,
-    courseName: data.event.title,
-    completionDate: format(new Date(data.event.endDate), "MMMM d, yyyy"),
+    id: certId,
+    recipientName: recipient,
+    courseName: course,
+    completionDate,
     signatures: [
       {
-        name: "Mr. Nischal Panthi",
-        title: "President ",
+        name: presidentName,
+        title: "President",
         institute: "CSIT Association of BMC",
-        image: "/nischal-sign.png",
+        image: presidentSignature,
       },
       {
         name: "Dr. Arun Kumar Kshetree",
@@ -73,31 +97,46 @@ const CertificateData = async ({
     ],
   };
 
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=https://csitabmc.com/certificate/${certificateDetails.id}&size=200x200`;
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=https://csitabmc.com/certificate/${encodeURIComponent(
+    certificateDetails.id
+  )}&size=200x200`;
+
+  const certDataCompatible: CertificateTypes = {
+    certificateID: certId,
+    certificate_id: certId,
+    fullName: recipient,
+    full_name: recipient,
+    isProjectComplete: isEligible,
+    is_project_completed: isEligible,
+    event_title: course,
+    issued_at: cert.issued_at,
+    president_name: cert.president_name,
+    president_signature_url: cert.president_signature_url,
+    event: {
+      id: 1,
+      title: course,
+      startDate: cert.issued_at || new Date().toISOString(),
+      endDate: cert.issued_at || new Date().toISOString(),
+      slug: "event",
+    } as any,
+  };
 
   return (
-    <div className="min-h-screen w-full mx-auto bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      <div className="container mx-auto">
+    <div className="w-full mx-auto bg-slate-50/50 py-8 sm:py-12">
+      <Container>
         <CertificateVerification
           certificateDetails={certificateDetails}
-          isValid={data.isProjectComplete}
+          isValid={isEligible}
         />
 
         {/* Certificate Display */}
         <CertificateDisplay
           certificateDetails={certificateDetails}
           qrCodeUrl={qrCodeUrl}
-          certificateData={data}
-          isValid={data.isProjectComplete}
+          certificateData={certDataCompatible}
+          isValid={isEligible}
         />
-
-        <EventMentorDetails
-          certificateDetails={certificateDetails}
-          eventData={data.event}
-        />
-      </div>
+      </Container>
     </div>
   );
-};
-
-export default CertificateData;
+}

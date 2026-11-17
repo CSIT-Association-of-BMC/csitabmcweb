@@ -32,10 +32,10 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
   isValid = true,
 }) => {
   return (
-    <div className="w-full mb-4  bg-slate-50 overflow-x-auto overflow-y-hidden lg:overflow-visible lg:flex lg:items-center lg:justify-center">
+    <div className="w-full mb-4 bg-slate-50 overflow-x-auto overflow-y-hidden lg:overflow-visible lg:flex lg:items-center lg:justify-center">
       <div
         id="certificate-to-download"
-        className=" bg-white shadow-sm border border-slate-200 my-6 w-[900px] aspect-[12/10] lg:aspect-auto lg:w-[95vw] lg:mx-auto mx-4"
+        className="relative bg-white shadow-sm border border-slate-200 rounded-lg overflow-hidden my-6 w-[900px] aspect-[12/10] lg:aspect-auto lg:w-[95vw] lg:mx-auto mx-4"
       >
         <div style={{ fontSize: "16px", width: "100%", height: "100%" }}>
           <div className="relative w-full h-full overflow-hidden">
@@ -253,65 +253,108 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
                     style={{ marginTop: "1.5em", gap: "2em" }}
                   >
                     {certificateDetails.signatures.map((signature, index) => (
-                      <div key={signature.name}>
-                        {signature.image ? (
-                          <div
-                            style={{
-                              height: "8em",
-                              display: "flex",
-                              alignItems: "flex-end",
-                              position: "relative",
-                            }}
-                          >
-                            <Image
-                              src={signature.image}
-                              alt={`${signature.name} signature`}
-                              width={2200}
-                              height={2200}
-                              className="object-contain absolute left-0 w-full scale-150 h-full"
-                              style={{ maxHeight: "9em" }}
-                            />
-                          </div>
-                        ) : (
-                          <div style={{ marginBottom: "0.5em" }}>
-                            <svg
-                              viewBox="0 0 180 50"
-                              style={{ width: "100%", height: "2em" }}
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d={
-                                  index % 2 === 0
-                                    ? "M 10 30 Q 25 15, 45 28 Q 65 40, 85 25 Q 105 10, 125 30 Q 145 45, 165 28"
-                                    : "M 10 25 Q 30 35, 50 20 Q 70 5, 90 25 Q 110 40, 130 20 Q 150 10, 170 30"
-                                }
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                fill="none"
-                                className="text-slate-700"
+                      <div key={signature.title || index} className="flex flex-col">
+                        {/* Fixed-height Signature Container (guarantees sign place and divider line never shift) */}
+                        <div
+                          style={{
+                            height: "8em",
+                            display: "flex",
+                            alignItems: "flex-end",
+                            justifyContent: "center",
+                            position: "relative",
+                          }}
+                        >
+                          {signature.image ? (
+                            index === 0 ? (
+                              <div
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  display: "flex",
+                                  alignItems: "flex-end",
+                                  justifyContent: "center",
+                                  paddingBottom: "0.5em",
+                                }}
+                              >
+                                <Image
+                                  src={signature.image}
+                                  alt={`${signature.name} signature`}
+                                  width={640}
+                                  height={320}
+                                  unoptimized={signature.image.startsWith("http://") || signature.image.startsWith("https://")}
+                                  className="object-contain"
+                                  style={{
+                                    maxHeight: "3.25em",
+                                    maxWidth: "75%",
+                                    width: "auto",
+                                    height: "auto",
+                                  }}
+                                />
+                              </div>
+                            ) : (
+                              <Image
+                                src={signature.image}
+                                alt={`${signature.name} signature`}
+                                width={2200}
+                                height={2200}
+                                unoptimized={signature.image.startsWith("http://") || signature.image.startsWith("https://")}
+                                className="object-contain absolute left-0 w-full scale-150 h-full"
+                                style={{ maxHeight: "9em" }}
                               />
-                            </svg>
-                          </div>
-                        )}
+                            )
+                          ) : (
+                            /* Fixed-position fallback when no signature image exists */
+                            <div
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                display: "flex",
+                                alignItems: "flex-end",
+                                justifyContent: "center",
+                                paddingBottom: "0.75em",
+                              }}
+                            >
+                              <svg
+                                viewBox="0 0 180 50"
+                                style={{ width: "65%", height: "2.5em" }}
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d={
+                                    index % 2 === 0
+                                      ? "M 10 30 Q 25 15, 45 28 Q 65 40, 85 25 Q 105 10, 125 30 Q 145 45, 165 28"
+                                      : "M 10 25 Q 30 35, 50 20 Q 70 5, 90 25 Q 110 40, 130 20 Q 150 10, 170 30"
+                                  }
+                                  stroke="currentColor"
+                                  strokeWidth="1.5"
+                                  fill="none"
+                                  className="text-slate-400"
+                                />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Divider Line & Details (locked at consistent baseline across all 3 columns) */}
                         <div
                           className="border-t border-slate-300 text-center"
                           style={{ paddingTop: "0.25em" }}
                         >
                           <p
-                            style={{ fontSize: "0.875em" }}
-                            className="font-semibold text-slate-900"
+                            style={{ fontSize: "0.875em", minHeight: "1.25em" }}
+                            className="font-semibold text-slate-900 leading-tight"
                           >
                             {signature.name}
                           </p>
                           <p
-                            style={{ fontSize: "0.75em" }}
-                            className="text-slate-600"
+                            style={{ fontSize: "0.75em", minHeight: "1.25em" }}
+                            className="text-slate-600 leading-tight"
                           >
                             {signature.title}
                           </p>
                           <p
-                            style={{ fontSize: "0.75em" }}
-                            className="text-slate-600"
+                            style={{ fontSize: "0.75em", minHeight: "1.25em" }}
+                            className="text-slate-600 leading-tight"
                           >
                             {signature.institute}
                           </p>
@@ -351,36 +394,36 @@ const CertificateDisplay: React.FC<CertificateDisplayProps> = ({
             </div> */}
           </div>
 
-          {/* Invalid Certificate Overlay */}
+          {/* Incomplete / Not Verified Certificate Overlay */}
           {!isValid && (
-            <div className="absolute inset-0 bg-red-900/90 backdrop-blur-sm flex items-center justify-center z-20">
-              <div className="bg-white rounded-lg p-8 max-w-md mx-4 text-center shadow-2xl border-4 border-red-600">
+            <div className="absolute inset-0 bg-red-900/85 backdrop-blur-xs flex items-center justify-center z-30 p-4">
+              <div className="bg-white rounded-xl p-6 sm:p-8 max-w-md w-full mx-4 text-center shadow-2xl border-2 border-red-600 animate-in fade-in zoom-in-95 duration-200">
                 <div className="mb-4">
-                  <svg
-                    className="w-16 h-16 text-red-600 mx-auto"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-                    />
-                  </svg>
+                  <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mx-auto text-red-600">
+                    <svg
+                      className="w-8 h-8"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                      />
+                    </svg>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-red-600 mb-2">
-                  INVALID CERTIFICATE
+                <h3 className="text-xl sm:text-2xl font-bold text-red-600 tracking-tight mb-2">
+                  CERTIFICATE NOT VERIFIED
                 </h3>
-                <p className="text-slate-700 mb-4">
-                  This certificate cannot be issued because the required
-                  projects and assignments have not been completed.
+                <p className="text-sm text-slate-700 leading-relaxed mb-4">
+                  This certificate cannot be authenticated because the required projects, assignments, or coursework have not been completed.
                 </p>
                 <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                  <p className="text-sm text-red-800 font-medium">
-                    Please complete all required coursework to receive a valid
-                    certificate.
+                  <p className="text-xs sm:text-sm text-red-800 font-semibold">
+                    Status: Incomplete Requirements / Not Verified
                   </p>
                 </div>
               </div>

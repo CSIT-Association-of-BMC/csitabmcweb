@@ -1,82 +1,156 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import Image from "next/image";
-import { Calendar, Download } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Calendar, Maximize2, X } from "lucide-react";
 import { NoticeTypes } from "@/types/Notice";
 import { getLocalDate } from "@/lib/data";
-import { Button } from "@/components/ui/button";
-import Markdown from "react-markdown";
-import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { cn } from "@/lib/utils";
+import { NoticePreviewModal } from "./NoticePreviewModal";
+import { startLoading } from "@/components/shared/LoadingIndicator";
+import { getNoticeSlug } from "@/lib/slugs";
+import { resolveImageUrl } from "@/lib/images";
 
 export const NoticeCardComponent = ({ notice }: { notice: NoticeTypes }) => {
-  const router = useRouter();
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const triggerButtonRef = useRef<HTMLButtonElement>(null);
 
-  const handleCardClick = useCallback(() => {
-    router.push(`/notices/${notice.documentId}`);
-  }, [router, notice.documentId]);
-
-  const handleDownload = useCallback(() => {
-    if (notice.image && notice.image.length > 0 && notice.image[0].url) {
-      const a = document.createElement("a");
-      a.href = notice.image[0].url;
-      a.download = "";
-      a.click();
+  // Close mobile expanded state when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent | TouchEvent) {
+      if (cardRef.current && !cardRef.current.contains(e.target as Node)) {
+        setIsExpanded(false);
+      }
     }
-  }, [notice.image]);
+
+    if (isExpanded) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("touchstart", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [isExpanded]);
+
+  const initialImageUrl = resolveImageUrl(notice.image);
+  const [imgSrc, setImgSrc] = useState<string | null>(initialImageUrl);
+
+  const router = useRouter();
+  const noticeUrl = `/notices/${getNoticeSlug(notice)}`;
+
+  const handleCardClick = () => {
+    if (window.innerWidth < 768) {
+      if (!isExpanded) {
+        setIsExpanded(true);
+      }
+    } else {
+      startLoading();
+      router.push(noticeUrl);
+    }
+  };
 
   return (
-    <Card className="cursor-pointer" onClick={handleCardClick}>
-      <CardHeader className="flex flex-row items-center gap-4">
-        <div className="grid gap-1 h-14">
-          <CardTitle>{notice.title}</CardTitle>
-          <div className="text-sm text-muted-foreground line-clamp-2">
-            <Markdown>{notice.description}</Markdown>
+    <>
+      <div
+        ref={cardRef}
+        onClick={handleCardClick}
+        tabIndex={0}
+        role="region"
+        aria-label={notice.title}
+        className="relative h-full w-full overflow-hidden rounded-2xl group border border-slate-200/90 bg-slate-50 flex items-center justify-center cursor-pointer shadow-sm hover:shadow-xl transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
+      >
+        {/* Category Pill: Positioned top-right using canonical primary red token */}
+        {notice.category && (
+          <span className="bg-primary text-primary-foreground text-xs font-semibold px-3.5 py-1 rounded-full shadow-md absolute top-3.5 right-3.5 z-20 pointer-events-none capitalize">
+            {notice.category}
+          </span>
+        )}
+
+        {/* Natural Document Presentation: w-full h-auto block without cropping */}
+        {imgSrc ? (
+          <img
+            src={imgSrc}
+            alt={notice.title}
+            className="w-full h-auto block mx-auto my-auto object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+            loading="lazy"
+            onError={() => setImgSrc(null)}
+          />
+        ) : (
+          <div className="w-full aspect-[3/4] bg-slate-100 flex items-center justify-center text-slate-400 text-xs font-medium">
+            No document scan available
           </div>
-        </div>
-        <span className="ml-auto rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold capitalize text-slate-700">
-          {notice.category}
-        </span>
-      </CardHeader>
-      <CardContent>
-        <Image
-          src={
-            notice.image &&
-            notice.image.length > 0 &&
-            notice.image[0].url !== ""
-              ? (notice.image[0].url as string)
-              : "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191383/logohero_nsqj8h.png"
-          }
-          width={800}
-          height={400}
-          alt={notice.title}
-          className="rounded-lg border w-full h-48 object-contain"
-        />
-      </CardContent>
-      <CardFooter className="flex justify-between">
-        <div className="flex items-center text-sm text-muted-foreground">
-          <Calendar className="mr-1 h-4 w-4" />
-          {getLocalDate(notice.publishedAt)}
-        </div>
-        {notice.image && notice.image.length > 0 && notice.image[0].url ? (
-          <Button
+        )}
+
+        {/* Hover / Focus / Touch Overlay: Frosted dark overlay */}
+        <div
+          className={cn(
+            "absolute inset-0 z-10 bg-slate-950/85 backdrop-blur-[2px] transition-all duration-300 p-5 text-white flex flex-col justify-end",
+            isExpanded
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto"
+          )}
+        >
+          {/* Mobile Close Button */}
+          {isExpanded && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsExpanded(false);
+              }}
+              className="md:hidden absolute top-3.5 right-3.5 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              aria-label="Close details"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+
+          {/* 1. Notice Title / Subject */}
+          <h3 className="text-sm font-bold leading-snug line-clamp-3 text-white">
+            {notice.title}
+          </h3>
+
+          {/* 2. Published Date */}
+          {notice.publishedAt && (
+            <div className="flex items-center gap-1.5 text-xs text-slate-300 mt-1.5">
+              <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <span>{getLocalDate(notice.publishedAt)}</span>
+            </div>
+          )}
+
+          {/* 3. Action Button triggering Full-Screen Preview */}
+          <button
+            ref={triggerButtonRef}
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
-              handleDownload();
+              if (imgSrc) {
+                setIsPreviewOpen(true);
+              }
             }}
+            className="mt-3 rounded-lg bg-white text-slate-900 text-xs font-semibold px-3.5 py-2 inline-flex items-center justify-center gap-1.5 hover:bg-slate-200 hover:text-slate-950 active:bg-slate-300 transition-all duration-200 shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
-            <Download className="mr-2 h-4 w-4" />
-            Notice
-          </Button>
-        ) : null}
-      </CardFooter>
-    </Card>
+            <span>View Full Notice</span>
+            <Maximize2 className="w-3.5 h-3.5 text-slate-900" />
+          </button>
+        </div>
+      </div>
+
+      {/* Full-Screen Interactive Lightbox Modal */}
+      {imgSrc && (
+        <NoticePreviewModal
+          isOpen={isPreviewOpen}
+          onClose={() => setIsPreviewOpen(false)}
+          imageUrl={imgSrc}
+          title={notice.title}
+          triggerRef={triggerButtonRef}
+        />
+      )}
+    </>
   );
 };

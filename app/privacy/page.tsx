@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
+import { Container } from "@/components/shared/Container";
+import { generatePageMetadata, siteConfig } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = generatePageMetadata({
   title: "Privacy Policy | CSIT Association of BMC Notice App",
   description:
     "Privacy Policy explaining how CSIT Association of BMC's Notice App collects, uses, stores, and protects user and device information.",
-};
+  canonical: `${siteConfig.url}/privacy`,
+  ogImage: siteConfig.defaultOgImage,
+  ogImageAlt: "Privacy Policy - CSIT Association of BMC",
+});
 
 const APP_NAME = "CSIT Association of BMC App";
 
@@ -17,7 +22,7 @@ const LAST_UPDATED = "August 25, 2026";
 export default function PrivacyPolicyPage() {
   return (
     <main className="min-h-screen bg-white text-slate-700">
-      <div className="mx-auto max-w-3xl px-5 py-12 sm:px-6 sm:py-16 lg:py-20">
+      <Container className="max-w-3xl py-12 sm:py-16 lg:py-20">
         {/* Header */}
         <header className="border-b border-slate-200 pb-10">
           <p className="mb-4 text-sm font-medium text-slate-500">
@@ -497,7 +502,7 @@ export default function PrivacyPolicyPage() {
             reserved.
           </p>
         </footer>
-      </div>
+      </Container>
     </main>
   );
 }

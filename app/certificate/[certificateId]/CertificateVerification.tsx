@@ -1,9 +1,12 @@
-import { format } from "date-fns";
+import Link from "next/link";
+import { ShieldCheck, ShieldAlert, ArrowLeft, Calendar, Building2 } from "lucide-react";
+import DownloadCertificate from "./DownloadCertificate";
 
 interface CertificateVerificationProps {
   certificateDetails: {
     id: string;
     completionDate: string;
+    recipientName?: string;
   };
   isValid: boolean;
 }
@@ -13,148 +16,113 @@ export default function CertificateVerification({
   isValid,
 }: CertificateVerificationProps) {
   return (
-    <div className="py-8 px-2 sm:px-4 md:px-6 bg-slate-50">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 md:p-10">
+    <section className="py-6 sm:py-8 px-4 sm:px-6">
+      <div className="max-w-5xl mx-auto">
+        {/* Navigation Breadcrumb / Return */}
+        <div className="mb-4">
+          <Link
+            href="/certificate"
+            className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-slate-500 hover:text-primary transition-colors font-medium"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Verify Another Certificate</span>
+          </Link>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-xs border border-slate-200/90 p-5 sm:p-7 md:p-8">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-            <div className="flex items-start space-x-3 sm:space-x-6">
-              <div className="flex-shrink-0 hidden sm:block">
+            <div className="flex items-start gap-4 sm:gap-5">
+              <div className="shrink-0 hidden sm:block">
                 <div
-                  className={`w-16 h-16 rounded-lg flex items-center justify-center ${
-                    isValid ? "bg-blue-600" : "bg-red-600"
+                  className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-xs ${
+                    isValid
+                      ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
+                      : "bg-amber-50 text-amber-600 border border-amber-200"
                   }`}
                 >
-                  <svg
-                    className="w-8 h-8 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d={
-                        isValid
-                          ? "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                          : "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      }
-                    />
-                  </svg>
+                  {isValid ? (
+                    <ShieldCheck className="w-7 h-7" />
+                  ) : (
+                    <ShieldAlert className="w-7 h-7" />
+                  )}
                 </div>
               </div>
 
               <div className="min-w-0 flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <h1 className="text-2xl font-bold text-slate-900">
+                <div className="flex flex-wrap items-center gap-2.5 mb-2">
+                  <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                     Certificate Verification
                   </h1>
                   <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
                       isValid
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
+                        ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                        : "bg-amber-100 text-amber-800 border border-amber-200"
                     }`}
                   >
-                    {isValid ? "Verified" : "Deactivated"}
+                    {isValid ? "Verified & Active" : "Coursework Pending"}
                   </span>
                 </div>
 
-                <p className="text-slate-600 mb-4">
+                <p className="text-sm text-slate-600 leading-relaxed mb-4 max-w-2xl">
                   {isValid
-                    ? "This certificate has been officially verified and authenticated by the CSIT Association of BMC. The document is valid and recognized for all professional and academic purposes."
-                    : "This certificate has been deactivated due to incomplete requirements. The recipient has not completed all necessary projects and assignments."}
+                    ? "This certificate has been officially verified and authenticated by the CSIT Association of BMC. The credential is active and verified for academic and professional portfolios."
+                    : "This certificate is currently unverified or locked because the required project, assignments, or practical evaluations have not yet been completed."}
                 </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                  <div className="flex items-center text-slate-600">
-                    <svg
-                      className="w-4 h-4 mr-2 text-slate-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                    Issued: {certificateDetails.completionDate}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm text-slate-600">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
+                    <span>Issued: {certificateDetails.completionDate}</span>
                   </div>
-                  <div className="flex items-center text-slate-600">
-                    <svg
-                      className="w-4 h-4 mr-2 text-slate-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                      />
-                    </svg>
-                    Organization: CSIT Association of BMC
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-slate-400 shrink-0" />
+                    <span>Issuer: CSIT Association of BMC</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="w-full lg:w-auto">
-              <div className="bg-slate-50 rounded-lg p-3 border border-slate-200 max-w-full sm:max-w-xs lg:max-w-sm">
-                <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1 text-left lg:text-right">
+            {/* Action and ID column */}
+            <div className="w-full lg:w-auto flex flex-col sm:flex-row lg:flex-col items-stretch lg:items-end gap-3 shrink-0">
+              <div className="bg-slate-50/80 rounded-xl p-3 border border-slate-200 text-left lg:text-right">
+                <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">
                   Certificate ID
                 </div>
-                <div className="font-mono text-sm font-semibold text-slate-900 break-words">
+                <div className="font-mono text-xs sm:text-sm font-bold text-slate-800 break-all select-all">
                   {certificateDetails.id}
                 </div>
               </div>
+
+              {/* Download Action Gated by Coursework Eligibility */}
+              <DownloadCertificate
+                certificateId={certificateDetails.id}
+                recipientName={certificateDetails.recipientName || "Recipient"}
+                isEligible={isValid}
+              />
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-slate-200">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 text-sm text-slate-500">
-              <div className="flex items-center space-x-2 text-sm">
-                <span className="text-slate-600">Powered by</span>
-                <a
-                  className="text-red-500 underline"
-                  href="https://consolesoft.ltd"
-                >
-                  Console Soft
-                </a>
-              </div>
+          {/* Footer info bar */}
+          <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-slate-500">
+            <div className="flex items-center gap-1.5">
+              <span>Authentication Platform:</span>
+              <span className="font-medium text-slate-700">CSITABMC Verification Engine</span>
+            </div>
 
-              <div className="flex items-center">
-                <svg
-                  className={`w-4 h-4 mr-2 ${
-                    isValid ? "text-green-500" : "text-red-500"
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d={
-                      isValid
-                        ? "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                        : "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    }
-                  />
-                </svg>
-                <span className="text-sm">
-                  Status: {isValid ? "Active & Valid" : "Inactive & Invalid"}
-                </span>
-              </div>
+            <div className="flex items-center gap-2">
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  isValid ? "bg-emerald-500" : "bg-amber-500"
+                }`}
+              />
+              <span>
+                Status: {isValid ? "Authenticated & Eligible" : "Incomplete Requirements"}
+              </span>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
