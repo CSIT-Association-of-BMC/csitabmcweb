@@ -15,7 +15,9 @@ export interface ApiResponse<T> {
 
 export function getApiBaseUrl(): string {
   const url = process.env.NEXT_PUBLIC_API_BASE_URL;
-  return url!.replace(/\/+$/, "");
+  if (!url) return "https://cms.csitabmc.com/api/v1";
+  const candidate = url.split(",")[0].trim().replace(/\/+$/, "");
+  return candidate || "https://cms.csitabmc.com/api/v1";
 }
 
 export interface RequestOptions extends RequestInit {

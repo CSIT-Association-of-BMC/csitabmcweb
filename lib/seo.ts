@@ -5,13 +5,26 @@ import { resolveImageUrl } from "./images";
 // Global SEO Configuration (Fallback values only)
 // =============================================================================
 
+function getCanonicalSiteUrl(): string {
+    const raw = process.env.NEXT_PUBLIC_SITE_URL;
+    if (!raw) return "https://csitabmc.com";
+    // Support comma-separated URLs (e.g. multiple deployment/preview domains in env)
+    const candidate = raw.split(",")[0].trim().replace(/\/+$/, "");
+    try {
+        const parsed = new URL(candidate);
+        return parsed.origin;
+    } catch {
+        return "https://csitabmc.com";
+    }
+}
+
 export const siteConfig = {
     name: "CSIT Association of BMC",
     shortName: "CSITABMC",
     description:
         "CSIT Association of Butwal Multiple Campus is a non-profit, student-led tech community empowering IT and CSIT students through workshops, hackathons, and tech events in Butwal, Rupandehi, Nepal.",
-    url: process.env.NEXT_PUBLIC_SITE_URL || "https://csitabmc.com",
-    ogImage: "https://csitabmc.com/api/og",
+    url: getCanonicalSiteUrl(),
+    ogImage: `${getCanonicalSiteUrl()}/api/og`,
     defaultOgImage:
         "https://res.cloudinary.com/dol8m5gx7/image/upload/v1723191383/logohero_nsqj8h.png",
     keywords: [
